@@ -1,12 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
+
+import CheckInOut from "@/components/employee/CheckInOut.vue";
+
 import LeaveApplication from "@/components/employee/leaveApplication.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue"
+
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
 import CheckInCheckOut from "@/components/admin/CheckInCheckOut.vue";
+
+import ManageLeaves from '@/components/hr/ManageLeaves.vue'
+
 
 
 const router = createRouter({
@@ -25,6 +32,10 @@ const router = createRouter({
     {
       path:'/forgot-pass',
       component:ForgotPass
+    },
+    {
+      path:'/manage-leaves',
+      component:ManageLeaves
     },
     {
       path: "/leaveApplication",
@@ -48,5 +59,6 @@ const router = createRouter({
     },
    
   ]
-})
+});
 export default router
+
