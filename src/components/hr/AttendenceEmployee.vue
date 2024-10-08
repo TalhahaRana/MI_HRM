@@ -1,62 +1,92 @@
-<template>
-    <div class="container mt-5">
-      <h3 class="text-black">Attendance</h3>
+
+
+
+  <template>
+    <div class="container mt-5 py-5">
+      <h3 class="text-black ">Attendance</h3>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Attendance</li>
+          <li class="breadcrumb-item fw-bolder"><a href="#"><strong>Dashboard</strong></a></li>
+          <li class="breadcrumb-item active fw-bolder" aria-current="page"><strong>Attendance</strong></li>
         </ol>
       </nav>
 
       <!-- Filters -->
       <div class="row mb-3">
         <div class="col">
-          <input v-model="filters.name" type="text" class="form-control" placeholder="Employee Name" />
+          <input
+            v-model="filters.name"
+            type="text"
+            class="form-control py-3"
+            placeholder="Employee Name"
+          />
         </div>
         <div class="col">
-          <select v-model="filters.month" class="form-select">
+          <select v-model="filters.month" class="form-select py-3">
             <option disabled value="">Select Month</option>
-            <option v-for="month in months" :key="month.value" :value="month.value">{{ month.name }}</option>
+            <option
+              v-for="month in months"
+              :key="month.value"
+              :value="month.value"
+            >
+              {{ month.name }}
+            </option>
           </select>
         </div>
         <div class="col">
-          <select v-model="filters.year" class="form-select">
+          <select v-model="filters.year" class="form-select py-3">
             <option disabled value="">Select Year</option>
-            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
           </select>
         </div>
         <div class="col">
-          <button @click="search" class="btn --basic-button w-100">Search</button>
+          <button @click="search" class="btn --basic-button w-100 py-3">
+            Search
+          </button>
         </div>
       </div>
 
-      <!-- Attendance Table -->
-      <table class="table table-bordered text-center">
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th v-for="day in days" :key="day">{{ day }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="employee in filteredEmployees" :key="employee.id">
-            <td>
-              <img :src="employee.image" :alt="employee.name" class="employee-img me-2" />
-              {{ employee.name }}
-            </td>
-            <td v-for="(icon, index) in employee.icons" :key="index" class="position-relative">
-              <!-- Correct/Wrong Icon -->
-              <i
-                v-if="icon"
-                :class="getIconClass(icon)"
-                @click="handleIconClick(employee, index)"
-                class="action-icon"
-                title="View Details"
-              ></i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Attendance Table with Horizontal Scroll -->
+      <div class="table-responsive">
+        <table class="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th v-for="day in days" :key="day">{{ day }}</th> <!-- Display all 30 days -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="employee in filteredEmployees" :key="employee.id">
+              <td class="employee-name-cell">
+                <div class="d-flex align-items-center"> <!-- Flexbox for alignment -->
+                  <img
+                    :src="employee.image"
+                    :alt="employee.name"
+                    class="employee-img me-2"
+                  />
+                  <strong>{{ employee.name }}</strong> <!-- Make name bold -->
+                </div>
+              </td>
+              <td
+                v-for="(icon, index) in employee.icons"
+                :key="index"
+                class="position-relative"
+              >
+                <!-- Correct/Wrong Icon -->
+                <i
+                  v-if="icon"
+                  :class="getIconClass(icon)"
+                  @click="handleIconClick(employee, index)"
+                  class="action-icon"
+                  title="View Details"
+                ></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Modal for Employee Check-In/Out Details -->
       <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
@@ -72,6 +102,7 @@
   <script setup>
   import { ref, computed } from "vue";
   import CheckInOut from "./CheckInOut.vue";
+
   // Filters for searching
   const filters = ref({
     name: "",
@@ -80,7 +111,7 @@
   });
 
   // Define days, months, and years
-  const days = Array.from({ length: 15 }, (_, i) => i + 1); // Days 1-15
+  const days = Array.from({ length: 30 }, (_, i) => i + 1); // Days 1-30
   const months = [
     { name: "January", value: 1 },
     { name: "February", value: 2 },
@@ -103,13 +134,13 @@
       id: 1,
       name: "John Doe",
       image: "https://via.placeholder.com/40",
-      icons: generateRandomIcons(15),
+      icons: generateRandomIcons(30),
     },
     {
       id: 2,
       name: "Richard Miles",
       image: "https://via.placeholder.com/40",
-      icons: generateRandomIcons(15),
+      icons: generateRandomIcons(30),
     },
     // Add more employees as needed...
   ]);
@@ -137,7 +168,8 @@
   // Computed property for filtering employees
   const filteredEmployees = computed(() => {
     return employees.value.filter((employee) => {
-      const matchesName = !filters.value.name ||
+      const matchesName =
+        !filters.value.name ||
         employee.name.toLowerCase().includes(filters.value.name.toLowerCase());
       const matchesMonth = !filters.value.month || true; // Extend logic as needed
       const matchesYear = !filters.value.year || true;
@@ -168,7 +200,9 @@
       openModal(employee, dayIndex + 1);
     } else if (iconType === "wrong") {
       // Dummy functionality for wrong icon click
-      alert(`Wrong icon clicked for ${employee.name} on Day ${dayIndex + 1}`);
+      alert(
+        `Wrong icon clicked for ${employee.name} on Day ${dayIndex + 1}`
+      );
     }
   };
 
@@ -188,6 +222,9 @@
   </script>
 
   <style scoped>
+  * {
+    background-color: #f7f7f7;
+  }
   .employee-img {
     width: 40px;
     height: 40px;
@@ -218,16 +255,6 @@
     overflow-y: auto;
   }
 
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
   /* Styles for Action Icons within Day Cells */
   .action-icon {
     font-size: 1.2rem;
@@ -253,8 +280,34 @@
 
   /* Button color */
   .--basic-button {
-    background-color: var(--basic-button-color, #007bff);
+    background-color: var(--basic-button);
     color: white;
   }
 
+  /* Styles for Horizontal Scroll */
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  /* Optional: Improve table layout for better horizontal scrolling */
+  .table {
+    min-width: 1500px; /* Increased to accommodate 30 columns */
+  }
+
+  /* Bold text for employee names */
+  td strong {
+    font-weight: bold;
+  }
+
+  /* Employee name cell styles */
+  .employee-name-cell {
+    display: flex; /* Enable flexbox */
+    align-items: center; /* Align items in center */
+  }
+  .table th,
+  .table td {
+
+    padding: 12px;
+
+  }
   </style>

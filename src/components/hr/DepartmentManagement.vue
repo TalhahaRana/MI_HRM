@@ -1,41 +1,62 @@
+
 <template>
     <div class="designation-department-management">
-      <!-- Department Management Section -->
+
+
       <h2>Departments</h2>
-      <button @click="openAddModal" class="btn btn-primary">Add Department</button>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Department Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(dept, index) in departments" :key="dept.id">
-            <td>{{ index + 1 }}</td>
-            <td>{{ dept.name }}</td>
-            <td>
-              <button @click="editDepartment(dept)" class="btn btn-warning">Edit</button>
-              <button @click="deleteDepartment(dept.id)" class="btn btn-danger">Delete</button>
-              <button @click="openAssignModal(dept)" class="btn btn-info">Assign Employees</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb d-flex justify-content-between">
+    <li class="breadcrumb-item fw-bolder"><a href="#"><strong>Dashboard</strong></a></li>
+    <li class="breadcrumb-item active fw-bolder" aria-current="page"><strong>Attendance</strong></li>
+    <button @click="openAddModal" class="btn btn-primary ms-auto">Add Department</button>
+  </ol>
+</nav>
 
-      <!-- Designations Section -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Department Name</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(dept, index) in departments" :key="dept.id">
+      <td>{{ index + 1 }}</td>
+      <td>{{ dept.name }}</td>
+      <td class="text-end px-4">
+
+        <div class="dropdown">
+    <i class="fa-solid fa-ellipsis-vertical" id="actionMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+      <li class="dropdown-item"><i class="fa-solid fa-pencil"></i>Edit</li>
+      <li class="dropdown-item"><i class="fa-solid fa-trash-can"></i>Delete</li>
+      <li class="dropdown-item"><i class="fa-solid fa-plus"></i>Assign Employee</li>
+    </ul>
+  </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb d-flex justify-content-between">
+    <li class="breadcrumb-item fw-bolder"><a href="#"><strong>Dashboard</strong></a></li>
+    <li class="breadcrumb-item active fw-bolder" aria-current="page"><strong>Attendance</strong></li>
+    <button @click="openDesignationModal" class="btn btn-primary ms-auto">Add Department</button>
+  </ol>
+</nav>
       <h2>Designations</h2>
-      <button @click="openDesignationModal" class="btn btn-primary">Add Designation</button>
 
-      <table class="table">
+      <table class="table  table-striped">
         <thead>
           <tr>
             <th>#</th>
             <th>Designation</th>
             <th>Department</th>
-            <th>Actions</th>
+            <th class="text-end">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -43,17 +64,25 @@
             <td>{{ index + 1 }}</td>
             <td>{{ designation.name }}</td>
             <td>{{ getDepartmentName(designation.departmentId) }}</td>
-            <td>
-              <button @click="editDesignation(designation)" class="btn btn-warning">Edit</button>
-              <button @click="deleteDesignation(designation.id)" class="btn btn-danger">Delete</button>
-            </td>
+            <td class="text-end px-4">
+
+<div class="dropdown">
+<i class="fa-solid fa-ellipsis-vertical" id="actionMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+<ul class="dropdown-menu" aria-labelledby="actionMenu">
+<li class="dropdown-item"><i class="fa-solid fa-pencil"></i>Edit</li>
+<li class="dropdown-item"><i class="fa-solid fa-trash-can"></i>Delete</li>
+
+</ul>
+</div>
+</td>
+
           </tr>
         </tbody>
       </table>
 
-      <!-- Employee Management Section -->
+
       <h2>Employees</h2>
-      <table class="table">
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>#</th>
@@ -74,7 +103,7 @@
         </tbody>
       </table>
 
-      <!-- Add/Edit Designation Modal -->
+
       <div v-if="showDesignationModal" class="modal">
         <div class="modal-content">
           <h3>{{ isEditingDesignation ? 'Edit Designation' : 'Add Designation' }}</h3>
@@ -95,7 +124,7 @@
         </div>
       </div>
 
-      <!-- Add/Edit Department Modal -->
+
       <div v-if="showModal" class="modal">
         <div class="modal-content">
           <h3>{{ isEditing ? 'Edit Department' : 'Add Department' }}</h3>
@@ -110,7 +139,7 @@
         </div>
       </div>
 
-      <!-- Assign Employees Modal -->
+
       <div v-if="showAssignModal" class="modal">
         <div class="modal-content">
           <h3>Assign Employees to {{ selectedDepartment.name }}</h3>
@@ -220,52 +249,132 @@
         this.showModal = false;
       },
       // Methods for assigning employees
-      openAssignModal(dept) {
-        this.selectedDepartment = dept;
+      openAssignModal(department) {
+        this.selectedDepartment = department;
+        this.selectedDepartment.employees = []; // Reset employee selection
         this.showAssignModal = true;
-      },
-      saveEmployeeAssignment() {
-        this.showAssignModal = false;
       },
       closeAssignModal() {
         this.showAssignModal = false;
       },
-      // Helper methods
+      saveEmployeeAssignment() {
+        // Save employee assignment logic
+        this.closeAssignModal();
+      },
       getDepartmentName(departmentId) {
-        const department = this.departments.find((dept) => dept.id === departmentId);
-        return department ? department.name : "Unknown";
+        const department = this.departments.find((d) => d.id === departmentId);
+        return department ? department.name : '';
       },
       getDesignationName(designationId) {
         const designation = this.designations.find((d) => d.id === designationId);
-        return designation ? designation.name : "Unknown";
+        return designation ? designation.name : '';
       },
     },
   };
   </script>
-<style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+
+  <style scoped>
+
+
+  /* Updated dropdown style */
+.dropdown-menu {
+  right: 0;
+  left: auto;
+  padding: 0;
+  background-color: #f8f9fa; /* Light gray background */
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for a modern look */
+}
+
+.dropdown-item {
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333; /* Darker color for text */
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+.dropdown-item i {
+  margin-right: 8px; /* Space between icon and text */
+  font-size: 16px; /* Increase icon size slightly */
 }
 
-.table {
-  margin-top: 20px;
+.dropdown-item:hover {
+  background-color:var(--basic-button); /* Blue hover effect */
+  color: #fff;
 }
 
-.btn {
-  margin-right: 10px;
+.dropdown-item:hover i {
+    color: white;
 }
-</style>
+
+
+
+.fa-pencil,
+.fa-trash-can,
+.fa-plus {
+  color: var(--basic-button); /* Match the icon color with your primary color */
+}
+
+/* Optional: Improve icon alignment in the dropdown trigger */
+#actionMenu {
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .breadcrumbs {
+    font-size: 14px;
+    color: gray;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .table th,
+  .table td {
+    padding: 12px;
+    border-bottom: 1px solid #0000003c;
+  }
+  .table th{
+    font-size: 18px;
+  }
+
+  .table td{
+    font-size: 16px;
+    font-weight: 400;
+    color: black;
+  }
+
+  .btn {
+    margin-left: 10px;
+    background-color: var(--basic-button);
+  }
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  </style>
+
