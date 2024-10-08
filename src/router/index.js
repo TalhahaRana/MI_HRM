@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
-import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/auth/Login.vue";
-import ForgotPass from "@/views/auth/ForgotPass.vue";
 import LeaveApplication from "@/components/employee/leaveApplication.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
 
