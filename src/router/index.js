@@ -6,7 +6,14 @@ import CheckInOut from "@/components/employee/CheckInOut.vue";
 
 import LeaveApplication from "@/components/employee/leaveApplication.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue"
+
+import AddHR from "@/components/admin/AddHR.vue";
+import AllHR from "@/components/admin/AllHR.vue";
+import Projects from "@/components/admin/Projects.vue";
+import CheckInCheckOut from "@/components/admin/CheckInCheckOut.vue";
+
 import ManageLeaves from '@/components/hr/ManageLeaves.vue'
+
 
 
 const router = createRouter({
@@ -17,21 +24,7 @@ const router = createRouter({
       name: "login",
       component: Login,
     },
-
     {
-      path: "/check",
-      name: "CheckInOut",
-      component: CheckInOut,
-    },
-    {
-      path: "/forgot-pass",
-      component: ForgotPass,
-    },
-  ],
-});
-
-export default router;
-
       path: '/check',
       name: 'CheckInOut',
       component: CheckInOut
@@ -43,12 +36,29 @@ export default router;
     {
       path:'/manage-leaves',
       component:ManageLeaves
-    }
+    },
+    {
       path: "/leaveApplication",
       name: "leaveApplication",
       component: LeaveApplication,
     },
+    {
+    path:"/Add-HR",
+    name: "AddHR",
+    component:AddHR
+    },
+    {
+      path:"/All-HR",
+      name:"AllHR",
+      component:AllHR
+    },
+    {
+      path:"/project",
+      name:"Projects",
+      component:Projects
+    },
+   
   ]
-})
+});
 export default router
 
