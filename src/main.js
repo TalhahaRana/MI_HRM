@@ -11,10 +11,16 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const app = createApp(App)
 
+
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+import "bootstrap"; // Import Bootstrap JS (optional)
+
 library.add(faUserSecret);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(router)
+
 
 const app = createApp(App);
 
