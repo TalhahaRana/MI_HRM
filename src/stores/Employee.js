@@ -1,32 +1,42 @@
-import ApiServices from "@/services/ApiServices";
-
+// store/modules/employee.js
 const state = {
-  employees: [],
+  departments: [],
 };
 
 const getters = {
-  allEmployees: (state) => state.employees,
+  departments: (state) => state.departments,
 };
 
 const actions = {
-  async fetchEmployees({ commit }) {
-    try {
-      const response = await ApiServices.get("/employees");
-      commit("setEmployees", response.data);
-    } catch (error) {
-      console.error("Error fetching employees:", error); // Handle the error properly
-    }
+  addDepartment({ commit }, department) {
+    // Here you would typically make an API call to add the department
+    const newDepartment = { id: Date.now(), ...department }; // Mocked ID for demonstration
+    commit('ADD_DEPARTMENT', newDepartment);
+  },
+  updateDepartment({ commit }, updatedDepartment) {
+    commit('UPDATE_DEPARTMENT', updatedDepartment);
+  },
+  deleteDepartment({ commit }, departmentId) {
+    commit('DELETE_DEPARTMENT', departmentId);
   },
 };
 
 const mutations = {
-  setEmployees(state, employees) {
-    state.employees = employees;
+  ADD_DEPARTMENT(state, department) {
+    state.departments.push(department);
+  },
+  UPDATE_DEPARTMENT(state, updatedDepartment) {
+    const index = state.departments.findIndex(dept => dept.id === updatedDepartment.id);
+    if (index !== -1) {
+      state.departments.splice(index, 1, updatedDepartment);
+    }
+  },
+  DELETE_DEPARTMENT(state, departmentId) {
+    state.departments = state.departments.filter(dept => dept.id !== departmentId);
   },
 };
 
 export default {
-  namespaced: true,
   state,
   getters,
   actions,

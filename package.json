@@ -16,8 +16,10 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "chart.js": "^4.4.4",
     "font-awesome": "^4.7.0",
     "vue": "^3.4.29",
+    "vue-chartjs": "^5.3.1",
     "vue-router": "^4.3.3",
     "vuex": "^4.1.0"
   },
