@@ -7,19 +7,14 @@ import Leaves from "@/components/admin/Leaves.vue";
 import Attendance from "@/components/admin/Attendance.vue";
 import DepartmentManagement from "@/components/admin/DepartmentManagement.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
-import LeaveApplication from "@/components/employee/leaveApplication.vue";
-<<<<<<< HEAD
-import CheckInOut from "@/components/employee/CheckInOut.vue";
-import WorkingHours from "@/components/employee/workingHours.vue";
-=======
-import CheckInOut from "@/components/employee/CheckInOut.vue"
+import LeaveApplication from "@/components/employee/LeaveApplication.vue";
+import WorkingHours from "@/components/employee/WorkingHours.vue"; // From feature/leaveApplication
+import Dashboard from "@/views/Dashboard.vue"; // From dev
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
 import CheckInCheckOut from "@/components/admin/CheckInCheckOut.vue";
-import ManageLeaves from '@/components/hr/ManageLeaves.vue'
-
->>>>>>> 2e862dd4b4118cbdc7e3e6fe121377ecb7d5bf6e
+import ManageLeaves from "@/components/hr/ManageLeaves.vue"; // Merged from both feature/leaveApplication and dev
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,85 +25,64 @@ const router = createRouter({
       component: Login,
     },
     {
-<<<<<<< HEAD
-      path: "/check",
-      name: "CheckInOut",
-      component: CheckInOut,
-=======
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+    },
+    {
       path: "/forgot-pass",
       component: ForgotPass,
     },
     {
-      path: "/admin/add-employee",
-      name: "AddEmployee",
-      component: AddEmployee,
+      path: "/check",
+      name: "CheckInOut",
+      component: CheckInOut,
     },
     {
-      path: "/admin/all-employee",
-      name: "AllEmployee",
-      component: AllEmployee,
+      path: "/leave-application",
+      name: "LeaveApplication",
+      component: LeaveApplication,
     },
     {
-      path: "/admin/leaves",
-      name: "Leaves",
-      component: Leaves,
+      path: "/working-hours",
+      name: "WorkingHours",
+      component: WorkingHours,
     },
     {
       path: "/admin/attendance",
       name: "Attendance",
       component: Attendance,
-    },{
+    },
+    {
       path: "/admin/department-management",
       name: "DepartmentManagement",
       component: DepartmentManagement,
     },
-     {
-      path: '/check',
-      name: 'CheckInOut',
-      component: CheckInOut
->>>>>>> 2e862dd4b4118cbdc7e3e6fe121377ecb7d5bf6e
+    {
+      path: "/admin/add-hr",
+      name: "AddHR",
+      component: AddHR,
     },
     {
-      path: "/forgot-pass",
-      component: ForgotPass,
-      path: "/forgot-pass",
-      component: ForgotPass,
+      path: "/admin/all-hr",
+      name: "AllHR",
+      component: AllHR,
     },
     {
-      path:'/manage-leaves',
-      component:ManageLeaves
+      path: "/projects",
+      name: "Projects",
+      component: Projects,
     },
     {
-      path: "/leaveApplication",
-      name: "leaveApplication",
-      component: LeaveApplication,
+      path: "/manage-leaves",
+      component: ManageLeaves,
     },
     {
-<<<<<<< HEAD
-      path: "/workingHours",
-      name: "workingHours",
-      component: WorkingHours,
-=======
-    path:"/Add-HR",
-    name: "AddHR",
-    component:AddHR
-    },
-    {
-      path:"/All-HR",
-      name:"AllHR",
-      component:AllHR
-    },
-    {
-      path:"/project",
-      name:"Projects",
-      component:Projects
->>>>>>> 2e862dd4b4118cbdc7e3e6fe121377ecb7d5bf6e
+      path: "/admin/check-in-check-out",
+      name: "CheckInCheckOut",
+      component: CheckInCheckOut,
     },
   ],
 });
 
-<<<<<<< HEAD
 export default router;
-=======
-export default router;
->>>>>>> 2e862dd4b4118cbdc7e3e6fe121377ecb7d5bf6e
