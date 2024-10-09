@@ -5,7 +5,6 @@
             <div class="login-content">
                 <div class="left-side">
                     <img :src="logo" alt="Logo" class="logo" />
-                 
                     <p>Enter the email address associated with your account and we'll
                         send you a link to reset your password..
                     </p>
@@ -18,9 +17,7 @@
                                 v-model="email"
                             />
                         </div>
-                        
                         <button type="submit" class="login-button">Continue</button>
-
                         <div class="login-options">
                             <p>Back to 
                             <a href="/" class="forgot-password">Login</a>
@@ -32,27 +29,19 @@
         </div>
     </div>
 </template>
-
 <script>
 import logo from '../../assets/images/login.jpeg';
 import { ref } from 'vue'; 
-
 export default {
     setup() {
         const logoImage = logo;
         const email = ref(''); 
         const password = ref(''); 
-       
-
         // Handle login function
         const handleLogin = () => {
-          
             console.log('Email:', email.value);
             console.log('Password:', password.value);
-            
-           
         };
-
         return {
             logo: logoImage,
             email,
@@ -152,6 +141,7 @@ export default {
 
 .logo {
     width: 130px;
+    margin-left: 30%;
     height: auto;
     margin-bottom: 0px;
 }
