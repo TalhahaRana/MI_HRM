@@ -15,35 +15,30 @@
       <ul class="list-unstyled components">
         <li >
           <router-link
-            to="/mainDashboard/studentRequests"
+            to="/dashboard/add-employee"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Add Employee
           </router-link>
         </li>
         <li >
-          <router-link to="/mainDashboard/addManager" class="redirect-link">
+          <router-link to="/dashboard/all-employee" class="redirect-link">
             <i class="icon fas fa-tachometer-alt"></i> All Employees
           </router-link>
         </li>
         <li >
-          <router-link to="/mainDashboard/createQuiz" class="redirect-link">
+          <router-link to="/dashboard/leaves" class="redirect-link">
             <i class="icon fas fa-tachometer-alt"></i> Manage Leaves
           </router-link>
         </li>
         <li >
-          <router-link to="/mainDashboard/assignQuiz" class="redirect-link">
+          <router-link to="/dashboard/department-management" class="redirect-link">
             <i class="icon fas fa-tachometer-alt"></i> Manage Department
           </router-link>
         </li>
         <li >
-          <router-link to="/mainDashboard/viewAllQuiz" class="redirect-link">
-            <i class="icon fas fa-tachometer-alt"></i> Employee Designations
-          </router-link>
-        </li>
-        <li >
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/projects"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Manage Projects
@@ -51,16 +46,24 @@
         </li>
         <li >
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/checkout"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Check-in/Check-out
           </router-link>
         </li>
+        <li >
+          <router-link
+            to="/dashboard/manage-leaves"
+            class="redirect-link">
+            <i class="icon fas fa-tachometer-alt"></i> Manage Attendance
+          </router-link>
+        </li>
+
         <!-- HR -->
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/manage-leaves"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Manage Employee Leaves
@@ -68,15 +71,7 @@
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
-            class="redirect-link"
-          >
-            <i class="icon fas fa-tachometer-alt"></i> Manage Employee Leaves
-          </router-link>
-        </li>
-        <li>
-          <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/attendance-hr"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Manage Attendance
@@ -84,23 +79,23 @@
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/department-management"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Department Management
           </router-link>
         </li>
-        <li>
+        <!-- <li>
           <router-link
             to="/mainDashboard/studentAssignQuiz"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i>Payroll
           </router-link>
-        </li> 
+        </li>  -->
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/checkout"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i>Check-in/Check-out Tracking
@@ -109,7 +104,7 @@
 
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/employee-joining"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i>Employee Joining Dates
@@ -120,7 +115,7 @@
 
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/check"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i>Check-in/Check-out
@@ -128,7 +123,7 @@
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/attendance-employee"
             class="redirect-link"
           >
           <i class="icon fas fa-tachometer-alt"></i>View Attendance
@@ -136,23 +131,15 @@
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/leave-application"
             class="redirect-link"
           >
-          <i class="icon fas fa-tachometer-alt"></i>View Department
+          <i class="icon fas fa-tachometer-alt"></i>Apply Leave
           </router-link>
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
-            class="redirect-link"
-          >
-          <i class="icon fas fa-tachometer-alt"></i>View Department
-          </router-link>
-        </li>
-        <li>
-          <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/working-hours"
             class="redirect-link"
           >
           <i class="icon fas fa-tachometer-alt"></i>Working Hours
@@ -160,27 +147,10 @@
         </li>
         <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/assignedProjects"
             class="redirect-link"
           >
           <i class="icon fas fa-tachometer-alt"></i>Assigned Projects
-          </router-link>
-        </li>
-
-        <li>
-          <router-link
-            to="/mainDashboard/studentAssignQuiz"
-            class="redirect-link"
-          >
-          <i class="icon fas fa-tachometer-alt"></i>Assigned Projects
-          </router-link>
-        </li>
-        <li>
-          <router-link
-            to="/mainDashboard/studentAssignQuiz"
-            class="redirect-link"
-          >
-          <i class="icon fas fa-tachometer-alt"></i>Completed Projects
           </router-link>
         </li>
       </ul>

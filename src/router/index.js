@@ -8,13 +8,19 @@ import Attendance from "@/components/admin/Attendance.vue";
 import DepartmentManagement from "@/components/admin/DepartmentManagement.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
 import LeaveApplication from "@/components/employee/LeaveApplication.vue";
-import WorkingHours from "@/components/employee/WorkingHours.vue"; // From feature/leaveApplication
-import Dashboard from "@/views/Dashboard.vue"; // From dev
+import WorkingHours from "@/components/employee/WorkingHours.vue"; 
+import Dashboard from "@/views/Dashboard.vue"; 
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
-import ManageLeaves from "@/components/hr/ManageLeaves.vue"; // Merged from both feature/leaveApplication and dev
-import Hr from "@/views/Hr/Hr.vue";
+import HrCheckoutCheckIn from "@/components/hr/CheckInOut.vue";
+import HrDepartmentManagement from "@/components/hr/DepartmentManagement.vue";
+import HrEmployeeJoining from "@/components/hr/EmployeeJoining.vue";
+import HrManageLeaves from "@/components/hr/ManageLeaves.vue";
+import AttendanceHR from "@/components/hr/AttendanceEmployee.vue";
+import AttendanceEmployee from "@/components/employee/AttendanceEmployee.vue";
+import AssignedProjects from "@/components/employee/AssignedProjects.vue";
+import ManageLeaves from "@/components/admin/Leaves.vue"; // Missing import
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -24,62 +30,105 @@ const router = createRouter({
       component: Login,
     },
     {
-      path: "/dashboard",
-      name: "Dashboard",
-      component: Dashboard,
-    },
-    {
       path: "/forgot-pass",
       component: ForgotPass,
     },
     {
-      path: "/check",
-      name: "CheckInOut",
-      component: CheckInOut,
-    },
-    {
-      path: "/leave-application",
-      name: "LeaveApplication",
-      component: LeaveApplication,
-    },
-    {
-      path: "/working-hours",
-      name: "WorkingHours",
-      component: WorkingHours,
-    },
-    {
-      path: "/admin/attendance",
-      name: "Attendance",
-      component: Attendance,
-    },
-    {
-      path: "/admin/department-management",
-      name: "DepartmentManagement",
-      component: DepartmentManagement,
-    },
-    {
-      path: "/admin/add-hr",
-      name: "AddHR",
-      component: AddHR,
-    },
-    {
-      path: "/admin/all-hr",
-      name: "AllHR",
-      component: AllHR,
-    },
-    {
-      path: "/projects",
-      name: "Projects",
-      component: Projects,
-    },
-    {
-      path: "/manage-leaves",
-      component: ManageLeaves,
-    },
-    {
-      path: "/hr",
-      component: Hr,
-    },
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+      children: [
+        {
+          path: 'check',
+          name: 'CheckInOut',
+          component: CheckInOut,
+        },
+        {
+          path: "leave-application",
+          name: "LeaveApplication",
+          component: LeaveApplication
+        },
+        {
+          path: "attendance-employee",
+          name: "AttendanceEmployee",
+          component:AttendanceEmployee,
+        },
+        {
+          path: "assignedProjects",
+          name: "AssignedProjects",
+          component:AssignedProjects,
+        },
+        {
+          path: "working-hours",
+          name: "WorkingHours",
+          component: WorkingHours,
+        },
+        {
+          path: "attendance",
+          name: "Attendance",
+          component:Attendance,
+        },
+        {
+          path: "leaves",
+          name: "Leaves",
+          component:Leaves,
+        },
+        {
+          path: "department",
+          name: "DepartmentManagement",
+          component:DepartmentManagement,
+        },
+        {
+          path: "addHr",
+          name: "AddHR",
+          component: AddHR,
+        },
+        {
+          path: "all-hr",
+          name: "AllHR",
+          component: AllHR,
+        },
+        {
+          path: "add-employee",
+          name: "AddEmployee",
+          component: AddEmployee,
+        },
+        {
+          path: "all-employee",
+          name: "AllEmployee", // Fixed name
+          component: AllEmployee,
+        },
+        {
+          path: "projects",
+          name: "Projects",
+          component: Projects,
+        },
+        {
+          path: "manage-leaves",
+          component: ManageLeaves,
+        },
+        {
+          path: "checkout",
+          component: HrCheckoutCheckIn,
+        },
+        {
+          path: "department-management",
+          component: HrDepartmentManagement,
+        },
+        {
+          path: "employee-joining",
+          component: HrEmployeeJoining,
+        },
+        {
+          path: "manage-leaves-hr",
+          component: HrManageLeaves,
+        },
+        {
+          path: "attendance-hr",
+          component: AttendanceHR,
+        },
+      ]
+    }, 
   ],
 });
 
