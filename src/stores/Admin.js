@@ -1,13 +1,10 @@
 import ApiServices from "@/services/ApiServices";
-
 const state = {
   adminData: {},
 };
-
 const getters = {
   getAdminData: (state) => state.adminData,
 };
-
 const actions = {
   async fetchAdminData({ commit }) {
     try {
@@ -18,7 +15,6 @@ const actions = {
     }
   },
 };
-
 const mutations = {
   setAdminData(state, data) {
     state.adminData = data;

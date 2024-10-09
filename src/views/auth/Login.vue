@@ -44,24 +44,39 @@
 <script>
 import logo from "../../assets/images/login.jpeg";
 import { ref } from "vue";
-
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 export default {
   setup() {
     const logoImage = logo;
     const email = ref("");
     const password = ref("");
-
-    // Handle login function
-    const handleLogin = () => {
-      console.log("Email:", email.value);
-      console.log("Password:", password.value);
+    const handleLogin = async () => {
+      const userData = { email: email.value, password: password.value };
+      try {
+        const response = await store.dispatch('auth/login', userData); // Dispatch the login action
+        // Store the whole response or adjust according to the structure
+        store.commit('auth/setUser', response);
+        store.commit('roles/setUserRole', response.role);
+        store.commit('roles/setPermissions', response.permissions);
+        console.log("permissions", response.permissions);
+        // Check if role and permissions are set
+        const userRole = store.getters['roles/userRole'];
+        if (userRole !== undefined && userRole !== null) {
+          router.push('/dashboard'); // Redirect to dashboard
+        } else {
+          console.error('User role is undefined or null. Unable to redirect.');
+          errorMessage.value = 'Unable to redirect. User role is not defined.';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.value = error.response?.data?.message || error.message || 'Login failed';
+      }
     };
-
     return {
       logo: logoImage,
       email,
       password,
-
       handleLogin,
     };
   },
@@ -163,6 +178,7 @@ export default {
 }
 
 .logo {
+  margin-left: 30%;
   width: 130px;
   height: auto;
   margin-bottom: 0px;

@@ -2,12 +2,10 @@ const state = {
     userRole: localStorage.getItem('userRole') || null,
     permissions: JSON.parse(localStorage.getItem('userPermissions')) || [],
   };
-  
   const getters = {
     userRole: (state) => state.userRole,
     hasPermission: (state) => (permission) => state.permissions.includes(permission),
   };
-  
   const actions = {
     setRoleAndPermissions({ commit }, { role, permissions }) {
       commit('setUserRole', role);
@@ -16,7 +14,6 @@ const state = {
       localStorage.setItem('userPermissions', JSON.stringify(permissions));
     },
   };
-  
   const mutations = {
     setUserRole(state, role) {
       state.userRole = role;
@@ -25,7 +22,6 @@ const state = {
       state.permissions = permissions;
     },
   };
-  
   export default {
     namespaced: true,
     state,
@@ -33,4 +29,3 @@ const state = {
     actions,
     mutations,
   };
-  
