@@ -13,9 +13,7 @@ import Dashboard from "@/views/Dashboard.vue"; // From dev
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
-import CheckInCheckOut from "@/components/admin/CheckInCheckOut.vue";
 import ManageLeaves from "@/components/hr/ManageLeaves.vue"; // Merged from both feature/leaveApplication and dev
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -76,11 +74,6 @@ const router = createRouter({
     {
       path: "/manage-leaves",
       component: ManageLeaves,
-    },
-    {
-      path: "/admin/check-in-check-out",
-      name: "CheckInCheckOut",
-      component: CheckInCheckOut,
     },
   ],
 });

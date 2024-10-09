@@ -225,22 +225,38 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script >
+import { ref, computed, onUnmounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
-// Ref to control sidebar visibility
-const sidebarVisible = ref(false);
+export default {
+  name:'Dashoard',
+  setup() {
+    const sidebarVisible = ref(false);
 
-const hasPermission = (permission) => {
-      return store.getters['roles/hasPermission'](permission);
+    const toggleSidebar = () => {
+      sidebarVisible.value = !sidebarVisible.value;
     };
 
-// Toggle sidebar visibility
-function toggleSidebar() {
-  sidebarVisible.value = !sidebarVisible.value;
-}
+    const goToProfileSettings = () => {
+      // Logic to navigate to profile settings
+    };
 
+    const logout = () => {
+      // Logic for logout
+    };
+
+    return {
+      sidebarVisible,
+      toggleSidebar,
+      goToProfileSettings,
+      logout,
+    };
+  },
+};
 </script>
+
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -334,9 +350,9 @@ body {
     margin-right: 8px;
     font-size: 22px;
   }
-  .profile-settings-btn:hover, .logout-btn:hover {
-    /* color: var(--light-grey);  */
-  }
+  /* .profile-settings-btn:hover, .logout-btn:hover {
+    color: var(--light-grey); 
+  } */
 
 /* Fix sidebar position in mobile */
 
