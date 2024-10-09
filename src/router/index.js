@@ -3,6 +3,7 @@ import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
 import LeaveApplication from "@/components/employee/leaveApplication.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
+import WorkingHours from "@/components/employee/workingHours.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
       path: "/leaveApplication",
       name: "leaveApplication",
       component: LeaveApplication,
+    },
+    {
+      path: "/workingHours",
+      name: "workingHours",
+      component: WorkingHours,
     },
   ],
 });
