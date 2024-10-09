@@ -150,7 +150,6 @@
           <i class="icon fas fa-tachometer-alt"></i>View Department
           </router-link>
         </li>
-
         <li>
           <router-link
             to="/mainDashboard/studentAssignQuiz"
@@ -224,7 +223,6 @@
     </div>
   </div>
 </template>
-
 <script >
 import { ref, computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';

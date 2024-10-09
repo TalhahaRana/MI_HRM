@@ -14,6 +14,7 @@ import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
 import ManageLeaves from "@/components/hr/ManageLeaves.vue"; // Merged from both feature/leaveApplication and dev
+import Hr from "@/views/Hr/Hr.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -74,6 +75,10 @@ const router = createRouter({
     {
       path: "/manage-leaves",
       component: ManageLeaves,
+    },
+    {
+      path: "/hr",
+      component: Hr,
     },
   ],
 });
