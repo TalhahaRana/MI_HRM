@@ -259,8 +259,7 @@ body {
   flex-grow: 1; 
   background-color: #F5F7FF;
   padding: 20px; 
-  overflow-y: auto; 
-  height: 100vh;
+  overflow-y: auto;
 }
 #sidebar ul li {
   padding: 10px 0;
