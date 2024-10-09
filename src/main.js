@@ -1,13 +1,26 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router/index.js' // Ensure the correct path to the router file
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUserSecret } from "@fortawesome/free-solid-svg-icons"; // Import any icon you need
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 
+// Add FontAwesome icons to the library
+library.add(faUserSecret);
 
-const app = createApp(App)
+// Create the Vue application
+const app = createApp(App);
 
-app.use(router)
+// Register the FontAwesomeIcon component
+app.component("font-awesome-icon", FontAwesomeIcon);
 
-app.mount('#app')
+// Use the router
+app.use(router);
+
+// Mount the application
+app.mount("#app");
