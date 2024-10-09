@@ -7,8 +7,8 @@ import Leaves from "@/components/admin/Leaves.vue";
 import Attendance from "@/components/admin/Attendance.vue";
 import DepartmentManagement from "@/components/admin/DepartmentManagement.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
-// import LeaveApplication from "@/components/employee/LeaveApplication.vue";
-// import WorkingHours from "@/components/employee/WorkingHours.vue"; // From feature/leaveApplication
+import LeaveApplication from "@/components/employee/leaveApplication.vue";
+import WorkingHours from "@/components/employee/workingHours.vue"; // From feature/leaveApplication
 import Dashboard from "@/views/Dashboard.vue"; // From dev
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
