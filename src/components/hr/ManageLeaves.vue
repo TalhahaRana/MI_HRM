@@ -1,5 +1,6 @@
 <template>
     <div class="leaves-dashboard">
+        <h2 class="my-3">Leaves</h2>
         <!-- Dashboard Stats -->
         <div class="dashboard-stats">
             <div class="stat-box" v-for="(stat, index) in stats" :key="index">
@@ -26,17 +27,57 @@
 
         <!-- Leave Table -->
         <div class="leave-table-wrapper">
-            <table class="leave-table">
-                <thead>
+            <table class="leave-table table table-striped">
+                <thead class="thead-light">
                     <tr>
-                        <th>Employee</th>
-                        <th>Leave Type</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>No. of Days</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Employee</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Leave Type</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">From</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">To</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">No. of Days</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Reason</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Status</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-3"></i>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Actions</p>
+                                <i class="fa-solid fa-arrow-right-arrow-left fa-sm fa-rotate-90 me-5"></i>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,12 +96,16 @@
                         </td>
                         <td>
                             <div class="action-dropdown">
-                                <button class="btn-actions" @click="toggleDropdown(leave)">
+                                <button class="btn-actions ms-4" @click="toggleDropdown(leave)">
                                     <strong>&#8942;</strong>
                                 </button>
                                 <ul v-if="leave.showActions" class="action-menu">
-                                    <li @click="editLeave(leave)"><i class="fas fa-pencil-alt"></i>Edit</li>
-                                    <li @click="deleteLeave(leave)"><i class="fas fa-trash-alt"></i>Delete</li>
+                                    <li @click="editLeave(leave)">
+                                        <i class="fas fa-pencil-alt"></i>Edit
+                                    </li>
+                                    <li @click="deleteLeave(leave)">
+                                        <i class="fas fa-trash-alt"></i>Delete
+                                    </li>
                                 </ul>
                             </div>
                         </td>
@@ -68,6 +113,7 @@
                 </tbody>
             </table>
         </div>
+
 
         <!-- Add Leave Button -->
         <button @click="openModal" class="btn-add-leave mt-3">+ Add Leave</button>
@@ -94,17 +140,17 @@
 
                     <label>
                         To *
-                        <input type="date" v-model="leaveForm.toDate"  />
+                        <input type="date" v-model="leaveForm.toDate" />
                     </label>
 
                     <label>
                         Number of days *
-                        <input type="number" v-model="leaveForm.noOfDays"  />
+                        <input type="number" v-model="leaveForm.noOfDays" />
                     </label>
 
                     <label>
                         Remaining Leaves *
-                        <input type="number" v-model="leaveForm.remainingLeaves"  />
+                        <input type="number" v-model="leaveForm.remainingLeaves" />
                     </label>
 
                     <label>
@@ -234,7 +280,9 @@ const deleteLeave = (leave) => {
 <style scoped>
 .leaves-dashboard {
     padding: 20px;
-    font-family: 'Inter', sans-serif;
+    /* font-family: 'Inter', sans-serif; */
+    max-width: 90%;
+    margin: auto;
 }
 
 .dashboard-stats {
@@ -298,9 +346,9 @@ const deleteLeave = (leave) => {
 }
 
 .leave-table-wrapper {
-    overflow-x: auto; /* Keep horizontal scrolling */
-    max-height: 570px; /* Set max-height for vertical scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: auto;
+    max-height: 540px;
+    overflow-y: auto;
 }
 
 .leave-table {
@@ -317,7 +365,13 @@ const deleteLeave = (leave) => {
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
-
+.leave-table th {
+    background-color: #f5f8fa; /* Slight background for headers */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: center;
+}
 .leave-row:hover {
     background-color: #f9f9f9;
 }
@@ -327,6 +381,7 @@ const deleteLeave = (leave) => {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
 .action-dropdown {
     position: relative;
 }
@@ -368,29 +423,37 @@ const deleteLeave = (leave) => {
     margin-right: 8px;
     color: #666;
 }
+
 .custom-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5); /* Keep the semi-transparent backdrop */
+    background: rgba(0, 0, 0, 0.5);
+    /* Keep the semi-transparent backdrop */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(4px); /* Adds a nice blur effect */
+    backdrop-filter: blur(4px);
+    /* Adds a nice blur effect */
 }
 
 .custom-modal {
     background-color: white;
-    padding: 30px; /* Increase padding for better spacing */
-    border-radius: 12px; /* Rounded corners for a modern look */
+    padding: 30px;
+    /* Increase padding for better spacing */
+    border-radius: 12px;
+    /* Rounded corners for a modern look */
     width: 100%;
-    max-width: 500px; /* Limit the width for larger screens */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    max-width: 500px;
+    /* Limit the width for larger screens */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Soft shadow for depth */
     position: relative;
-    transform: translateY(-30px); /* Subtle entrance animation */
+    transform: translateY(-30px);
+    /* Subtle entrance animation */
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 1;
 }
@@ -401,31 +464,39 @@ const deleteLeave = (leave) => {
     right: 12px;
     background: none;
     border: none;
-    font-size: 18px; /* Increase font size for better accessibility */
+    font-size: 18px;
+    /* Increase font size for better accessibility */
     cursor: pointer;
-    color: #333; /* Neutral color for the close button */
+    color: #333;
+    /* Neutral color for the close button */
     transition: color 0.2s ease;
 }
 
 .close-button:hover {
-    color: #ff5e62; /* Add hover effect for interactivity */
+    color: #ff5e62;
+    /* Add hover effect for interactivity */
 }
 
 h2 {
     font-size: 1.5rem;
     color: #333;
-    margin-bottom: 20px; /* Space between heading and form */
-    text-align: center; /* Centered heading for focus */
+    margin-bottom: 20px;
+    /* Space between heading and form */
+    text-align: center;
+    /* Centered heading for focus */
 }
 
 form label {
     display: block;
     margin-bottom: 15px;
     font-size: 0.9rem;
-    color: #555; /* Softer text color */
+    color: #555;
+    /* Softer text color */
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -436,19 +507,22 @@ input, select, textarea {
     transition: border-color 0.2s ease;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #4B49AC;
 }
 
 textarea {
-    resize: vertical; /* Allow vertical resizing */
+    resize: vertical;
 }
 
 .btn-submit {
     width: 100%;
     padding: 12px;
-    background-color: #ff5e62; /* Use the user-preferred color */
+    background-color: #ff5e62;
+    /* Use the user-preferred color */
     color: white;
     border: none;
     border-radius: 6px;
@@ -459,8 +533,10 @@ textarea {
 }
 
 .btn-submit:hover {
-    background-color: #ff3a44; /* Slightly darker on hover */
+    background-color: #ff3a44;
+    /* Slightly darker on hover */
 }
+
 .btn-add-leave {
     background-color: var(--basic-button);
     color: white;
@@ -480,9 +556,12 @@ textarea {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.btn-add-leave:hover, .btn-submit:hover {
+
+.btn-add-leave:hover,
+.btn-submit:hover {
     background-color: #4b49acc2;
 }
+
 @media (max-width: 768px) {
     .custom-modal {
         width: 90%;
