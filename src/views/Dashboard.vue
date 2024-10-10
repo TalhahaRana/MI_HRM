@@ -85,14 +85,22 @@
             <i class="icon fas fa-tachometer-alt"></i> Department Management
           </router-link>
         </li>
-        <!-- <li>
+        <li>
           <router-link
-            to="/mainDashboard/studentAssignQuiz"
+            to="/dashboard/payroll-hr"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i>Payroll
           </router-link>
-        </li>  -->
+        </li> 
+        <li>
+          <router-link
+            to="/dashboard/manage-projects-hr"
+            class="redirect-link"
+          >
+            <i class="icon fas fa-tachometer-alt"></i>Manage Projects HR
+          </router-link>
+        </li> 
         <li>
           <router-link
             to="/dashboard/checkout"

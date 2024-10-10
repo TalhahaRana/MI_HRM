@@ -58,51 +58,65 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { ref, computed, onMounted } from 'vue';
 
 export default {
-  data() {
-    return {
-      searchTerm: '',           
-      selectedDepartment: '',   
-      selectedDesignation: '',  
-    };
-  },
-  computed: {
-    // Correct usage of mapGetters with namespaced module
-    ...mapGetters('employee', ['allEmployees']),
+  setup() {
+    // Static dummy employee data
+    const employees = ref([
+      { id: 1, name: 'John Doe', department: 'HR', designation: 'Manager' },
+      { id: 2, name: 'Jane Smith', department: 'Finance', designation: 'Accountant' },
+      { id: 3, name: 'Alice Johnson', department: 'IT', designation: 'Developer' },
+      { id: 4, name: 'Bob Brown', department: 'HR', designation: 'Assistant' },
+      { id: 5, name: 'Charlie Black', department: 'Finance', designation: 'Analyst' },
+    ]);
 
-    filteredEmployees() {
-      return this.allEmployees.filter(employee => {
-        const matchesName = employee.name.toLowerCase().includes(this.searchTerm.toLowerCase());
-        const matchesDepartment = this.selectedDepartment === '' || employee.department === this.selectedDepartment;
-        const matchesDesignation = this.selectedDesignation === '' || employee.designation === this.selectedDesignation;
+    const searchTerm = ref('');            // Search by employee name
+    const selectedDepartment = ref('');    // Filter by department
+    const selectedDesignation = ref('');   // Filter by designation
+
+    // Filter employees based on search and selected filters
+    const filteredEmployees = computed(() => {
+      return employees.value.filter((employee) => {
+        const matchesName = employee.name.toLowerCase().includes(searchTerm.value.toLowerCase());
+        const matchesDepartment = !selectedDepartment.value || employee.department === selectedDepartment.value;
+        const matchesDesignation = !selectedDesignation.value || employee.designation === selectedDesignation.value;
         return matchesName && matchesDepartment && matchesDesignation;
       });
-    },
+    });
 
-    departments() {
-      return [...new Set(this.allEmployees.map(emp => emp.department))];
-    },
+    // Get unique departments
+    const departments = computed(() => {
+      return [...new Set(employees.value.map(emp => emp.department))];
+    });
 
-    designations() {
-      return [...new Set(this.allEmployees.map(emp => emp.designation))];
-    },
-  },
-  methods: {
-    ...mapActions('employee', ['fetchEmployees']),
-  },
-  mounted() {
-    this.fetchEmployees(); // This will use static data for now
+    // Get unique designations
+    const designations = computed(() => {
+      return [...new Set(employees.value.map(emp => emp.designation))];
+    });
+
+    // Simulate fetching employees (in this case, just using static data)
+    onMounted(() => {
+      // In a real-world scenario, you'd fetch employee data from an API here
+    });
+
+    return {
+      searchTerm,
+      selectedDepartment,
+      selectedDesignation,
+      filteredEmployees,
+      departments,
+      designations,
+    };
   },
 };
 </script>
 
 <style scoped>
-  .table {
-    margin-top: 20px;
-  }
-  thead {
-    background-color: #f8f9fa;
-  }
+.table {
+  margin-top: 20px;
+}
+thead {
+  background-color: #f8f9fa;
+}
 </style>

@@ -21,6 +21,8 @@ import AttendanceHR from "@/components/hr/AttendanceEmployee.vue";
 import AttendanceEmployee from "@/components/employee/AttendanceEmployee.vue";
 import AssignedProjects from "@/components/employee/AssignedProjects.vue";
 import ManageLeaves from "@/components/admin/Leaves.vue"; // Missing import
+import Payroll from "@/components/hr/Payroll.vue";
+import ManageProjectsHR from "@/components/hr/ManageProjects.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -127,6 +129,15 @@ const router = createRouter({
           path: "attendance-hr",
           component: AttendanceHR,
         },
+        {
+          path: "payroll-hr",
+          component: Payroll,
+        },
+        {
+          path: "manage-projects-hr",
+          component: ManageProjectsHR,
+        },
+
       ]
     }, 
   ],
