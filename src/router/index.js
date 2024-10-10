@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import DashView from "@/views/Hr/DashView.vue";
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
 import AddEmployee from "@/components/admin/AddEmployee.vue";
@@ -40,6 +41,10 @@ const router = createRouter({
       name: "Dashboard",
       component: Dashboard,
       children: [
+        {
+          path: '', // Empty path means it will be the default
+          component: DashView, // Your default child component
+        },
         {
           path: 'check',
           name: 'CheckInOut',
