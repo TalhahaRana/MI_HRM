@@ -63,7 +63,7 @@
         <!-- HR -->
         <li>
           <router-link
-            to="/dashboard/manage-leaves"
+            to="/dashboard/manage-leaves-hr"
             class="redirect-link"
           >
             <i class="icon fas fa-tachometer-alt"></i> Manage Employee Leaves
