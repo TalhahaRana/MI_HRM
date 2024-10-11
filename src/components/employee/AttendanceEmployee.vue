@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container mt-4  form-card">
     <h2 class="text-center mb-4">Employee Attendance</h2>
     <div class="row mb-3 align-items-end">
       <div class="col-md-4">

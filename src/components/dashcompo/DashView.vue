@@ -3,9 +3,9 @@
         <div class="dashboard-container">
         <h1 class="welcome-title">Welcome Samia</h1>
 
-        <p class="welcome-message">
+        <!-- <p class="welcome-message">
             All systems are running smoothly! You have 3 unread alerts!
-        </p>
+        </p> -->
     </div>
     <div class="align-items-center justify-content-between container">
         <div class="row">
@@ -146,6 +146,15 @@ export default {
     font-size: 2rem;
 
     font-weight: bold;
+  
+ /* color: #be4146; 
+ background-image: linear-gradient(45deg, #be4146 59%, #d26764 68%, #f2acac 34%);  */
+ background-clip: text; 
+ --angle: 45deg; 
+ background: linear-gradient(var(--angle), #4E9DE6, #417EB2, #34639D);
+ -webkit-background-clip: text; 
+ -webkit-text-fill-color: transparent; 
+
 }
 
 .welcome-message {
