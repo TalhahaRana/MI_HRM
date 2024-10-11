@@ -239,13 +239,14 @@ body {
 }
 
 #sidebar ul li a {
-  color: black;
+  color: #6C7383;
   display: flex;
   align-items: center;
   text-decoration: none;
 }
 
 #sidebar ul li a i.icon {
+  color: #6C7383;
   margin-right: 10px;
   /* Space between icon and text */
   font-size: 1.2em;
@@ -253,9 +254,11 @@ body {
 }
 
 #sidebar ul li a:hover {
-  color: white;
+  color: rgb(0, 0, 0);
   /* Change text color to white on hover */
-  background-color: var(--basic-button);
+  /* background-color: var(--basic-button); */
+ border: 3px solid transparent;
+  border-image: var(--gradient) 1;
   /* Change background color on hover */
   padding: 15px;
   /* Increase padding to extend hover height */
@@ -266,7 +269,7 @@ body {
 }
 
 #sidebar ul li:hover .icon {
-  color: white;
+  color: rgb(0, 0, 0);
   /* Change icon color on hover */
 }
 

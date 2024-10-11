@@ -1,7 +1,7 @@
 
 //all hr
 <template>
-    <div class="table-container">
+    <div class="table-container  form-card">
       <h2>All HR List</h2>
       <table>
         <thead>

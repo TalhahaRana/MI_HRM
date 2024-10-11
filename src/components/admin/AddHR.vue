@@ -1,6 +1,6 @@
 <template>
     <!-- samia -->
-    <div class="add-manager-container">
+    <div class="add-manager-container form-card">
       <div class="add-manager">
         <h2>Add HR</h2>
         <form>

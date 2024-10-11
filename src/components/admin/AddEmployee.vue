@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5 d-flex justify-content-center">
+  <div class="mt-5 d-flex justify-content-center">
     <div class="card p-4 shadow-sm form-card">
       <h4 class="mb-3">Add Employee</h4>
       <form @submit.prevent="submitForm">
