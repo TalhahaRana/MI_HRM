@@ -1,13 +1,13 @@
 <template>
-    <div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-container">
         <h1 class="welcome-title">Welcome Samia</h1>
 
         <p class="welcome-message">
             All systems are running smoothly! You have 3 unread alerts!
         </p>
     </div>
-
-    <div class="align-items-center justify-content-between">
+    <div class="align-items-center justify-content-between container">
         <div class="row">
             <div class="tail col-7">
                 <div class="weather-info">
@@ -32,60 +32,40 @@
             </div>
             <div class="col-5">
                 <!-- <Clock/> -->
+    <Calander/>
+
             </div>
 
         </div>
         <div class="row mt-4 stats-section">
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-today-bookings">
-                    <div class="card-body">
-                        <h5 class="card-title">Today's Bookings</h5>
-                        <p class="card-text display-4">4006</p>
-                        <p class="text-muted">Last 30 days</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-total-bookings">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Bookings</h5>
-                        <p class="card-text display-4">61344</p>
-                        <p class="text-muted">Last 30 days</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-number-meetings">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Meetings</h5>
-                        <p class="card-text display-4">34040</p>
-                        <p class="text-muted">2.00% (Increase)</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-number-clients">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Clients</h5>
-                        <p class="card-text display-4">47033</p>
-                        <p class="text-muted">0.22% (Increase)</p>
-                    </div>
-                </div>
-            </div>
+            <AdminDashCard/>
+            <HrDashCard/>
+            <EmpDashCard/>
         </div>
     </div>
+
+
+    </div>
+
+    
+
+    
 </template>
 
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
-// import Clock from "../clock.vue";
+import Calander from "./Calander.vue";
+import AdminDashCard from "./cards/admin/AdminDashCard.vue";
+import HrDashCard from "./cards/hr/HrDashCard.vue";
+import EmpDashCard from "./cards/emp/EmpDashCard.vue";
+import Admin from "@/stores/Admin";
 
 export default {
     components: {
-    // Clock
+    Calander
+    ,AdminDashCard
+    ,HrDashCard
+    ,EmpDashCard
   },
     name: "Dashboard",
     setup() {
@@ -143,7 +123,8 @@ export default {
 .dashboard-container {
     background-color: #f8f9fa;
 
-    padding: 20px;
+    padding: 26px 0px;
+    
 
     border-radius: 10px;
 }
@@ -173,7 +154,6 @@ export default {
 
 .weather-info {
     margin-top: 59px;
-    /* background-image: url(../../assets/images/people.png); */
     position: relative;
 }
 

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import DashView from "@/views/Hr/DashView.vue";
+import DashView from "@/components/dashcompo/DashView.vue";
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
 import AddEmployee from "@/components/admin/AddEmployee.vue";
