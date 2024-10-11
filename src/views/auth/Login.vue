@@ -14,7 +14,6 @@
                   <h3>Hello! Let's get started</h3>
                   <p>Sign in to continue</p>
                 </div>
-
                 <form @submit.prevent="handleLogin">
                   <div class="input-group">
                     <input type="email" placeholder="Email Address" required v-model="email" />
@@ -40,13 +39,11 @@
     </div>
   </div>
 </template>
-
 <script>
 import logo from "../../assets/images/login.jpeg";
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-
 export default {
   setup() {
     const logoImage = logo;
@@ -54,27 +51,30 @@ export default {
     const password = ref("");
     const store = useStore();
     const router = useRouter();
-
     const handleLogin = async () => {
-      const userData = { email: email.value, password: password.value };
-      try {
-        const response = await store.dispatch('auth/login', userData);
-        store.commit('auth/setUser', response);
-        store.commit('roles/setUserRole', response.role);
-        store.commit('roles/setPermissions', response.permissions);
-        console.log("permissions", response.permissions);
+    const userData = { email: email.value, password: password.value };
+  try {
+    const response = await store.dispatch('auth/login', userData);
+    console.log(response.data);
+   
+    const { role, permissions } = response.data;
+    console.log("ROle",role," Permission",permissions);
+    await store.dispatch('roles/setRoleAndPermissions', { role, permissions });
 
-        const userRole = store.getters['roles/userRole'];
-        if (userRole !== undefined && userRole !== null) {
-          router.push('/dashboard');
-        } else {
-          console.error('User role is undefined or null. Unable to redirect.');
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-      }
-    };
 
+    console.log("permissions", response.permissions);
+    // Check the user role from Vuex store
+    const userRole = store.getters['roles/userRole'];
+    if (userRole) {
+      router.push('/dashboard');
+    } else {
+      console.error('User role is undefined or null. Unable to redirect.');
+    }
+  } catch (error) {
+    // Handle any errors during login
+    console.error('Login error:', error);
+  }
+};
     return {
       logo: logoImage,
       email,
@@ -84,7 +84,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .login-container {
   height: 100vh;
@@ -92,9 +91,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
-
 }
-
 .login-card {
   max-width: 400px;
   width: 100%;
@@ -102,7 +99,6 @@ export default {
   text-align: center;
   margin: auto;
 }
-
 .login-content {
   width: 100%;
   background: rgba(12, 12, 12, 0.2);
@@ -111,27 +107,22 @@ export default {
   border: 1px solid rgba(12, 12, 12, 0.3);
   border-radius: 13px;
 }
-
 .left-side {
   padding: 20px;
   color: white;
 }
-
 .left-side h3 {
   margin-bottom: 2px;
   font-size: 20px;
   font-weight: 500;
 }
-
 .left-side p {
   margin-bottom: 20px;
   color: #ffffff;
 }
-
 .input-group {
   margin-bottom: 20px;
 }
-
 .input-group input {
   width: 100%;
   padding: 12px;
