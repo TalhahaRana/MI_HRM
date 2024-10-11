@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="col-5">
-                <Clock/>
+                <!-- <Clock/> -->
             </div>
 
         </div>
@@ -81,11 +81,11 @@
 
 <script>
 import { ref, onMounted, onUnmounted } from "vue";
-import Clock from "../clock.vue";
+// import Clock from "../clock.vue";
 
 export default {
     components: {
-    Clock
+    // Clock
   },
     name: "Dashboard",
     setup() {
