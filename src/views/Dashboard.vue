@@ -1,10 +1,15 @@
 <template>
   <nav class="navbar">
-         <div class="container-fluid">
+         <div class="container-fluid d-block">
            <button class="btn btn-primary d-md-none" type="button" id="sidebarToggle" @click="toggleSidebar">
              ☰
            </button>
-           <div class="profile-menu ms-auto">
+           <div class="profile-menu justify-content-between ">
+            <div class="header-left">
+              <h2>
+                Dashboard
+              </h2>
+            </div>
              <div class="header-right">
                <button class="profile-settings-btn" @click="goToProfileSettings">
                  <i class="fas fa-user-circle"></i> Profile
@@ -26,9 +31,9 @@
           'd-none d-md-block': !sidebarVisible,
           'd-block': sidebarVisible,
         }">
-          <div class="sidebar-header">
+          <!-- <div class="sidebar-header">
             <h4>Dashboard</h4>
-          </div>
+          </div> -->
           <hr style="border: 1px solid black;" />
           <ul class="list-unstyled components">
             <li>
@@ -150,8 +155,6 @@
              </div>
            </div>
          </div>
-
-
        </div>
     </div>
  
@@ -160,7 +163,7 @@
 import { ref, computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
-import DashView from './Hr/DashView.vue';
+import DashView from '../components/dashcompo/DashView.vue';
 
 export default {
   name: 'Dashoard',
@@ -282,7 +285,7 @@ body {
 .logout-btn {
   background-color: transparent;
   border: none;
-  color: var(--side);
+  color: #6C7383;
   font-size: 16px;
   margin-left: 20px;
   cursor: pointer;
@@ -326,7 +329,6 @@ body {
   }
 
   .navbar {
-    margin-top: -60px;
     top: 0;
   }
 
@@ -350,7 +352,15 @@ body {
 .navbar {
   padding: 10px;
   color: black;
-  background-color: var(--basic-button);
+  font-weight: 400;
+    transition: background 0.25s ease;
+    -webkit-transition: background 0.25s ease;
+    -moz-transition: background 0.25s ease;
+    -ms-transition: background 0.25s ease;
+    -webkit-box-shadow: 0px 5px 21px -5px #CDD1E1;
+    -moz-box-shadow: 0px 5px 21px -5px #CDD1E1;
+    box-shadow: 0px 5px 21px -5px #CDD1E1;
+
 }
 
 .profile-menu {
