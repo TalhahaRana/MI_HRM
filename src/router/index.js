@@ -4,6 +4,7 @@ import AssignProject from "@/components/hr/AssignProject.vue";
 // Import all the components/views used in the routes
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
+import SetPassword from "@/views/auth/SetPassword.vue";
 import AddEmployee from "@/components/admin/AddEmployee.vue";
 import AllEmployee from "@/components/admin/AllEmployee.vue";
 import Attendance from "@/components/admin/Attendance.vue";
@@ -41,6 +42,10 @@ const router = createRouter({
     {
       path: "/forgot-pass",
       component: ForgotPass,
+    },
+    {
+      path: "/password-setup",
+      component: SetPassword,
     },
     {
       path: "/dashboard",

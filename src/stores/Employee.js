@@ -22,7 +22,7 @@ const actions = {
   // Add a new employee
   async addEmployee({ commit }, employeeData) {
     try {
-      const response = await ApiServices.PostRequest("/employees", employeeData);
+      const response = await ApiServices.PostRequestHeader("/register", employeeData);
       commit("newEmployee", response); // Assuming the API returns the created employee
     } catch (error) {
       throw error;
