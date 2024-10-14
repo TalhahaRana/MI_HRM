@@ -132,8 +132,8 @@ export default {
 
     const employees = ref([]);
 
-    const departments = ['HR', 'Engineering', 'Sales', 'Marketing'];
-    const roles = ['Manager', 'Developer', 'Designer', 'Analyst'];
+    const departments = ref('');
+    const roles = ['hr', 'employee'];
     const positions = ['Junior', 'Mid-level', 'Senior', 'Lead'];
 
     const submitForm = () => {

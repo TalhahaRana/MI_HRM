@@ -5,7 +5,7 @@ import roles from './RoleModule';
 import employee from './Employee';
 import admin from './Admin';
 import hr from './Hr';
-import projects from '@/components/admin/Projects.vue';
+import projects from './Projects';
 // Vue 3 style store setup
 export default createStore({
   modules: {
