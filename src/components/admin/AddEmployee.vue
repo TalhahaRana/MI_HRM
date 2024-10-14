@@ -11,7 +11,7 @@
               type="text"
               class="form-control"
               id="name"
-              v-model="newEmployee.name"
+              v-model="name"
               placeholder="Name"
               required
             />
@@ -22,7 +22,7 @@
               type="email"
               class="form-control"
               id="email"
-              v-model="newEmployee.email"
+              v-model="email"
               placeholder="Email"
               required
             />
@@ -36,12 +36,12 @@
             <select
               class="form-control"
               id="role"
-              v-model="newEmployee.role"
+              v-model="role"
               required
             >
               <option disabled value="">Select a Role</option>
-              <option v-for="role in roles" :key="role" :value="role">
-                {{ role }}
+              <option v-for="roleOption in roles" :key="roleOption" :value="roleOption">
+                {{ roleOption }}
               </option>
             </select>
           </div>
@@ -50,16 +50,12 @@
             <select
               class="form-control"
               id="department"
-              v-model="newEmployee.department"
+              v-model="department"
               required
             >
               <option disabled value="">Select a Department</option>
-              <option
-                v-for="department in departments"
-                :key="department"
-                :value="department"
-              >
-                {{ department }}
+              <option v-for="dept in departments" :key="dept.id" :value="dept.name">
+                {{ dept.name }}
               </option>
             </select>
           </div>
@@ -72,12 +68,12 @@
             <select
               class="form-control"
               id="position"
-              v-model="newEmployee.position"
+              v-model="position"
               required
             >
               <option disabled value="">Select a Designation</option>
-              <option v-for="position in positions" :key="position" :value="position">
-                {{ position }}
+              <option v-for="positionOption in positions" :key="positionOption" :value="positionOption">
+                {{ positionOption }}
               </option>
             </select>
           </div>
@@ -116,40 +112,55 @@
   </div>
 </template>
 
-
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex'; // Assuming you are using Vuex for state management
 
 export default {
   setup() {
-    const newEmployee = ref({
-      name: '',
-      email: '',
-      department: '',
-      role: '',
-      position: ''
-    });
+    const store = useStore();
+    const name = ref('');
+    const email = ref('');
+    const department = ref('');
+    const role = ref('');
+    const position = ref('');
+    const pay = ref('');
 
-    const employees = ref([]);
-
-    const departments = ref('');
-    const roles = ['hr', 'employee'];
+    const roles = ['HR', 'Employee'];
     const positions = ['Junior', 'Mid-level', 'Senior', 'Lead'];
 
-    const submitForm = () => {
-      employees.value.push({ ...newEmployee.value });
+    // Fetch departments from the Vuex store
+    const departments = ref([]);
 
-      // Reset the form after submission
-      newEmployee.value = {
-        name: '',
-        email: '',
-        department: '',
-        role: '',
-        position: ''
+    onMounted(async () => {
+      try {
+        await store.dispatch('department/fetchDepartments');
+        departments.value = store.getters['department/allDepartments'];
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    });
+
+    const submitForm = () => {
+      const newEmployee = {
+        name: name.value,
+        email: email.value,
+        department: department.value,
+        role: role.value,
+        position: position.value,
+        pay: pay.value,
       };
 
+      console.log('New Employee:', newEmployee);
       alert('Employee added successfully!');
-      console.log('All employees:', employees.value);
+
+      // Reset form fields
+      name.value = '';
+      email.value = '';
+      department.value = '';
+      role.value = '';
+      position.value = '';
+      pay.value = '';
     };
 
     const cancelForm = () => {
@@ -157,20 +168,24 @@ export default {
     };
 
     return {
-      newEmployee,
-      employees,
+      name,
+      email,
+      department,
+      role,
+      position,
+      pay,
       departments,
       roles,
       positions,
       submitForm,
-      cancelForm
+      cancelForm,
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
-/* Style to mimic the uploaded design */
+/* Styles for the form */
 .form-card {
   border-radius: 15px;
   background-color: #f9f9fc;
