@@ -43,8 +43,23 @@ const ApiServices = {
       console.error('POST request failed:', error);
       throw error;
     }
+  },
+  async PostRequestHeader(url, data) {
+    try {
+      const headers = {
+        ...this.getAuthHeader(),
+        'Content-Type': 'application/json', // Add custom header
+      };
+
+      console.log(`POST request to: ${baseURL}${url}`); 
+      const response = await axios.post(url, data, { headers });
+      alert(response.data.message);
+      return response.data;
+    } catch (error) {
+      console.error('POST request with header failed:', error);
+      throw error;
+    }
   }
-  
 };
 
 export default ApiServices;
