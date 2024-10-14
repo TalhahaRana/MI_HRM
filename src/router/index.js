@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import RouteService from "@/services/RouteGuard"; // Import route guard logic
-
+import AssignProject from "@/components/hr/AssignProject.vue";
 // Import all the components/views used in the routes
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
@@ -217,6 +217,10 @@ const router = createRouter({
             next(RouteService('User can create Projects', to));
           },
         },
+        {
+          path:"AssignProject",
+          component:AssignProject
+        }
       ],
     },
   ],

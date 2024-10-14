@@ -8,7 +8,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Import Bootstrap Icons
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { QuillEditor } from 'vue-quill-editor'; import 'quill/dist/quill.snow.css'; // Quill CSS
+import { QuillEditor } from '@vueup/vue-quill'; import '@vueup/vue-quill/dist/vue-quill.snow.css'; //
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
