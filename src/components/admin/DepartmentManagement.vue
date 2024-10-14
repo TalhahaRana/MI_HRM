@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container mt-5  form-card">
       <h3 class="mb-4">Department Management</h3>
   
       <form @submit.prevent="submitForm">

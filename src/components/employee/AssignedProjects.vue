@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container mt-4  form-card">
     <h2 class="text-center mb-4">Assigned Projects</h2>
     <div class="row">
       <div

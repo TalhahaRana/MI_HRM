@@ -1,9 +1,9 @@
 
 <template>
-    <div class="designation-department-management">
+    <div class="designation-department-management ">
 
 
-      <h2>Departments</h2>
+      <h2 class="form-card">Departments</h2>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb d-flex justify-content-between">
@@ -48,7 +48,7 @@
     <button @click="openDesignationModal" class="btn btn-primary ms-auto">Add Department</button>
   </ol>
 </nav>
-      <h2>Designations</h2>
+      <h2 class="form-card">Designations</h2>
 
       <table class="table  table-striped">
         <thead>

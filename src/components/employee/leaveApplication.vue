@@ -1,5 +1,5 @@
 <template>
-  <div class="form-container">
+  <div class="form-container  form-card">
     <h2>Leave Application</h2>
     <form @submit.prevent="handleSubmit">
       <!-- Start Date Field -->

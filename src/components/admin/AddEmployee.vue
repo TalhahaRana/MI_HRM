@@ -1,43 +1,97 @@
 <template>
-  <div class="container mt-5 d-flex justify-content-center">
+  <div class="mt-5 d-flex justify-content-center">
     <div class="card p-4 shadow-sm form-card">
       <h4 class="mb-3">Add Employee</h4>
       <form @submit.prevent="submitForm">
-        <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="name"
-            v-model="newEmployee.name"
-            placeholder="Name"
-            required
-          />
+        <!-- Row for Name and Email -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="name" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              v-model="newEmployee.name"
+              placeholder="Name"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              v-model="newEmployee.email"
+              placeholder="Email"
+              required
+            />
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label for="department" class="form-label">Department</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="department"
-            v-model="newEmployee.department"
-            placeholder="Department"
-            required
-          />
+        <!-- Row for Role and Department -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="role" class="form-label">Role</label>
+            <select
+              class="form-control"
+              id="role"
+              v-model="newEmployee.role"
+              required
+            >
+              <option disabled value="">Select a Role</option>
+              <option v-for="role in roles" :key="role" :value="role">
+                {{ role }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="department" class="form-label">Department</label>
+            <select
+              class="form-control"
+              id="department"
+              v-model="newEmployee.department"
+              required
+            >
+              <option disabled value="">Select a Department</option>
+              <option
+                v-for="department in departments"
+                :key="department"
+                :value="department"
+              >
+                {{ department }}
+              </option>
+            </select>
+          </div>
         </div>
 
-        <!-- Designation -->
-        <div class="mb-3">
-          <label for="designation" class="form-label">Designation</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="designation"
-            v-model="newEmployee.designation"
-            placeholder="Designation"
-            required
-          />
+        <!-- Row for Position and Pay -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="position" class="form-label">Designation</label>
+            <select
+              class="form-control"
+              id="position"
+              v-model="newEmployee.position"
+              required
+            >
+              <option disabled value="">Select a Designation</option>
+              <option v-for="position in positions" :key="position" :value="position">
+                {{ position }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="pay" class="form-label">Pay</label>
+            <input
+              type="number"
+              class="form-control"
+              id="pay"
+              v-model="pay"
+              placeholder="Pay"
+              required
+            />
+          </div>
         </div>
 
         <!-- Optional Checkbox for confirmation -->
@@ -62,6 +116,7 @@
   </div>
 </template>
 
+
 <script>
 import { ref } from 'vue';
 
@@ -69,22 +124,28 @@ export default {
   setup() {
     const newEmployee = ref({
       name: '',
+      email: '',
       department: '',
-      designation: '',
+      role: '',
+      position: ''
     });
 
-    // Array to store the added employees (dummy data)
     const employees = ref([]);
 
+    const departments = ['HR', 'Engineering', 'Sales', 'Marketing'];
+    const roles = ['Manager', 'Developer', 'Designer', 'Analyst'];
+    const positions = ['Junior', 'Mid-level', 'Senior', 'Lead'];
+
     const submitForm = () => {
-      // Add the new employee to the list
       employees.value.push({ ...newEmployee.value });
-      
+
       // Reset the form after submission
       newEmployee.value = {
         name: '',
+        email: '',
         department: '',
-        designation: '',
+        role: '',
+        position: ''
       };
 
       alert('Employee added successfully!');
@@ -92,16 +153,19 @@ export default {
     };
 
     const cancelForm = () => {
-      // Handle form cancel (for example, reset form or navigate away)
       alert('Form canceled');
     };
 
     return {
       newEmployee,
+      employees,
+      departments,
+      roles,
+      positions,
       submitForm,
-      cancelForm,
+      cancelForm
     };
-  },
+  }
 };
 </script>
 
@@ -115,10 +179,6 @@ export default {
 
 h4 {
   font-weight: bold;
-}
-
-.text-muted {
-  font-size: 14px;
 }
 
 .form-control-lg {
