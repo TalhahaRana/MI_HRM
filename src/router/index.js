@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
-import DashView from "@/components/dashcompo/DashView.vue";
+import RouteService from "@/services/RouteGuard"; // Import route guard logic
+import AssignProject from "@/components/hr/AssignProject.vue";
+// Import all the components/views used in the routes
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
 import AddEmployee from "@/components/admin/AddEmployee.vue";
 import AllEmployee from "@/components/admin/AllEmployee.vue";
-import Leaves from "@/components/admin/Leaves.vue";
 import Attendance from "@/components/admin/Attendance.vue";
 import DepartmentManagement from "@/components/admin/DepartmentManagement.vue";
 import CheckInOut from "@/components/employee/CheckInOut.vue";
-import LeaveApplication from "@/components/employee/LeaveApplication.vue";
-import WorkingHours from "@/components/employee/WorkingHours.vue"; 
-import Dashboard from "@/views/Dashboard.vue"; 
+import LeaveApplication from "@/components/employee/leaveApplication.vue";
+import WorkingHours from "@/components/employee/workingHours.vue";
+import Dashboard from "@/views/Dashboard.vue";
 import AddHR from "@/components/admin/AddHR.vue";
 import AllHR from "@/components/admin/AllHR.vue";
 import Projects from "@/components/admin/Projects.vue";
@@ -21,9 +22,14 @@ import HrManageLeaves from "@/components/hr/ManageLeaves.vue";
 import AttendanceHR from "@/components/hr/AttendanceEmployee.vue";
 import AttendanceEmployee from "@/components/employee/AttendanceEmployee.vue";
 import AssignedProjects from "@/components/employee/AssignedProjects.vue";
-import ManageLeaves from "@/components/admin/Leaves.vue"; // Missing import
+import ManageLeaves from "@/components/admin/Leaves.vue"; // Import corrected
 import Payroll from "@/components/hr/Payroll.vue";
 import ManageProjectsHR from "@/components/hr/ManageProjects.vue";
+import DashView from "@/components/dashcompo/DashView.vue";
+//Profile
+import Profile from "@/components/profile.vue";
+
+// Create Vue Router instance
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -40,111 +46,183 @@ const router = createRouter({
       path: "/dashboard",
       name: "Dashboard",
       component: Dashboard,
+      // beforeEnter: (to, from, next) => {
+      //   const result = RouteService("User can access dashboard", to);
+      //   if (result === true) {
+      //     next(); 
+      //   } else {
+      //     next(result); 
+      //   }
+      // },
       children: [
         {
-          path: '', // Empty path means it will be the default
-          component: DashView, // Your default child component
+          path: "",
+          name: "DashView",
+          component: DashView, // Default child route for Dashboard
         },
         {
-          path: 'check',
-          name: 'CheckInOut',
+          path:"profile",
+          name: "Profile",
+          component: Profile
+        },
+        {
+          path: "check",
+          name: "CheckInOut",
           component: CheckInOut,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can Check-in/Check-out', to));
+          },
         },
         {
           path: "leave-application",
           name: "LeaveApplication",
-          component: LeaveApplication
+          component: LeaveApplication,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can submit Leave Applications', to));
+          },
         },
         {
           path: "attendance-employee",
           name: "AttendanceEmployee",
-          component:AttendanceEmployee,
+          component: AttendanceEmployee,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see Attendance Record of itself', to));
+          },
         },
         {
           path: "assignedProjects",
           name: "AssignedProjects",
-          component:AssignedProjects,
+          component: AssignedProjects,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see Assigned Projects', to));
+          },
         },
         {
           path: "working-hours",
           name: "WorkingHours",
           component: WorkingHours,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see its Working Hours', to));
+          },
         },
         {
           path: "attendance",
           name: "Attendance",
-          component:Attendance,
+          component: Attendance,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see Attendance Record of all users', to));
+          },
         },
-        {
-          path: "leaves",
-          name: "Leaves",
-          component:Leaves,
-        },
-        {
-          path: "department",
-          name: "DepartmentManagement",
-          component:DepartmentManagement,
-        },
-        {
-          path: "addHr",
-          name: "AddHR",
-          component: AddHR,
-        },
-        {
-          path: "all-hr",
-          name: "AllHR",
-          component: AllHR,
-        },
+        // {
+        //   path: "department-management",
+        //   name: "DepartmentManagement",
+        //   component: DepartmentManagement,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can manage all users department and position (update)', to));
+        //   },
+        // },
+        // {
+        //   path: "addHr",
+        //   name: "AddHR",
+        //   component: AddHR,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService("Admin can add HR", to));
+        //   },
+        // },
+        // {
+        //   path: "all-hr",
+        //   name: "AllHR",
+        //   component: AllHR,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService("Admin can view all HR", to));
+        //   },
+        // },
         {
           path: "add-employee",
           name: "AddEmployee",
           component: AddEmployee,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can add users (employee,hr)', to));
+          },
         },
         {
           path: "all-employee",
-          name: "AllEmployee", // Fixed name
+          name: "AllEmployee",
           component: AllEmployee,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see all users', to));
+          },
         },
         {
           path: "projects",
           name: "Projects",
           component: Projects,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can create Projects', to));
+          },
         },
         {
           path: "manage-leaves",
           component: ManageLeaves,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can view attendance records', to));
+          },
         },
         {
           path: "checkout",
           component: HrCheckoutCheckIn,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can Check-in/Check-out', to));
+          },
         },
         {
           path: "department-management",
           component: HrDepartmentManagement,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can manage all users department and position (update)', to));
+          },
         },
         {
           path: "employee-joining",
           component: HrEmployeeJoining,
+          // beforeEnter: (to, from, next) => {
+          //   next(RouteService("HR can handle employee joining", to));
+          // },
         },
         {
           path: "manage-leaves-hr",
           component: HrManageLeaves,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see Attendance Record of all users', to));
+          },
         },
         {
           path: "attendance-hr",
           component: AttendanceHR,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can see Attendance Record of all users', to));
+          },
         },
         {
           path: "payroll-hr",
           component: Payroll,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can manage payroll', to));
+          },
         },
         {
           path: "manage-projects-hr",
           component: ManageProjectsHR,
+          beforeEnter: (to, from, next) => {
+            next(RouteService('User can create Projects', to));
+          },
         },
-
-      ]
-    }, 
+        {
+          path:"AssignProject",
+          component:AssignProject
+        }
+      ],
+    },
   ],
 });
 
