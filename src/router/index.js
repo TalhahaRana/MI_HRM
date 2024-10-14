@@ -113,14 +113,14 @@ const router = createRouter({
             next(RouteService('User can see Attendance Record of all users', to));
           },
         },
-        {
-          path: "department-management",
-          name: "DepartmentManagement",
-          component: DepartmentManagement,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can manage all users department and position (update)', to));
-          },
-        },
+        // {
+        //   path: "department-management",
+        //   name: "DepartmentManagement",
+        //   component: DepartmentManagement,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can manage all users department and position (update)', to));
+        //   },
+        // },
         // {
         //   path: "addHr",
         //   name: "AddHR",
