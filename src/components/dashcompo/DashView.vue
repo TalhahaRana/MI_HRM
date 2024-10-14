@@ -9,7 +9,7 @@
     </div>
     <div class="align-items-center justify-content-between container">
         <div class="row">
-            <div class="tail col-7">
+            <div class="tail col-md-7">
                 <div class="weather-info">
                     <!-- Existing Image -->
                     <img src="../../assets/images/people.png" alt="Profile Image" />
@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-md-5">
                 <!-- <Clock/> -->
     <Calander/>
 

@@ -1,24 +1,32 @@
 <template>
   <nav class="navbar">
          <div class="container-fluid d-block">
-           <button class="btn btn-primary d-md-none" type="button" id="sidebarToggle" @click="toggleSidebar">
-             ☰
-           </button>
-           <div class="profile-menu justify-content-between ">
-            <div class="header-left">
-              <h2>
-                Dashboard
-              </h2>
+          <div class="row">
+            <div class="col-5 row">
+        
+               <button class="btn btn-primary d-md-none" type="button" id="sidebarToggle" @click="toggleSidebar">
+                ☰
+              </button>
+              <div class="header-left">
+                 <h2>
+                   Dashboard
+                 </h2>
+               </div>
+              </div>
+            
+            <div class="col-7 row">
+              
+                <div class="profile-menu">    
+                    <button class="profile-settings-btn" @click="goToProfileSettings">
+                      <i class="fas fa-user-circle"></i> Profile
+                    </button>
+                    <button class="logout-btn" @click="logout">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+              </div>
             </div>
-             <div class="header-right">
-               <button class="profile-settings-btn" @click="goToProfileSettings">
-                 <i class="fas fa-user-circle"></i> Profile
-               </button>
-               <button class="logout-btn" @click="logout">
-                 <i class="fas fa-sign-out-alt"></i> Logout
-               </button>
-             </div>
-           </div>
+          
          </div>
        </nav>
    
@@ -276,12 +284,6 @@ body {
   /* Initial icon color */
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  padding: 6px;
-}
-
 .profile-settings-btn,
 .logout-btn {
   background-color: transparent;
@@ -367,6 +369,7 @@ body {
 .profile-menu {
   display: flex;
   align-items: center;
+  justify-content: end;
 }
 
 .profile-img {
