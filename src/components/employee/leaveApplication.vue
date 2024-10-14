@@ -34,26 +34,39 @@
 
 <script>
 import { reactive } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
-    // Define a reactive form object
+    const store = useStore();
+
     const form = reactive({
       startDate: "",
       endDate: "",
       message: "",
     });
 
-    // Handle form submission
-    const handleSubmit = () => {
-      console.log("Form Data:", form);
-      alert(
-        `Your leave application from ${form.startDate} to ${form.endDate} has been submitted!`
-      );
-      // Reset form after submission
-      form.startDate = "";
-      form.endDate = "";
-      form.message = "";
+    const handleSubmit = async () => {
+      try {
+        const leaveData = {
+          start_date: form.startDate,
+          end_date: form.endDate,
+          reason: form.message,
+        };
+
+        // Dispatch the action using the correct module name, 'employee/LeaveApplication'
+        await store.dispatch("employee/LeaveApplication", leaveData);
+
+        alert(`Your leave application from ${form.startDate} to ${form.endDate} has been submitted!`);
+
+        // Reset the form
+        form.startDate = "";
+        form.endDate = "";
+        form.message = "";
+      } catch (error) {
+        console.error("Error submitting leave application:", error);
+        alert("Failed to submit the leave application.");
+      }
     };
 
     return { form, handleSubmit };
@@ -61,13 +74,12 @@ export default {
 };
 </script>
 
+
 <style scoped>
 /* Container for the form */
 .form-container {
-  max-width: 500px;
   margin: 50px auto;
   padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

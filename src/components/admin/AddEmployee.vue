@@ -3,41 +3,91 @@
     <div class="card p-4 shadow-sm form-card">
       <h4 class="mb-3">Add Employee</h4>
       <form @submit.prevent="submitForm">
-        <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="name"
-            v-model="newEmployee.name"
-            placeholder="Name"
-            required
-          />
+        <!-- Row for Name and Email -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="name" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              v-model="name"
+              placeholder="Name"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              v-model="email"
+              placeholder="Email"
+              required
+            />
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label for="department" class="form-label">Department</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="department"
-            v-model="newEmployee.department"
-            placeholder="Department"
-            required
-          />
+        <!-- Row for Role and Department -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="role" class="form-label">Role</label>
+            <select
+              class="form-control"
+              id="role"
+              v-model="role"
+              required
+            >
+              <option disabled value="">Select a Role</option>
+              <option v-for="roleOption in roles" :key="roleOption" :value="roleOption">
+                {{ roleOption }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="department" class="form-label">Department</label>
+            <select
+              class="form-control"
+              id="department"
+              v-model="department"
+              required
+            >
+              <option disabled value="">Select a Department</option>
+              <option v-for="dept in departments.data" :key="dept.id" :value="dept.name">
+                {{ dept.name }}
+              </option>
+            </select>
+          </div>
         </div>
 
-        <!-- Designation -->
-        <div class="mb-3">
-          <label for="designation" class="form-label">Designation</label>
-          <input
-            type="text"
-            class="form-control form-control"
-            id="designation"
-            v-model="newEmployee.designation"
-            placeholder="Designation"
-            required
-          />
+        <!-- Row for Position and Pay -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="position" class="form-label">Designation</label>
+            <select
+              class="form-control"
+              id="position"
+              v-model="position"
+              required
+            >
+              <option disabled value="">Select a Designation</option>
+              <option v-for="positionOption in positions" :key="positionOption" :value="positionOption">
+                {{ positionOption }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="pay" class="form-label">Pay</label>
+            <input
+              type="number"
+              class="form-control"
+              id="pay"
+              v-model="pay"
+              placeholder="Pay"
+              required
+            />
+          </div>
         </div>
 
         <!-- Optional Checkbox for confirmation -->
@@ -63,41 +113,70 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex'; // Assuming you are using Vuex for state management
 
 export default {
   setup() {
-    const newEmployee = ref({
-      name: '',
-      department: '',
-      designation: '',
+    const store = useStore();
+    const name = ref('');
+    const email = ref('');
+    const department = ref('');
+    const role = ref('');
+    const position = ref('');
+    const pay = ref('');
+
+    const roles = ['HR', 'Employee'];
+    const positions = ['Junior', 'Mid-level', 'Senior', 'Lead'];
+
+    // Fetch departments from the Vuex store
+    const departments = ref([]);
+
+    onMounted(async () => {
+      try {
+        await store.dispatch('department/fetchDepartments');
+        departments.value = store.getters['department/allDepartments'];
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
     });
 
-    // Array to store the added employees (dummy data)
-    const employees = ref([]);
-
     const submitForm = () => {
-      // Add the new employee to the list
-      employees.value.push({ ...newEmployee.value });
-      
-      // Reset the form after submission
-      newEmployee.value = {
-        name: '',
-        department: '',
-        designation: '',
+      const newEmployee = {
+        name: name.value,
+        email: email.value,
+        department: department.value,
+        role: role.value,
+        position: position.value,
+        pay: pay.value,
       };
 
+      console.log('New Employee:', newEmployee);
       alert('Employee added successfully!');
-      console.log('All employees:', employees.value);
+
+      // Reset form fields
+      name.value = '';
+      email.value = '';
+      department.value = '';
+      role.value = '';
+      position.value = '';
+      pay.value = '';
     };
 
     const cancelForm = () => {
-      // Handle form cancel (for example, reset form or navigate away)
       alert('Form canceled');
     };
 
     return {
-      newEmployee,
+      name,
+      email,
+      department,
+      role,
+      position,
+      pay,
+      departments,
+      roles,
+      positions,
       submitForm,
       cancelForm,
     };
@@ -106,7 +185,7 @@ export default {
 </script>
 
 <style scoped>
-/* Style to mimic the uploaded design */
+/* Styles for the form */
 .form-card {
   border-radius: 15px;
   background-color: #f9f9fc;
@@ -115,10 +194,6 @@ export default {
 
 h4 {
   font-weight: bold;
-}
-
-.text-muted {
-  font-size: 14px;
 }
 
 .form-control-lg {
