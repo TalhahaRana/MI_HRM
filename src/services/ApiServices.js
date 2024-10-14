@@ -8,7 +8,6 @@ const ApiServices = {
     axios.defaults.baseURL = baseURL;
     axios.defaults.headers.common["Content-Type"] = "application/json";
   },
-
   // Helper method to get the authorization header
   getAuthHeader() {
     return {

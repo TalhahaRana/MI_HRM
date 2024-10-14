@@ -16,7 +16,6 @@ const actions = {
     localStorage.setItem('userPermissions', JSON.stringify(permissions));
   },
 };
-
 const mutations = {
   setUserRole(state, role) {
     state.userRole = role;

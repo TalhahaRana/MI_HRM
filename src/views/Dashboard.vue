@@ -11,10 +11,11 @@
               </h2>
             </div>
              <div class="header-right">
-               <button class="profile-settings-btn" @click="goToProfileSettings">
-                 <i class="fas fa-user-circle"></i> Profile
-               </button>
-               <button class="logout-btn" @click="logout">
+              <router-link to="/dashboard/profile" class="profile-settings-btn btn btn-primary">
+                <i class="fas fa-user-circle"></i> Profile
+              </router-link>
+
+               <button class="logout-btn profile-settings-btn btn btn-primary" @click="logout">
                  <i class="fas fa-sign-out-alt"></i> Logout
                </button>
              </div>
@@ -34,71 +35,72 @@
           <!-- <div class="sidebar-header">
             <h4>Dashboard</h4>
           </div> -->
-          <hr style="border: 1px solid black;" />
+          <!-- <hr style="border: 1px solid black;" /> -->
           <ul class="list-unstyled components">
-            <li>
+            <li v-if="hasPermission('User can add users (employee,hr)')">
               <router-link to="/dashboard/add-employee" class="redirect-link">
                 <i class="icon fas fa-user-plus"></i> Add Employee
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can see all users')">
               <router-link to="/dashboard/all-employee" class="redirect-link">
                 <i class="icon fas fa-address-card"></i> All Employees
               </router-link>
             </li>
-            <li>
-              <router-link to="/dashboard/leaves" class="redirect-link">
+            <!-- <li v-if="hasPermission('User can manage  leaves (accept/reject)'|| hasPermission('User can manage employee leaves (accept/reject)'))">
+              <router-link to="/dashboard/manage-leaves" class="redirect-link">
                 <i class="icon far fa-band-aid "></i> Manage Leaves
               </router-link>
-            </li>
-            <li>
+            </li> -->
+            <li v-if="hasPermission('User can manage all users department and position (update)')">
               <router-link to="/dashboard/department-management" class="redirect-link">
                 <i class="icon fas  fa-building"></i> Manage Department
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can create Projects')">
               <router-link to="/dashboard/projects" class="redirect-link">
-                <i class="icon fas fa-project-diagram"></i> Manage Projects
+                <i class="icon fas fa-project-diagram"></i> Manage Projects Optional
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can create Projects')">
+              <router-link to="/dashboard/manage-projects-hr" class="redirect-link">
+                <i class="icon fas fa-tasks"></i> Manage Projects 
+              </router-link>
+            </li>
+            <!-- <li v-if="hasPermission('')">
               <router-link to="/dashboard/checkout" class="redirect-link">
                 <i class="icon far fa-stopwatch"></i> Check-in/Check-out
               </router-link>
-            </li>
-            <li>
+            </li> -->
+            <li v-if="hasPermission('User can view attendance records')">
               <router-link to="/dashboard/manage-leaves" class="redirect-link">
                 <i class="icon fas fa-calendar-check"></i> Manage Attendance
               </router-link>
             </li>
-    
-            <!-- HR -->
-            <li>
-              <router-link to="/dashboard/manage-leaves-hr" class="redirect-link">
-                <i class="icon fas fa-user-times"></i> Manage Employee Leaves
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/dashboard/attendance-hr" class="redirect-link">
-                <i class="icon fas fa-user-clock"></i> Manage Attendance
-              </router-link>
-            </li>
-            <li>
+            <!-- <li v-if="hasPermission('User can manage all users department and position (update)')">
               <router-link to="/dashboard/department-management" class="redirect-link">
-                <i class="icon fas fa-building"></i> Department Management
+                <i class="icon fas fa-building"></i> Add Department
               </router-link>
-            </li>
-            <li>
+            </li> -->
+            <li v-if="hasPermission('User can manage payroll')">
               <router-link to="/dashboard/payroll-hr" class="redirect-link">
                 <i class="icon fas fa-money-check-alt"></i> Payroll
               </router-link>
             </li>
-            <li>
-              <router-link to="/dashboard/manage-projects-hr" class="redirect-link">
-                <i class="icon fas fa-tasks"></i> Manage Projects HR
+            <!-- HR -->
+            <li v-if="hasPermission('User can see Attendance Record of all users')">
+              <router-link to="/dashboard/manage-leaves-hr" class="redirect-link">
+                <i class="icon fas fa-user-times"></i> View Attendance Records
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can see Attendance Record of all users')">
+              <router-link to="/dashboard/attendance-hr" class="redirect-link">
+                <i class="icon fas fa-user-clock"></i> Attendance Record Optional
+              </router-link>
+            </li>
+            
+           
+            <li >
               <router-link to="/dashboard/checkout" class="redirect-link">
                 <i class="icon fas fa-user-check"></i> Check-in/Check-out Tracking
               </router-link>
@@ -111,32 +113,31 @@
             </li>
     
             <!-- Employees -->
-            <li>
+            <li v-if="hasPermission('User can Check-in/Check-out')">
               <router-link to="/dashboard/check" class="redirect-link">
                 <i class="icon fas fa-user-check"></i> Check-in/Check-out
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can see Attendance Record of itself')">
               <router-link to="/dashboard/attendance-employee" class="redirect-link">
                 <i class="icon fas fa-calendar-alt"></i> View Attendance
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can submit Leave Applications')">
               <router-link to="/dashboard/leave-application" class="redirect-link">
                 <i class="icon fas fa-file-alt"></i> Apply Leave
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can see its Working Hours')">
               <router-link to="/dashboard/working-hours" class="redirect-link">
                 <i class="icon fas fa-clock"></i> Working Hours
               </router-link>
             </li>
-            <li>
+            <li v-if="hasPermission('User can see Assigned Projects')">
               <router-link to="/dashboard/assignedProjects" class="redirect-link">
                 <i class="icon fas fa-clipboard-list"></i> Assigned Projects
               </router-link>
             </li>
-    
           </ul>
         </nav>
            </div>
@@ -145,19 +146,17 @@
              <div class="child">
                <!-- Router View -->
                <div class="container">
-                 <!-- <DashView /> -->
+                 <DashView />
        
                </div>
                <router-view>
-       
-       
+
                </router-view>
              </div>
            </div>
          </div>
        </div>
     </div>
- 
 </template>
 <script>
 import { ref, computed, onUnmounted } from 'vue';
@@ -168,6 +167,7 @@ import DashView from '../components/dashcompo/DashView.vue';
 export default {
   name: 'Dashoard',
   setup() {
+    const store = useStore();
     const sidebarVisible = ref(false);
 
     const toggleSidebar = () => {
@@ -177,22 +177,25 @@ export default {
     const goToProfileSettings = () => {
       // Logic to navigate to profile settings
     };
-
-    const logout = () => {
-      // Logic for logout
+    const hasPermission = (permission) => {
+      // return store.getters['roles/hasPermission'](permission);
+      return true;
     };
-
+    const logout = () => {
+        localStorage.removeItem("token");
+        this.$router.push("/");
+    };
     return {
       sidebarVisible,
       toggleSidebar,
       goToProfileSettings,
       logout,
+      hasPermission,
       DashView,
     };
   },
 };
 </script>
-
 <style>
 body {
   font-family: Arial, sans-serif;
