@@ -1,180 +1,186 @@
 <template>
-    <div class="container my-5 ">
-        <div class="card p-4 shadow-lg">
-            <h3 class="text-center mb-4">Payroll Management System</h3>
-
-            <!-- Employee Selection -->
-            <div class="form-group mb-4">
-                <label for="employeeSelect" class="form-label">Select Employee</label>
-                <select id="employeeSelect" v-model="selectedEmployee" class="form-select">
-                    <option disabled value="">Choose Employee</option>
-                    <option v-for="employee in employees" :key="employee.id" :value="employee">
-                        {{ employee.name }} - {{ employee.designation }}
-                    </option>
-                </select>
-            </div>
-
-            <!-- Salary Month -->
-            <div class="form-group mb-4">
-                <label for="salaryMonth" class="form-label">Salary Month</label>
-                <input type="month" id="salaryMonth" v-model="salaryMonth" class="form-control"
-                    :class="{ 'is-invalid': salaryMonthError }" />
-                <div v-if="salaryMonthError" class="invalid-feedback">
-                    Please select a valid salary month.
-                </div>
-            </div>
-
-            <!-- Allowance and Bonus -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label for="bonus" class="form-label">Bonus</label>
-                    <input type="number" id="bonus" v-model="bonus" class="form-control"
-                        placeholder="Enter Bonus Amount" />
-                </div>
-                <div class="col-md-6">
-                    <label for="allowance" class="form-label">Allowance</label>
-                    <input type="number" id="allowance" v-model="allowance" class="form-control"
-                        placeholder="Enter Allowance Amount" />
-                </div>
-            </div>
-
-            <!-- Generate Payslip Button -->
-            <button class="btn btn-primary w-100 mt-3" @click="generatePayslip">
-                Generate Payslip
-            </button>
-
-            <!-- Payslip Display -->
-            <div v-if="payslipGenerated" class="payslip-container mt-5">
-                <div class="payslip p-4 bg-white shadow-sm">
-                    <h5 class="text-center text-primary">Payslip for {{ selectedEmployee.name }}</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Designation:</strong> {{ selectedEmployee.designation }}</p>
-                            <p><strong>Department:</strong> {{ selectedEmployee.department }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Salary Month:</strong> {{ formatMonth(salaryMonth) }}</p>
-                            <p><strong>Basic Salary:</strong> ${{ formatCurrency(selectedEmployee.basic_salary) }}</p>
-                        </div>
-                    </div>
-                    <hr />
-                    <p><strong>Bonus:</strong> ${{ formatCurrency(bonus) }}</p>
-                    <p><strong>Allowance:</strong> ${{ formatCurrency(allowance) }}</p>
-                    <p><strong>Gross Salary:</strong> ${{ formatCurrency(grossSalary) }}</p>
-                    <p><strong>Tax Deduction (10%):</strong> ${{ formatCurrency(taxDeduction) }}</p>
-                    <p><strong>Net Salary:</strong> ${{ formatCurrency(netSalary) }}</p>
-                </div>
-            </div>
+    <div class="salary-slip-container">
+      <div class="header">
+        <h1>Salary Slip Generator</h1>
+      </div>
+  
+      <div class="form-group">
+        <label for="working-hours">Working Hours:</label>
+        <input type="number" v-model="employee.workingHours" disabled />
+      </div>
+  
+      <div class="form-group">
+        <label for="salary">Salary:</label>
+        <input type="number" v-model="employee.salary" disabled />
+      </div>
+  
+      <div class="form-group">
+        <label for="status">Status:</label>
+        <input type="text" v-model="employee.status" disabled />
+      </div>
+  
+      <div class="form-group">
+        <label for="month">Select Salary Month:</label>
+        <select v-model="selectedMonth" class="select-month">
+          <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+        </select>
+      </div>
+  
+      <button @click="generatePDF" class="btn-download">Download Salary Slip (PDF)</button>
+  
+      <div v-if="showSlip" class="salary-slip-preview">
+        <h2>Salary Slip Preview for {{ selectedMonth }}</h2>
+        <div class="slip-details">
+          <p><strong>Working Hours:</strong> {{ employee.workingHours }} hours</p>
+          <p><strong>Salary:</strong> ${{ employee.salary }}</p>
+          <p><strong>Status:</strong> {{ employee.status }}</p>
+          <p><strong>Month:</strong> {{ selectedMonth }}</p>
         </div>
+      </div>
     </div>
-</template>
-
-<script>
-import { ref, computed } from 'vue';
-
-export default {
-    setup() {
-        // Mock Data for Employees
-        const employees = ref([
-            { id: 1, name: 'Mujahid Nawaz', designation: 'Software Engineer', department: 'IT', basic_salary: 5000 },
-            { id: 2, name: 'Qasim Ikram', designation: 'Project Manager', department: 'Operations', basic_salary: 7000 },
-        ]);
-
-        // Form Data
-        const selectedEmployee = ref('');
-        const salaryMonth = ref('');
-        const bonus = ref(0);
-        const allowance = ref(0);
-        const payslipGenerated = ref(false);
-        const salaryMonthError = ref(false);
-
-        // Computed Properties
-        const grossSalary = computed(() => {
-            return selectedEmployee.value ? selectedEmployee.value.basic_salary + parseFloat(bonus.value) + parseFloat(allowance.value) : 0;
-        });
-
-        const taxDeduction = computed(() => {
-            const taxRate = 0.1; // Example 10% tax
-            return grossSalary.value * taxRate;
-        });
-
-        const netSalary = computed(() => {
-            return grossSalary.value - taxDeduction.value;
-        });
-
-        // Generate Payslip
-        const generatePayslip = () => {
-            if (!selectedEmployee.value || !salaryMonth.value) {
-                if (!salaryMonth.value) salaryMonthError.value = true;
-                alert('Please select an employee and salary month.');
-            } else {
-                payslipGenerated.value = true;
-                salaryMonthError.value = false;
-            }
-        };
-
-        // Format Month
-        const formatMonth = (month) => {
-            const date = new Date(month);
-            return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-        };
-
-        // Format Currency
-        const formatCurrency = (value) => {
-            return parseFloat(value).toFixed(2);
-        };
-
-        return {
-            employees,
-            selectedEmployee,
-            salaryMonth,
-            bonus,
-            allowance,
-            grossSalary,
-            taxDeduction,
-            netSalary,
-            payslipGenerated,
-            salaryMonthError,
-            generatePayslip,
-            formatMonth,
-            formatCurrency,
-        };
-    },
-};
-</script>
-
-<style scoped>
-.container {
-    max-width: 700px;
-}
-
-.card {
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue';
+  import jsPDF from 'jspdf';
+  
+  // Employee data (can come from an API in a real app)
+  const employee = ref({
+    workingHours: 160,
+    salary: 3000,
+    status: 'Active',
+  });
+  
+  // Months for selection
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  
+  // Selected month
+  const selectedMonth = ref('');
+  
+  // To show salary slip section after month selection
+  const showSlip = ref(false);
+  
+  // Function to generate the PDF using jsPDF
+  const generatePDF = () => {
+    if (selectedMonth.value) {
+      showSlip.value = true;
+  
+      // Create a new jsPDF document
+      const doc = new jsPDF();
+  
+      // Styling the PDF
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(24);
+      doc.text('Salary Slip', 105, 20, null, null, 'center');
+  
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Month: ${selectedMonth.value}`, 20, 40);
+      doc.text(`Working Hours: ${employee.value.workingHours} hours`, 20, 50);
+      doc.text(`Salary: $${employee.value.salary}`, 20, 60);
+      doc.text(`Status: ${employee.value.status}`, 20, 70);
+  
+      // Adding a footer
+      doc.setFontSize(12);
+      doc.setTextColor(100);
+      doc.text('Generated by Payroll System', 105, 290, null, null, 'center');
+  
+      // Save the PDF with a generated filename
+      doc.save(`Salary_Slip_${selectedMonth.value}.pdf`);
+    } else {
+      alert('Please select a month to generate the salary slip');
+    }
+  };
+  </script>
+  
+  <style scoped>
+  .salary-slip-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 30px;
     border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .header h1 {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  input:disabled {
+    background-color: #f1f1f1;
+  }
+  
+  .select-month {
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .btn-download {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: #fff;
     border: none;
-    background-color: #f8f9fa;
-}
-
-button {
-    border-radius: 6px;
-    background-color: var(--basic-button);
-}
-.text-primary{
-
-    color: var(--basic-button) !important;
-}
-.payslip-container {
-    border-top: 2px solid var(--basic-button);
-}
-
-.payslip {
-    border-radius: 8px;
-}
-
-.is-invalid {
-    border-color: #dc3545;
-}
-
-.invalid-feedback {
-    color: #dc3545;
-}
-</style>
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .btn-download:hover {
+    background-color: #45a049;
+  }
+  
+  .salary-slip-preview {
+    margin-top: 30px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+  }
+  
+  .salary-slip-preview h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .slip-details p {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .slip-details strong {
+    color: #555;
+  }
+  </style>
+  
