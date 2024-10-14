@@ -2,10 +2,6 @@
     <div class="container">
         <div class="dashboard-container">
         <h1 class="welcome-title">Welcome Samia</h1>
-
-        <!-- <p class="welcome-message">
-            All systems are running smoothly! You have 3 unread alerts!
-        </p> -->
     </div>
     <div class="align-items-center justify-content-between container">
         <div class="row">
