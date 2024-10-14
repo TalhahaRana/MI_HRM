@@ -8,6 +8,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Import Bootstrap Icons
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { QuillEditor } from 'vue-quill-editor'; import 'quill/dist/quill.snow.css'; // Quill CSS
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -18,6 +19,7 @@ library.add(faUserSecret);
 const app = createApp(App);
 
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.component('QuillEditor', QuillEditor);
 ApiServices.init();
 // Use the router
 app.use(router);
