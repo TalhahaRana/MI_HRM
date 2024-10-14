@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-container">
+  <div class="chart-container  form-card">
     <h2>Employee Working Hours</h2>
     <Bar
       :data="chartData"

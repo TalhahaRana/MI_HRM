@@ -1,25 +1,21 @@
 import ApiServices from "@/services/ApiServices";
-
 const state = {
   user: null,
 };
-
 const getters = {
   isAuthenticated: (state) => !!state.user,
   user: (state) => state.user,
 };
-
 const actions = {
   async login({ commit }, credentials) {
     try {
-      const response = await ApiServices.post("/login", credentials);
+      const response = await ApiServices.PostRequest('/login', credentials);
       commit("setUser", response.data.user);
       return response;
     } catch (error) {
-      throw error; // Re-throw the error so the caller can handle it
+      throw error; 
     }
   },
-  
   async logout({ commit }) {
     commit("clearUser");
     // Simulating an async operation with resolve()

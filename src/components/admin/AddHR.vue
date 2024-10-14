@@ -1,6 +1,6 @@
 <template>
     <!-- samia -->
-    <div class="add-manager-container">
+    <div class="add-manager-container form-card">
       <div class="add-manager">
         <h2>Add HR</h2>
         <form>
@@ -78,8 +78,6 @@
     border-radius: 5px;
     cursor: pointer;
   }
- 
-  
   p {
     margin-top: 10px;
     color: #2c3e50;

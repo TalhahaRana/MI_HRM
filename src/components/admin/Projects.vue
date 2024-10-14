@@ -1,5 +1,5 @@
 <template>
-    <div class="projects-container">
+    <div class="projects-container  form-card">
       <h2>Projects</h2>
   
       <!-- Add Project Section -->
