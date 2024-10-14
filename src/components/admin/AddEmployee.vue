@@ -54,7 +54,7 @@
               required
             >
               <option disabled value="">Select a Department</option>
-              <option v-for="dept in departments" :key="dept.id" :value="dept.name">
+              <option v-for="dept in departments.data" :key="dept.id" :value="dept.name">
                 {{ dept.name }}
               </option>
             </select>
