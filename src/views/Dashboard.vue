@@ -24,17 +24,14 @@
    
     <div id="content">
       <!-- Navbar -->
-       <div class="container">
+       <div class="container mt-5">
          <div class="row">
            <div class="col-md-3">
             <nav id="sidebar" :class="{
           'd-none d-md-block': !sidebarVisible,
           'd-block': sidebarVisible,
         }">
-          <!-- <div class="sidebar-header">
-            <h4>Dashboard</h4>
-          </div> -->
-          <hr style="border: 1px solid black;" />
+
           <ul class="list-unstyled components">
             <li>
               <router-link to="/dashboard/add-employee" class="redirect-link">
@@ -142,7 +139,7 @@
            </div>
            <div class="col-md-9">
     
-             <div class="child">
+             <div class="child main-content">
                <!-- Router View -->
                <div class="container">
                  <!-- <DashView /> -->
@@ -212,12 +209,17 @@ body {
 
 #sidebar {
   background: var(--side);
-  /* width: 260px; */
-  padding: 15px;
-  color: white;
-  text-align: left;
+    border-radius: 14px;
+    box-shadow: 0 .1875rem .5rem 0 rgba(34, 48, 62, .1);
+    padding: 15px;
+
 
 }
+.main-content{
+  border-radius: 14px;
+  box-shadow: 0 .1875rem .5rem 0 rgba(34, 48, 62, .1);
+}
+
 
 .sidebar-header {
   text-align: center;
@@ -255,17 +257,13 @@ body {
 
 #sidebar ul li a:hover {
   color: rgb(0, 0, 0);
-  /* Change text color to white on hover */
-  /* background-color: var(--basic-button); */
- border: 3px solid transparent;
-  border-image: var(--gradient) 1;
-  /* Change background color on hover */
-  padding: 15px;
-  /* Increase padding to extend hover height */
-  border-radius: 4px;
-  /* Optional: add rounded corners */
-  transition: all 0.3s;
-  width: 220px;
+    /* background-color: var(--basic-button); */
+    border: 3px solid transparent;
+    border-image: var(--gradient) 1;
+    padding: 9px;
+    /* border-radius: 4px; */
+    transition: all 0.3s;
+    width: 100%;
 }
 
 #sidebar ul li:hover .icon {
