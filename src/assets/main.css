@@ -2,7 +2,10 @@
 
 #app {
   /* margin: 0; */
-
+  /* background: linear-gradient(115deg, #5efce8, #736efe) !important; */
+  background: linear-gradient(-101deg, #ffffff, #ffe3fb) !important;
+  /* background: linear-gradient(115deg, #86f9ea, #6891d6) !important; */
+  /* background: linear-gradient(115deg, #e2b0ff, #9f44d3) !important; */
   font-weight: normal;
   background: hsl(none 0% 100%);
 }
