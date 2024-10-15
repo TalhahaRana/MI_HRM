@@ -1,5 +1,72 @@
 <!-- <template>
-  <div class="project-container ">
+  <div>
+    <h3>Quill Editor Example</h3>
+    <QuillEditor
+      ref="quillEditor"
+      v-model="description"
+      :options="editorOptions"
+      class="quill-editor"
+      @text-change="onTextChange"
+    />
+    <button @click="logDescription">Log HTML Description</button>
+  </div>
+</template>
+
+<script>
+import { ref } from "vue";
+import { QuillEditor } from "@vueup/vue-quill";
+import "quill/dist/quill.snow.css"; // Import Quill's CSS for proper styling
+
+export default {
+  components: {
+    QuillEditor,
+  },
+  setup() {
+    const description = ref(""); // This will store the HTML content from QuillEditor
+
+    // Quill Editor options
+    const editorOptions = ref({
+      theme: "snow", // Optional: specify the theme
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["link", "blockquote", "code-block"],
+        [{ align: [] }],
+      ],
+    });
+
+    // Function to log the HTML content in the console
+    const logDescription = () => {
+      console.log("HTML Description:", description.value);
+    };
+
+    // On text change, capture the HTML content
+    const onTextChange = () => {
+      const quillEditorInstance = document.querySelector(".quill-editor .ql-editor");
+      if (quillEditorInstance) {
+        description.value = quillEditorInstance.innerHTML; // Capture the HTML content
+      }
+    };
+
+    return {
+      description,
+      editorOptions,
+      logDescription,
+      onTextChange,
+    };
+  },
+};
+</script>
+
+<style>
+.quill-editor {
+  height: 200px; /* Set a fixed height for the editor */
+}
+</style> -->
+
+<template>
+  <div class="project-container">
     <h2>Projects</h2>
 
     <div class="add-project">
@@ -18,12 +85,13 @@
         <div class="form-group">
           <label for="projectDescription">Project Description</label>
           <QuillEditor
-    v-model="newProjectDescription"
-    :options="editorOptions"
-    @input="updateDescription"
-    required
-    class="quill-editor"
-  />
+            ref="quillEditor"
+            v-model="description"
+            :options="editorOptions"
+            class="quill-editor"
+            @text-change="onTextChange"
+          />
+          <button @click="logDescription" type="button">Log HTML Description</button>
         </div>
 
         <div class="form-group">
@@ -54,7 +122,12 @@
           <td>{{ project.title }}</td>
           <td>
             <button class="me-2 edit" @click="editProject(project)">Edit</button>
-            <button class="ms-2 delete" @click="handleDeleteProject(project.id)">Delete</button>
+            <button
+              class="ms-2 delete"
+              @click="handleDeleteProject(project.id)"
+            >
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -63,107 +136,130 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { QuillEditor } from "@vueup/vue-quill";
+import "quill/dist/quill.snow.css"; // Import Quill's CSS for proper styling
 
 export default {
   components: {
     QuillEditor,
   },
   setup() {
-  const store = useStore();
+    const store = useStore();
 
-  // Refs for form data
-  const newProjectTitle = ref("");
-  const newProjectDescription = ref("");
-  const newProjectDeadline = ref("");
+    // Refs for form data
+    const newProjectTitle = ref("");
+    const description = ref(""); // This will store the HTML content from QuillEditor
+    const newProjectDeadline = ref("");
 
-  // Quill Editor options
-  const editorOptions = ref({
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "blockquote", "code-block"],
-      [{ align: [] }],
-    ],
-  });
-
-  // Refs to store projects
-  const projects = ref([]);
-
-  // Fetch projects on component mount
-  onMounted(async () => {
-    try {
-      await store.dispatch("projects/fetchProjects");
-      projects.value = store.getters["projects/allProjects"];
-    } catch (error) {
-      console.error("Failed to fetch projects:", error);
-    }
-  });
-
-  const updateDescription = (content) => {
-  newProjectDescription.value = content;
-  console.log("Updated Description: ", newProjectDescription.value); // Debugging log
-};
-  const handleAddProject = () => {
-  if (!newProjectTitle.value || !newProjectDescription.value) {
-    alert('Project Title and Description are required.');
-    return;
-  }
-
-  const projectData = {
-    title: newProjectTitle.value,
-    description: newProjectDescription.value,
-    deadline: newProjectDeadline.value,
-  };
-
-  console.log("Project Data: ", projectData); // Log data to check
-
-  store.dispatch("projects/addProject", projectData)
-    .then(() => {
-      newProjectTitle.value = "";
-      newProjectDescription.value = "";
-      newProjectDeadline.value = "";
-    })
-    .catch((error) => {
-      console.error("Failed to add project:", error);
+    // Quill Editor options
+    const editorOptions = ref({
+      theme: "snow", // Optional: specify the theme
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["link", "blockquote", "code-block"],
+        [{ align: [] }],
+      ],
     });
-};
 
+    // Function to log the HTML content in the console
+    const logDescription = () => {
+      console.log("HTML Description:", description.value);
+    };
 
-  // Delete a project via the store
-  const handleDeleteProject = (id) => {
-    if (confirm("Are you sure you want to delete this project?")) {
+    // On text change, capture the HTML content
+    const onTextChange = () => {
+      const quillEditorInstance = document.querySelector(".quill-editor .ql-editor");
+      if (quillEditorInstance) {
+        description.value = quillEditorInstance.innerHTML; // Capture the HTML content
+      }
+    };
+
+    // Refs to store projects
+    const projects = ref([]);
+
+    // Fetch projects on component mount
+    onMounted(async () => {
+      try {
+        await store.dispatch("projects/fetchProjects");
+        projects.value = store.getters["projects/allProjects"];
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    });
+
+    // Handle the addition of a new project
+    const handleAddProject = () => {
+      const title = newProjectTitle.value.trim();
+      const projectData = {
+        title: title,
+        description: description.value, // Pass raw HTML to API
+        deadline: newProjectDeadline.value,
+      };
+
+      // Check if the title and description are filled out
+      if (!title || !description.value.trim()) {
+        alert("Both Project Title and Description are required.");
+        return;
+      }
+
+      console.log("Project Data: ", projectData);
+
       store
-        .dispatch("project/deleteProject", id)
+        .dispatch("projects/addProject", projectData)
+        .then(() => {
+          // Clear form inputs after successful addition
+          newProjectTitle.value = "";
+          description.value = ""; // Clear Quill Editor content
+          newProjectDeadline.value = "";
+        })
         .catch((error) => {
-          console.error("Failed to delete project:", error);
+          console.error("Failed to add project:", error);
         });
-    }
-  };
+    };
 
-  // Placeholder function for editing a project
-  const editProject = (project) => {
-    console.log("Edit project:", project);
-  };
+    // Delete a project via the store
+    const handleDeleteProject = (id) => {
+      if (confirm("Are you sure you want to delete this project?")) {
+        store
+          .dispatch("projects/deleteProject", id)
+          .catch((error) => {
+            console.error("Failed to delete project:", error);
+          });
+      }
+    };
 
+    // Placeholder function for editing a project
+    const editProject = (project) => {
+      console.log("Edit project:", project);
+    };
 
-  return {
-    newProjectTitle,
-    newProjectDescription,
-    newProjectDeadline,
-    editorOptions,
-    projects,
-    handleAddProject,
-    handleDeleteProject,
-    editProject,
-  };
-},
-
+    return {
+      newProjectTitle,
+      description,
+      newProjectDeadline,
+      editorOptions,
+      projects,
+      logDescription,
+      onTextChange,
+      handleAddProject,
+      handleDeleteProject,
+      editProject,
+    };
+  },
 };
-</script> -->
+</script>
+
+<style>
+.quill-editor {
+  height: 200px; /* Set a fixed height for the editor */
+}
+</style>
+
+
 <!--
 <template>
   <div class="project-container">
@@ -1071,14 +1167,14 @@ label.form-label {
 .alert {
   margin-bottom: 20px;
 }
-</style> -->
+</style>
 
 
-<template>
+<!-- <template>
   <div class="project-container">
     <h2>Projects</h2>
 
-    <!-- Display Error Message -->
+
     <div v-if="error" class="alert alert-danger" role="alert">
       {{ error }}
     </div>
@@ -1124,14 +1220,14 @@ label.form-label {
       </form>
     </div>
 
-    <!-- Loader -->
+
     <div v-if="loading" class="text-center my-4">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
-    <!-- Project Table -->
+
     <table class="table table-striped project-table" v-else>
       <thead>
         <tr>
@@ -1170,7 +1266,7 @@ label.form-label {
       </tbody>
     </table>
 
-    <!-- Bootstrap Modal for Editing Project -->
+
     <div
       class="modal fade"
       tabindex="-1"
@@ -1604,4 +1700,4 @@ label.form-label {
 .form-card {
   margin-bottom: 20px;
 }
-</style>
+</style> -->
