@@ -1,119 +1,194 @@
 <template>
-  <div class="container mt-4  form-card">
-    <h2 class="text-center mb-4">Assigned Projects</h2>
-    <div class="row">
+  <div class="container mt-4 form-card">
+    <h2 class="text-center mb-4 text-primary">Assigned Projects</h2>
+
+    <div v-if="!projects || projects.length === 0" class="text-center">
+      <p>No assigned projects found.</p>
+    </div>
+
+    <div class="row" v-else>
       <div
         v-for="(project, index) in projects"
         :key="index"
         class="col-md-4 mb-4"
       >
-        <div class="card project-card">
+        <div class="card project-card animated-card">
           <div class="card-body">
-            <h5 class="card-title">{{ project.name }}</h5>
-            <p class="card-text">Description: {{ project.description }}</p>
-            <p class="card-text">Deadline: {{ project.deadline }}</p>
+            <h5 class="card-title">{{ project.project.title }}</h5>
+            <p class="card-text">
+              Description:
+              <span
+                class="view-description"
+                @click="showDescriptionModal(project.project.description)"
+                title="Click to view full description"
+              >
+                View Description -->
+              </span>
+            </p>
+            <p class="card-text">Deadline: {{ project.project.deadline }}</p>
             <p class="card-text">
               Status:
               <span :class="statusClass(project.status)">{{
                 project.status
               }}</span>
             </p>
-            <button class="btn btn-primary" @click="viewTask(project)">
-              View Tasks
+            <button class="btn btn-warning" @click="showStatusModal(project)">
+              Update Status
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="selectedProject" class="mt-4">
-      <h3>Task Details for {{ selectedProject.name }}</h3>
-      <table class="table table-bordered table-striped">
-        <thead class="table-light">
-          <tr>
-            <th>Task</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(task, index) in selectedProject.tasks" :key="index">
-            <td>{{ task.name }}</td>
-            <td>
-              <span :class="statusClass(task.status)">{{ task.status }}</span>
-            </td>
-          </tr>
-          <tr v-if="selectedProject.tasks.length === 0">
-            <td colspan="2" class="text-center">
-              No tasks available for this project.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Modal for Description -->
+    <transition name="fade">
+      <div v-if="showDescriptionModalFlag" class="modal-overlay">
+        <div class="modal-content">
+          <h3 class="text-center">Description</h3>
+          <p>{{ currentDescription }}</p>
+          <button class="btn btn-secondary" @click="closeDescriptionModal">
+            Close
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Modal for Status Update -->
+    <transition name="fade">
+      <div v-if="showModal" class="modal-overlay">
+        <div class="modal-content">
+          <h3>Update Status for {{ selectedProject?.project.title }}</h3>
+          <div class="status-options">
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="in_progress"
+                v-model="newStatus"
+              />
+              In Progress
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="pending"
+                v-model="newStatus"
+              />
+              Pending
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="completed"
+                v-model="newStatus"
+              />
+              Completed
+            </label>
+          </div>
+          <button
+            class="btn text-white"
+            @click="updateProjectStatus(newStatus)"
+            style="background-color: var(--basic-button);"
+          >
+            Update
+          </button>
+          <button class="btn btn-secondary" @click="closeModal">Cancel</button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
-    const projects = ref([
-      {
-        id: 1,
-        name: "Website Redesign",
-        description: "Complete overhaul of the company website.",
-        deadline: "2024-10-15",
-        status: "In Progress",
-        tasks: [
-          { name: "Create wireframes", status: "Completed" },
-          { name: "Develop homepage", status: "In Progress" },
-          { name: "Test responsiveness", status: "Pending" },
-        ],
-      },
-      {
-        id: 2,
-        name: "Mobile App Development",
-        description: "Developing a mobile app for iOS and Android.",
-        deadline: "2024-11-01",
-        status: "Pending",
-        tasks: [
-          { name: "Design UI mockups", status: "Pending" },
-          { name: "Set up backend architecture", status: "Pending" },
-        ],
-      },
-      {
-        id: 3,
-        name: "API Integration",
-        description: "Integrating third-party APIs for better functionality.",
-        deadline: "2024-10-25",
-        status: "Completed",
-        tasks: [
-          { name: "Research API options", status: "Completed" },
-          { name: "Implement authentication", status: "Completed" },
-        ],
-      },
-    ]);
-
+    const store = useStore();
+    const projects = ref([]);
     const selectedProject = ref(null);
+    const showModal = ref(false);
+    const newStatus = ref("");
+    const showDescriptionModalFlag = ref(false);
+    const currentDescription = ref("");
 
-    const viewTask = (project) => {
+    const fetchProjects = async () => {
+      try {
+        await store.dispatch("employee/fetchAssignedProjects");
+        const fetchedProjects = store.getters["employee/getAssignedProjects"];
+        projects.value = Array.isArray(fetchedProjects) ? fetchedProjects : [];
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    const showStatusModal = (project) => {
       selectedProject.value = project;
+      newStatus.value = project.status; // Set current status as the default
+      showModal.value = true;
+    };
+
+    const showDescriptionModal = (description) => {
+      currentDescription.value = description;
+      showDescriptionModalFlag.value = true;
+    };
+
+    const closeDescriptionModal = () => {
+      showDescriptionModalFlag.value = false;
+      currentDescription.value = ""; // Reset description
+    };
+
+    const closeModal = () => {
+      showModal.value = false;
+      selectedProject.value = null; // Reset selected project
+    };
+
+    const updateProjectStatus = async (status) => {
+      const validStatuses = ["in_progress", "pending", "completed"];
+      if (!validStatuses.includes(status)) return;
+
+      const responseMessage = await store.dispatch(
+        "employee/updateProjectStatus",
+        {
+          id: selectedProject.value.project.id,
+          status: status,
+        }
+      );
+
+      if (responseMessage) {
+        console.log(responseMessage);
+      }
+      closeModal();
     };
 
     const statusClass = (status) => {
       return {
-        "text-success": status === "Completed",
-        "text-warning": status === "In Progress",
-        "text-danger": status === "Pending",
+        "text-success": status === "completed",
+        "text-warning": status === "in_progress",
+        "text-danger": status === "pending",
       };
     };
 
+    onMounted(() => {
+      fetchProjects();
+    });
+
     return {
       projects,
+      showModal,
+      showStatusModal,
+      closeModal,
+      updateProjectStatus,
       selectedProject,
-      viewTask,
       statusClass,
+      newStatus,
+      showDescriptionModalFlag,
+      showDescriptionModal,
+      currentDescription,
+      closeDescriptionModal,
     };
   },
 };
@@ -121,57 +196,77 @@ export default {
 
 <style scoped>
 .project-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-  background-color: #ffffff; /* Uniform background color */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  height: 300px; /* Set a fixed height for all project cards */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s; /* Animation for hover effect */
 }
 
 .project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+  transform: scale(1.03); /* Slightly increase size on hover */
 }
 
-.card-title {
-  font-weight: bold;
+.card-body {
+  flex-grow: 1; /* Makes the body grow to fill the card */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space out content evenly */
 }
 
-.card-text {
-  margin: 0.5rem 0;
+.view-description {
+  color: black; /* Change color to indicate it's clickable */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-decoration: underline; /* Underline to emphasize it's a link */
 }
 
-.text-success {
-  color: #28a745;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.text-warning {
-  color: #ffc107;
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  transition: transform 0.3s ease-in-out;
 }
 
-.text-danger {
-  color: #dc3545;
+.status-options {
+  margin: 15px 0;
 }
 
-.table {
-  margin-top: 20px;
+.status-options label {
+  display: block;
+  margin: 5px 0;
 }
 
-.table-bordered th,
-.table-bordered td {
-  border: 1px solid #dee2e6;
+.btn-secondary {
+  margin-top: 10px;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 
 @media (max-width: 576px) {
-  .container {
-    padding: 0 15px;
-  }
-
-  .project-card {
-    margin: 10px 0; /* Adjust margin for vertical spacing on small screens */
+  .modal-content {
+    padding: 15px;
   }
 }
 </style>

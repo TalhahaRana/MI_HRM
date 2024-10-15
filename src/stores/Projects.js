@@ -1,77 +1,196 @@
-import ApiServices from "@/services/ApiServices";
+import ApiServices from "../services/ApiServices";
 
 const state = {
-  departments: [], 
+    projects: [],
+    loading: false, // Added loading state
+    error: null, // Added error state (optional but recommended)
+    departments: [],
 };
 
 const getters = {
-  allDepartments: (state) => state.departments,
+    allProjects: (state) => state.projects,
+    isLoading: (state) => state.loading, // Getter for loading state
+    projectError: (state) => state.error, // Getter for error state
+    allDepartments: (state) => state.departments,
+    fetchEmpDepartments: (state) => {
+    return state.employees; 
+  },
 };
 
 const actions = {
-  // Fetch all departments
-  async fetchDepartments({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest("/get/departments");
-      commit("setDepartments", response);
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Fetch all projects
+    async fetchProjects({ commit }) {
+        commit("setLoading", true); // Start loading
+        commit("clearError"); // Clear previous errors
+        console.log('Fetching projects...');
+        try {
+            const response = await ApiServices.GetRequest("/projects-all");
+            commit("setProjects", response.data);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            commit("setError", "Failed to fetch projects.");
+            throw error;
+        } finally {
+            commit("setLoading", false); // End loading
+        }
+    },
 
-  // Add a new department
-  async addDepartment({ commit }, departmentData) {
-    try {
-      const response = await ApiServices.PostRequest("/departments", departmentData);
-      commit("newDepartment", response); // Assuming the API returns the created department
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Add a new project
+    async addProject({ commit }, projectData) {
+        commit("setLoading", true); // Start loading
+        commit("clearError"); // Clear previous errors
+        try {
+            const response = await ApiServices.PostRequestHeader("/create-project", projectData);
+            commit("newProject", response.data); // Ensure response.data contains the new project
+        } catch (error) {
+            console.error("Error adding project:", error);
+            commit("setError", "Failed to add project.");
+            throw error;
+        } finally {
+            commit("setLoading", false); // End loading
+        }
+    },
 
-  // Update an existing department
-  async updateDepartment({ commit }, { id, updatedData }) {
-    try {
-      const response = await ApiServices.PutRequest(`/departments/${id}`, updatedData);
-      commit("updateDepartment", response); // Assuming API returns updated department
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Update an existing project
+    async updateProject({ commit }, { id, updatedData }) {
+        commit("setLoading", true); // Start loading
+        commit("clearError"); // Clear previous errors
+        try {
+            const response = await ApiServices.PutRequest(`/update-project/${id}`, updatedData);
+            commit("updateProject", response.data); // Ensure response.data contains the updated project
+        } catch (error) {
+            console.error("Error updating project:", error);
+            commit("setError", "Failed to update project.");
+            throw error;
+        } finally {
+            commit("setLoading", false); // End loading
+        }
+    },
 
-  // Delete a department
-  async deleteDepartment({ commit }, id) {
-    try {
-      await ApiServices.DeleteRequest(`/departments/${id}`);
-      commit("removeDepartment", id);
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Delete a project
+    async deleteProject({ commit }, projectId) {
+        if (!projectId) {
+            console.error("Invalid project ID");
+            commit("setError", "Invalid project ID.");
+            return;
+        }
+
+        commit("setLoading", true); // Start loading
+        commit("clearError"); // Clear previous errors
+        try {
+            await ApiServices.DeleteRequest(`/delete-project/${projectId}`);
+            commit("removeProject", projectId);
+            console.log(`Project with ID ${projectId} deleted successfully.`);
+        } catch (error) {
+            console.error("Error deleting project:", error);
+            commit("setError", "Failed to delete project.");
+            throw error;
+        } finally {
+            commit("setLoading", false); // End loading
+        }
+    },
+
+    //samia
+      async fetchEmpDepartments({ commit }, id) {
+        try {
+          const response = await ApiServices.GetRequest(`/get-employees/department/${id}`);
+    commit("setEmpDepartments", response.data.employees);  // Make sure to map employees correctly
+    
+        } catch (error) {
+          console.error("Error fetching employees:", error);
+          throw error;
+        }
+      },  
+    
+      async allProjects({ commit }) {
+        try {
+          const response = await ApiServices.GetRequest("/projects-all");
+          commit("setProjects", response.data);
+        } catch (error) {
+          throw error;
+        }
+      },
+     async assignProject({ commit }, assignmentData) {
+      try {
+        const response = await ApiServices.PostRequestHeader("/project-assignments", assignmentData);
+        commit("assignProject", response.data);
+        console.log("Project assigned successfully:", response.data);
+      } catch (error) {
+        console.error("Error assigning project:", error);
+        throw error;
+      }
+    },
+    async AllAssignProject({ commit }) {
+      try {
+        const response = await ApiServices.GetRequest('/get-assigned-projects');
+        commit('AllAssignProject', response.data); // Commit the data to the store
+      } catch (error) {
+        console.error('Error fetching assigned projects:', error);
+        throw error;
+      }
+    },
+      async fetchDepartments({ commit }) {
+        try {
+          const response = await ApiServices.GetRequest("/get/departments");
+          commit("setDepartments", response.data); 
+        } catch (error) {
+          throw error;
+        }
+      },
+        
 };
 
 const mutations = {
-  setDepartments(state, departments) {
-    state.departments = departments;
-  },
-  newDepartment(state, department) {
-    state.departments.push(department);
-  },
-  updateDepartment(state, updatedDepartment) {
-    const index = state.departments.findIndex((d) => d.id === updatedDepartment.id);
-    if (index !== -1) {
-      state.departments.splice(index, 1, updatedDepartment);
-    }
-  },
-  removeDepartment(state, id) {
-    state.departments = state.departments.filter((department) => department.id !== id);
-  },
+    setProjects(state, projects) {
+        state.projects = projects;
+    },
+    newProject(state, project) {
+        state.projects.push(project);
+    },
+    updateProject(state, updatedProject) {
+        const index = state.projects.findIndex((p) => p.id === updatedProject.id);
+        if (index !== -1) {
+            state.projects.splice(index, 1, updatedProject);
+        }
+    },
+    removeProject(state, id) {
+        state.projects = state.projects.filter((project) => project.id !== id);
+    },
+    setLoading(state, isLoading) {
+        state.loading = isLoading;
+    },
+    setError(state, errorMessage) {
+        state.error = errorMessage;
+    },
+    clearError(state) {
+        state.error = null;
+    },
+
+    //samia
+
+    setDepartments(state, departments) {
+        state.departments = departments;
+      },
+    
+      setEmpDepartments(state, employees) {
+        state.employees = employees;
+      },
+      AllAssignProject(state, projects) {
+        state.projects = projects; // Store fetched projects in state
+      },
+      assignProject(state, assignmentData) {
+        console.log("Assigned project data:", assignmentData);
+      
+      },
+      setProjects(state, projects) {
+        state.projects = projects; // Set projects in state
+      },
 };
 
 export default {
-  namespaced: true,
-  state,
-  getters,
-  actions,
-  mutations,
+    namespaced: true,
+    state,
+    getters,
+    actions,
+    mutations,
 };

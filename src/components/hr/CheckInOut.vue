@@ -1,146 +1,174 @@
 <template>
-    <div class="attendance-info">
-      <div class="timesheet-info">
-        <h2>Attendance Info</h2>
-        <div class="timesheet">
-          <h3>Timesheet <span>{{ timesheetDate }}</span></h3>
-          <div class="checkin-out">
-            <div class="checkin">
-              <p>Punch In at</p>
-              <span>{{ punchInTime }}</span>
-            </div>
-            <div class="hours-worked">
-              <span>{{ totalHours }} hrs</span>
-            </div>
-            <div class="checkout">
-              <p>Punch Out at</p>
-              <span>{{ punchOutTime }}</span>
-            </div>
+  <div class="container mt-4 form-card">
+    <div class="card">
+      <div class="card-body">
+        <div
+          class="alert d-flex justify-content-between align-items-center"
+          style="background-color: whitesmoke"
+        >
+          <div>
+            <h4 class="mb-0">Work Time</h4>
+            <p class="h5 mb-0 text-dark">{{ formattedWorkTime }}</p>
           </div>
-          <div class="extra-info">
-            <div class="break">
-              <p>Break</p>
-              <span>{{ breakTime }} hrs</span>
-            </div>
-            <div class="overtime">
-              <p>Overtime</p>
-              <span>{{ overtime }} hrs</span>
-            </div>
+          <div>
+            <button
+              class="btn btn-inverse gap-2 d-flex align-items-center justify-content-center"
+              @click="toggleCheckInOut"
+              :disabled="isCheckedOut || isTomorrow"
+            >
+              <img src="../../assets/images/clock.svg" />
+              {{ isCheckedIn ? "Check-out" : "Check-in" }}
+            </button>
+          </div>
+        </div>
+        <div class="row mt-3 text-center">
+          <div class="col">
+            <h5>Remaining</h5>
+            <p>{{ remainingTime }}</p>
+          </div>
+          <div class="col">
+            <h5>workingHours</h5>
+            <p>{{ workingHours }}</p>
+          </div>
+          <div class="col">
+            <h5>Break</h5>
+            <p>{{ breakTime }}</p>
           </div>
         </div>
       </div>
-
-      <div class="activity-info">
-        <h3>Activity</h3>
-        <ul class="activity-list">
-          <li v-for="activity in activities" :key="activity.id">
-            <p>{{ activity.label }} <span>{{ activity.time }}</span></p>
-          </li>
-        </ul>
+      <div class="card-footer text-start">
+        <div class="d-flex d-inline-flex align-items-center p-2 gap-2">
+          <a href="#" class="link-primary text-dark text-decoration-none"
+            >View Attendance</a
+          >
+          <img
+            src="../../assets/images/arrow-right-circle.svg"
+            alt="arrow-right-circle"
+          />
+        </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script>
-  export default {
-    data() {
-      return {
-        timesheetDate: '11 Mar 2019',
-        punchInTime: 'Wed, 11th Mar 2019 10:00 AM',
-        punchOutTime: 'Wed, 20th Feb 2019 9:00 PM',
-        totalHours: 3.45,
-        breakTime: 1.21,
-        overtime: 3,
-        activities: [
-          { id: 1, label: 'Punch In at', time: '10:00 AM' },
-          { id: 2, label: 'Punch Out at', time: '11:00 AM' },
-          { id: 3, label: 'Punch In at', time: '11:15 AM' },
-          { id: 4, label: 'Punch Out at', time: '1:30 PM' },
-          { id: 5, label: 'Punch In at', time: '2:00 PM' },
-          { id: 6, label: 'Punch Out at', time: '7:30 PM' },
-        ],
-      };
-    },
-  };
-  </script>
+<script>
+import { ref, computed, onMounted } from "vue"; // Import onMounted
+import { useStore } from "vuex"; // Import the Vuex store
 
-  <style scoped>
-  .attendance-info h2 {
-  color: #2c3e50; /* Set the desired color for the <h2> element */
+export default {
+  setup() {
+    const store = useStore(); // Initialize the store
+    const isCheckedIn = ref(false); // Track check-in/out state
+    const isCheckedOut = ref(false); // Track if checked out
+    const workTime = ref(0); // Time in seconds
+    const timer = ref(null); // Timer reference
+    const today = new Date(); // Current date
+    const isTomorrow = ref(false); // Check if it's the next day
+
+    // Computed property for formatted work time
+    const formattedWorkTime = computed(() => {
+      const hours = Math.floor(workTime.value / 3600);
+      const minutes = Math.floor((workTime.value % 3600) / 60);
+      const seconds = workTime.value % 60;
+      return `${hours} Hrs : ${minutes} Min : ${seconds} Sec`;
+    });
+
+    // Fetch working hours from the store
+    const workingHours = computed(
+      () => store.getters["employee/getWorkingHours"]
+    );
+
+    const toggleCheckInOut = async () => {
+      if (!isCheckedIn.value) {
+        // Check-in
+        await store.dispatch("employee/checkIn");
+        isCheckedIn.value = true;
+
+        // Start the timer
+        timer.value = setInterval(() => {
+          workTime.value += 1; // Increment the timer every second
+        }, 1000);
+      } else {
+        // Check-out
+        await store.dispatch("employee/checkOut");
+        isCheckedIn.value = false;
+        isCheckedOut.value = true; // Set checked out state
+
+        // Stop the timer
+        clearInterval(timer.value);
+      }
+    };
+
+    // Fetch working hours when the component is mounted
+    onMounted(async () => {
+      await store.dispatch("employee/fetchWorkingHours"); // Fetch working hours from Vuex
+      const workingHoursData = store.getters["employee/getWorkingHours"];
+
+      // Check if the current date is tomorrow
+      const endDate = new Date(workingHoursData.end_date);
+      isTomorrow.value = today.toDateString() === endDate.toDateString();
+    });
+
+    return {
+      formattedWorkTime,
+      remainingTime: ref("2 Hrs 36 Min"), // Placeholder, you can update this as needed
+      overtimeTime: ref("0 Hrs 00 Min"), // Placeholder
+      breakTime: ref("1 Hrs 20 Min"), // Placeholder
+      isCheckedIn,
+      toggleCheckInOut,
+      workingHours,
+      isCheckedOut,
+      isTomorrow,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
 }
 
-.attendance-info h3 {
-  color: #3498db; /* Set the desired color for the <h3> elements */
+.alert {
+  background-color: #fff3cd;
 }
 
-p,span{
-    color: black;
+.btn-inverse {
+  background-color: #4b49ac; /* Example color */
+  border-color: rgba(0, 123, 255, 0);
+  color: whitesmoke; /* Example color */
 }
-  .attendance-info {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
 
-  .timesheet-info,
-  .activity-info {
-    flex: 1;
-  }
+.btn-inverse:hover {
+  color: white; /* Color on hover */
+  background-color: #007bff; /* Background color on hover */
+  border-color: #007bff; /* Border color on hover */
+}
 
-  .timesheet-info {
-    padding-right: 20px;
-    border-right: 1px solid #ddd;
-  }
+.btn-inverse:focus,
+.btn-inverse.focus {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Focus effect */
+}
 
-  .timesheet h3 {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-  }
+.btn-inverse:disabled,
+.btn-inverse.disabled {
+  color: #007bff; /* Color when disabled */
+  background-color: transparent; /* Background when disabled */
+}
 
-  .checkin-out,
-  .extra-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
+.btn-inverse:active,
+.btn-inverse.active,
+.show > .btn-inverse.dropdown-toggle {
+  color: white; /* Color when active */
+  background-color: #007bff; /* Background color when active */
+  border-color: #007bff; /* Border color when active */
+}
 
-  .checkin-out div,
-  .extra-info div {
-    width: 45%;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
+@media (max-width: 576px) {
+  .alert {
+    flex-direction: column;
     text-align: center;
   }
-
-  .hours-worked {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    border: 2px solid #ddd;
-    border-radius: 50%;
-    margin: 0 auto;
-    font-size: 1.5rem;
-  }
-
-  .activity-info {
-    padding-left: 20px;
-  }
-
-  .activity-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .activity-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  </style>
+}
+</style>

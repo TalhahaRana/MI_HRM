@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL
+const baseURL = 'http://192.168.15.115:8000/api'; // Set your base URL
 
 const ApiServices = {
   // Initialize the Axios defaults
@@ -32,6 +32,36 @@ const ApiServices = {
     }
   },
 
+  async GetRequestWorkingHours(url, params = {}) {
+
+    try {
+    
+    const headers = {
+    
+    ...this.getAuthHeader(),
+    
+    "Content-Type": "application/json", // Add custom header
+    
+    };
+    
+    const response = await axios.get(url, { headers, params }); // Include params here
+    
+    alert(response.data.message); // Show a message alert on success
+    
+    return response.data; // Return the response data for further processing
+    
+    } catch (error) {
+    
+    console.error("GET request failed:", error);
+    
+    alert("An error occurred. Please try again later."); // Alert on error
+    
+    throw error; // Rethrow the error for further handling if needed
+    
+    }
+    
+    },  
+
   // Method for POST requests with async/await
   async PostRequest(url, data) {
     try {
@@ -59,7 +89,71 @@ const ApiServices = {
       console.error('POST request with header failed:', error);
       throw error;
     }
-  }
+  },
+  async PutRequest(url, data) {
+
+    try {
+
+        const headers = {
+
+            ...this.getAuthHeader(),
+
+            'Content-Type': 'application/json', // Add custom header
+
+        };
+        console.log(`PUT request to: ${baseURL}${url}`);
+
+        const response = await axios.put(url, data, { headers });
+
+        alert(response.data.message); // Show a message alert on success
+
+        return response.data; // Return the response data for further processing
+
+    } catch (error) {
+
+        console.error('PUT request failed:', error);
+
+        alert('An error occurred. Please try again later.'); // Alert on error
+
+        throw error; // Rethrow the error for further handling if needed
+
+    }
+
+},
+
+
+
+// Method for DELETE requests with async/await
+
+async DeleteRequest(url) {
+
+    try {
+
+        const headers = {
+
+            ...this.getAuthHeader(),
+
+            'Content-Type': 'application/json', // Add custom header
+
+        };
+
+        const response = await axios.delete(`${url}`, { headers });
+
+        alert(response.data.message); // Show a message alert on success
+
+        return response.data; // Return the response data for further processing
+
+    } catch (error) {
+
+        console.error('DELETE request failed:', error);
+
+        alert('An error occurred. Please try again later.'); // Alert on error
+
+        throw error; // Rethrow the error for further handling if needed
+
+    }
+
+}
 };
 
 export default ApiServices;

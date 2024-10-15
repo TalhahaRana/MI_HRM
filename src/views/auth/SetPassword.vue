@@ -1,93 +1,63 @@
 <template>
-    <div class="content">
-      <div class="content__inner">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-6 m-auto">
-              <form class="password-strength form-card p-4" @submit.prevent="handleSubmit">
-                <h3 class="form__title text-center mb-4">Enter the Password</h3>
+    <div class="container">
+    <div class="password-container form-card">
+      <form @submit.prevent="handleSubmit">
+        <h3 class="text-center">Set Your Password</h3>
   
-                <!-- Password Input -->
-                <div class="form-group">
-                  <label for="password-input">Password</label>
-                  <div class="input-group">
-                    <input
-                      v-model="password.value"
-                      :type="passwordVisible.value ? 'text' : 'password'"
-                      class="password-strength__input form-control"
-                      id="password-input"
-                      aria-describedby="passwordHelp"
-                      placeholder="Enter password"
-                      @input="validatePassword"
-                    />
-                    <div class="input-group-append">
-                      <button
-                        type="button"
-                        class="password-strength__visibility btn btn-outline-secondary"
-                        @click="togglePasswordVisibility"
-                      >
-                        <span v-if="!passwordVisible.value">
-                          <i class="fas fa-eye-slash"></i>
-                        </span>
-                        <span v-else>
-                          <i class="fas fa-eye"></i>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                  <small v-if="error.value" class="password-strength__error text-danger">
-                    {{ errorMessage.value }}
-                  </small>
-                </div>
+        <!-- Password Input -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <input
+              :type="passwordVisible ? 'text' : 'password'"
+              v-model="password"
+              class="form-control"
+              id="password"
+              placeholder="Enter password"
+              @input="validatePassword"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              @click="togglePasswordVisibility"
+            >
+              <span v-if="passwordVisible"><i class="fas fa-eye"></i></span>
+              <span v-else><i class="fas fa-eye-slash"></i></span>
+            </button>
+          </div>
+          <small class="text-danger" v-if="errorMessage">{{ errorMessage }}</small>
+        </div>
   
-                <!-- Confirm Password Input -->
-                <div class="form-group">
-                  <label for="confirm-password-input">Confirm Password</label>
-                  <input
-                    v-model="confirmPassword.value"
-                    :type="passwordVisible.value ? 'text' : 'password'"
-                    class="password-strength__input form-control"
-                    id="confirm-password-input"
-                    placeholder="Confirm password"
-                    @input="validateConfirmPassword"
-                  />
-                  <small v-if="passwordsDoNotMatch.value" class="password-strength__error text-danger">
-                    Passwords do not match!
-                  </small>
-                  <small id="passwordHelp" class="form-text text-muted mt-2">
-                    Add 9 characters or more, lowercase letters, uppercase letters, numbers, and symbols to make the
-                    password really strong!
-                  </small>
-                </div>
+        <!-- Confirm Password Input -->
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input
+            :type="passwordVisible ? 'text' : 'password'"
+            v-model="confirmPassword"
+            class="form-control"
+            id="confirm-password"
+            placeholder="Confirm password"
+            @input="validateConfirmPassword"
+          />
+          <small class="text-danger" v-if="passwordsDoNotMatch">Passwords do not match!</small>
+        </div>
   
-                <!-- Password Strength Bar -->
-                <div class="password-strength__bar-block progress mb-4">
-                  <div
-                    class="password-strength__bar progress-bar"
-                    :class="strengthClass.value"
-                    role="progressbar"
-                    :style="{ width: strengthValue.value + '%' }"
-                    :aria-valuenow="strengthValue.value"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  >
-                    {{ strengthLabel.value }}
-                  </div>
-                </div>
-  
-                <!-- Submit Button -->
-                <button
-                  type="submit"
-                  class="password-strength__submit btn btn-success d-flex m-auto"
-                  :disabled="!canSubmit.value"
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
+        <!-- Password Strength Bar -->
+        <div class="progress mb-3 mt-2">
+          <div
+            class="progress-bar"
+            :class="strengthClass"
+            role="progressbar"
+            :style="{ width: strengthValue + '%' }"
+          >
+            {{ strengthLabel }}
           </div>
         </div>
-      </div>
+  
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary" :disabled="!canSubmit">Submit</button>
+      </form>
+    </div>
     </div>
   </template>
   
@@ -97,82 +67,81 @@
   
   export default {
     setup() {
-      const store = useStore(); // Vuex store access
+      const store = useStore();
       const password = ref("");
       const confirmPassword = ref("");
       const passwordVisible = ref(false);
-      const error = ref(false);
+      const errorMessage = ref("");
       const passwordsDoNotMatch = ref(false);
       const strengthLabel = ref("");
       const strengthValue = ref(0);
-      const token = ref("");
       const email = ref("");
+      const token = ref("");
   
+      // Get token and email from query parameters
       onMounted(() => {
-        // Extract token and email from the URL query parameters
         const queryParams = new URLSearchParams(window.location.search);
         token.value = queryParams.get("token");
         email.value = queryParams.get("email");
-        console.log("Token:", token.value);
-        console.log("Email:", email.value);
       });
   
-      const canSubmit = computed(() => strengthValue.value >= 50 && !passwordsDoNotMatch.value);
-  
-      const strengthClass = computed(() => {
-        if (strengthValue.value === 25) return "bg-danger";
-        if (strengthValue.value === 50) return "bg-warning";
-        if (strengthValue.value === 75) return "bg-info";
-        if (strengthValue.value === 100) return "bg-success";
-        return "bg-danger";
-      });
-  
-      const errorMessage = computed(() => (error.value ? "This symbol is not allowed!" : ""));
-  
+      // Toggle password visibility
       const togglePasswordVisibility = () => {
         passwordVisible.value = !passwordVisible.value;
       };
   
+      // Validate the password and update the strength bar
       const validatePassword = () => {
-        const errorSymbols = /\s/g;
-        error.value = errorSymbols.test(password.value);
+        const strength = getPasswordStrength(password.value);
+        setStrengthBar(strength);
+        passwordsDoNotMatch.value = password.value !== confirmPassword.value;
+      };
   
-        if (!error.value) {
-          const strength = getPasswordStrength(password.value);
-          setStrengthBar(strength);
-        } else {
-          strengthValue.value = 0;
-          strengthLabel.value = "";
+      // Handle form submission
+      const handleSubmit = async () => {
+        console.log("Submit button clicked");
+        validateConfirmPassword(); // Ensure passwords match before submitting
+        if (canSubmit.value) {
+          const passwordData = {
+            email: email.value,
+            token: token.value,
+            password: password.value,
+            password_confirmation: confirmPassword.value,
+          };
+  
+          try {
+            await store.dispatch("auth/passwordSetup", passwordData);
+            alert("Password set successfully!");
+          } catch (error) {
+            alert("Failed to set password. Please try again.");
+          }
         }
-  
-        validateConfirmPassword();
       };
   
+      // Validate the confirm password input
       const validateConfirmPassword = () => {
-        passwordsDoNotMatch.value =
-          password.value !== confirmPassword.value && confirmPassword.value !== "";
+        passwordsDoNotMatch.value = password.value !== confirmPassword.value;
       };
   
+      // Get password strength
       const getPasswordStrength = (password) => {
-        const moderate =
-          /(?=.*[A-Z])(?=.*[a-z]).{5,}|(?=.*[\d])(?=.*[a-z]).{5,}|(?=.*[\d])(?=.*[A-Z])(?=.*[a-z]).{5,}/g;
-        const strong =
-          /(?=.*[A-Z])(?=.*[a-z])(?=.*[\d]).{7,}|(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=.*[\d]).{7,}/g;
-        const extraStrong =
-          /(?=.*[A-Z])(?=.*[a-z])(?=.*[\d])(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?]).{9,}/g;
-  
-        if (extraStrong.test(password)) {
+        if (
+          password.length >= 9 &&
+          /[A-Z]/.test(password) &&
+          /\d/.test(password) &&
+          /\W/.test(password)
+        ) {
           return "extra";
-        } else if (strong.test(password)) {
+        } else if (password.length >= 7 && /[A-Z]/.test(password) && /\d/.test(password)) {
           return "strong";
-        } else if (moderate.test(password)) {
+        } else if (password.length >= 5 && /[a-z]/.test(password)) {
           return "moderate";
-        } else if (password.length > 0) {
+        } else {
           return "weak";
         }
-        return "none";
       };
   
+      // Set the strength bar based on password strength
       const setStrengthBar = (strength) => {
         switch (strength) {
           case "weak":
@@ -197,35 +166,18 @@
         }
       };
   
-      const handleSubmit = async () => {
-        if (!passwordsDoNotMatch.value) {
-          const passwordData = {
-            email: email.value,
-            token: token.value,
-            password: password.value,
-            password_confirmation:confirmPassword.value
-          };
-  
-          try {
-            await store.dispatch("passwordSetup", passwordData);
-            alert("Password set successfully!");
-          } catch (error) {
-            alert("Failed to set password. Please try again.");
-          }
-        }
-      };
+      // Computed property to check if the form can be submitted
+      const canSubmit = computed(() => strengthValue.value >= 50 && !passwordsDoNotMatch.value);
   
       return {
         password,
         confirmPassword,
         passwordVisible,
-        error,
+        errorMessage,
         passwordsDoNotMatch,
         strengthLabel,
         strengthValue,
         canSubmit,
-        strengthClass,
-        errorMessage,
         togglePasswordVisibility,
         validatePassword,
         validateConfirmPassword,
@@ -236,9 +188,48 @@
   </script>
   
   <style scoped>
-  .password-strength {
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
-      0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  .password-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    margin-top: 15%;
+    
+  }
+  .container{
+    height: 100vh;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .progress-bar {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+   
+  }
+  
+  .bg-danger {
+    background-color: red;
+  }
+  
+  .bg-warning {
+    background-color: yellow;
+  }
+  
+  .bg-info {
+    background-color: lightblue;
+  }
+  
+  .bg-success {
+    background-color: green;
   }
   </style>
   

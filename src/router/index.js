@@ -27,6 +27,9 @@ import ManageLeaves from "@/components/admin/Leaves.vue"; // Import corrected
 import Payroll from "@/components/hr/Payroll.vue";
 import ManageProjectsHR from "@/components/hr/ManageProjects.vue";
 import DashView from "@/components/dashcompo/DashView.vue";
+import AllAssignedProjects from "@/components/admin/AllAssignedProjects.vue";
+
+import AssignProjectEmployee from "@/components/hr/AssignProjectEmployee.vue";
 //Profile
 import Profile from "@/components/profile.vue";
 
@@ -182,7 +185,7 @@ const router = createRouter({
         },
         {
           path: "department-management",
-          component: HrDepartmentManagement,
+          component: DepartmentManagement,
           beforeEnter: (to, from, next) => {
             next(RouteService('User can manage all users department and position (update)', to));
           },
@@ -223,9 +226,13 @@ const router = createRouter({
           },
         },
         {
-          path:"AssignProject",
-          component:AssignProject
-        }
+          path:"assign-projects-employee",
+          component:AssignProjectEmployee
+        },
+        {
+          path:"all-assign-projects",
+          component:AllAssignedProjects
+        }
       ],
     },
   ],

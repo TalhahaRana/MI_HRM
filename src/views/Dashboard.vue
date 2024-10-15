@@ -220,7 +220,9 @@ export default {
         closeSidebar(); // Automatically close sidebar on route change
       }
     );
-
+    const hasPermission = (permission) => {
+      return store.getters['roles/hasPermission'](permission);
+    };
     const goToProfileSettings = () => {
       // Logic to navigate to profile settings
     };
@@ -236,6 +238,7 @@ export default {
       goToProfileSettings,
       logout,
       DashView,
+      hasPermission
     };
   },
 };
