@@ -48,7 +48,7 @@
                   <i class="icon fas fa-user-plus"></i> Add Employee
                 </router-link>
               </li>
-              <li v-if="hasPermission('User can see all employee')">
+              <li v-if="samePermission('User can see all employee')">
                 <router-link to="/dashboard/all-employee" class="redirect-link">
                   <i class="icon fas fa-address-card"></i> All Employees
                 </router-link>
@@ -253,7 +253,9 @@ export default {
       const role=store.getters['roles/userRole'];
       console.log("Same Permission Role",role);
       if(isPermission){
-        if(role=="admin" || role=="hr"){
+        if(role=='employee'){return false}
+        if(role=="admin" || !(role=="hr"&& isPermission) ){
+          console.log("her!!!!!!!!!!!!!e");
           return true;
         }
         else{

@@ -3,7 +3,8 @@ import ApiServices from "@/services/ApiServices";
 const state = {
   employees: [], // List of employees
   salaryDetails: {}, // Salary details for the specific employee
-  workingHours: "", // New state for working hours
+  workingHour: "", // New state for working hours
+  workingHours: [],
 
 assignedProjects: [],
 };
@@ -11,8 +12,8 @@ assignedProjects: [],
 const getters = {
   allEmployees: (state) => state.employees,
   employeeSalaryDetails: (state) => state.salaryDetails,
-  getWorkingHours: (state) => state.workingHours, // Getter for working hours
   getAssignedProjects: (state) => state.assignedProjects,
+  getWorkingHours: (state) => state.workingHours,
 };
 
 const actions = {
@@ -28,6 +29,15 @@ const actions = {
       throw error;
     }
   },
+  async LeaveApplication({ commit }, leaveApplication) {
+    try {
+      const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
+      commit("newLeaveApplication", response.data);
+    } catch (error) {
+      console.error("Error submitting leave application:", error);
+      throw error;
+    }
+  },
   async fetchSalaryDetails({ commit }) {
 
     try {
@@ -104,6 +114,23 @@ async updateEmployee({ commit }, employeeData) {
       throw error; // Rethrow the error if needed
   }
 },
+// Fetch working hours for an employee
+async fetchEmployeeWorkingHours({ commit }, payload) {
+  try {
+    const response = await ApiServices.GetRequestWorkingHours(
+      "/get-employee/working-hours",
+      payload
+    );
+    console.log("Working hours response:", response.data);
+
+    // Ensure response data is in the expected format before committing
+    commit("SET_WORKING_HOURS", response.data);
+  } catch (error) {
+    console.error("Error fetching working hours:", error);
+    throw error;
+  }
+},
+
   // Check-in action
 
 async checkIn({ commit }) {
@@ -300,12 +327,20 @@ const mutations = {
   setSalaryDetails(state, salaryDetails) {
     state.salaryDetails = salaryDetails; // Update the salary details state
   },
+  newLeaveApplication(state, leaveApplication) {
+    // Logic to handle the leave application if needed
+  },
 
   //Arham
   setWorkingHours(state, workingHours) {
 
-    state.workingHours = workingHours; // Update the state with fetched working hours
+    state.workingHour = workingHours; // Update the state with fetched working hours
     
+    },
+    SET_WORKING_HOURS(state, payload) {
+
+      state.workingHours = payload;
+  
     },
     
     setAssignedProjects(state, projects) {
