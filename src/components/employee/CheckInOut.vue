@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4  form-card">
+  <div class="container form-card">
     <div class="card">
       <div class="card-body">
         <div

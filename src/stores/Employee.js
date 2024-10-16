@@ -3,7 +3,8 @@ import ApiServices from "@/services/ApiServices";
 const state = {
   employees: [], // List of employees
   salaryDetails: {}, // Salary details for the specific employee
-  workingHours: "", // New state for working hours
+  workingHour: "", // New state for working hours
+  workingHours: [],
 
   assignedProjects: [],
   attendanceRecords: [],
@@ -12,9 +13,9 @@ const state = {
 const getters = {
   allEmployees: (state) => state.employees,
   employeeSalaryDetails: (state) => state.salaryDetails,
-  getWorkingHours: (state) => state.workingHours, // Getter for working hours
   getAssignedProjects: (state) => state.assignedProjects,
   getAttendanceRecords: (state) => state.attendanceRecords,
+  getWorkingHours: (state) => state.workingHours,
 };
 
 const actions = {
@@ -30,6 +31,15 @@ const actions = {
       throw error;
     }
   },
+  async LeaveApplication({ commit }, leaveApplication) {
+    try {
+      const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
+      commit("newLeaveApplication", response.data);
+    } catch (error) {
+      console.error("Error submitting leave application:", error);
+      throw error;
+    }
+  },
   async fetchSalaryDetails({ commit }) {
     try {
       const response = await ApiServices.GetRequest("/salary-invoice"); // No need for employee ID
@@ -79,19 +89,46 @@ const actions = {
   },
 
   // Delete an employee
-  // Delete an employee
-  async deleteEmployee({ commit }, user_id) {
-    try {
-      const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
-      commit("removeEmployee", user_id); // Mutation to remove the employee from state
-      return response;
-    } catch (error) {
-      console.error("Error deleting employee:", error);
-      throw error;
-    }
-  },
-  async updateEmployee({ commit }, employeeData) {
-    try {
+//   async deleteEmployee({ commit }, user_id) {
+//     try {
+//       const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
+//       commit("removeEmployee", user_id); // Mutation to remove the employee from state
+//       return response;
+//     } catch (error) {
+//       console.error("Error deleting employee:", error);
+//       throw error;
+//     }
+//   },
+
+async deleteEmployee({ commit }, user_id) {
+  try {
+    const response = await ApiServices.DeleteRequest(`delete-employees/${user_id}`); // Ensure this uses user_id
+    commit('removeEmployee', user_id); // Mutation to remove the employee from state
+    return response;
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    throw error;
+  }
+},
+  // Fetch working hours for an employee
+async fetchEmployeeWorkingHours({ commit }, payload) {
+  try {
+    const response = await ApiServices.GetRequestWorkingHours(
+      "/get-employee/working-hours",
+      payload
+    );
+    console.log("Working hours response:", response.data);
+
+    // Ensure response data is in the expected format before committing
+    commit("SET_WORKING_HOURS", response.data);
+  } catch (error) {
+    console.error("Error fetching working hours:", error);
+    throw error;
+  }
+},
+async updateEmployee({ commit }, employeeData) {
+  try {
+
       // Check if id is defined
       if (!employeeData.id) {
         throw new Error("Employee ID is required");
@@ -106,6 +143,7 @@ const actions = {
       console.error("Failed to update employee:", error);
       alert("An error occurred while updating the employee."); // Alert on error
       throw error; // Rethrow the error if needed
+
     }
   },
   // Check-in action
@@ -266,7 +304,17 @@ const mutations = {
     state.workingHours = workingHours; // Update the state with fetched working hours
   },
 
-  setAssignedProjects(state, projects) {
+  newLeaveApplication(state, leaveApplication) {
+    // Logic to handle the leave application if needed
+  },
+  //Arham
+  setWorkingHours(state, workingHours) {
+    state.workingHour = workingHours; // Update the state with fetched working hours
+    },
+    SET_WORKING_HOURS(state, payload) {
+      state.workingHours = payload;
+    },
+    setAssignedProjects(state, projects) {
     if (Array.isArray(projects)) {
       state.assignedProjects = projects;
     } else {

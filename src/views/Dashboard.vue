@@ -44,22 +44,30 @@
             }"
           >
             <ul class="list-unstyled components">
-              <li>
+              <li v-if="hasPermission('User can add users (employee,hr)')">
                 <router-link to="/dashboard/add-employee" class="redirect-link">
                   <i class="icon fas fa-user-plus"></i> Add Employee
                 </router-link>
               </li>
-              <li>
+              <li v-if="samePermission('User can see all employee')">
                 <router-link to="/dashboard/all-employee" class="redirect-link">
                   <i class="icon fas fa-address-card"></i> All Employees
                 </router-link>
               </li>
-              <li>
+              <li v-if="samePermission('User can see Working Hours')">
+                <router-link
+                  to="/dashboard/working-hours"
+                  class="redirect-link"
+                >
+                  <i class="icon fas fa-clock"></i> Admin Working Hours
+                </router-link>
+              </li>
+              <!-- <li>
                 <router-link to="/dashboard/leaves" class="redirect-link">
                   <i class="icon far fa-band-aid"></i> Manage Leaves
                 </router-link>
-              </li>
-              <li>
+              </li> -->
+              <li v-if="hasPermission('User can add department')">
                 <router-link
                   to="/dashboard/department-management"
                   class="redirect-link"
@@ -67,27 +75,32 @@
                   <i class="icon fas fa-building"></i> Manage Department
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('User can create projects')">
                 <router-link to="/dashboard/projects" class="redirect-link">
                   <i class="icon fas fa-project-diagram"></i> Manage Projects
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('User can view employee assigned projects')">
+                <router-link to="/dashboard/all-assign-projects" class="redirect-link">
+                  <i class="icon fas fa-project-diagram"></i> Employee Assigned Projects
+                </router-link>
+              </li>
+
+              <!-- <li>
                 <router-link to="/dashboard/checkout" class="redirect-link">
                   <i class="icon far fa-stopwatch"></i> Check-in/Check-out
                 </router-link>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li>
                 <router-link
                   to="/dashboard/manage-leaves"
                   class="redirect-link"
                 >
                   <i class="icon fas fa-calendar-check"></i> Manage Attendance
                 </router-link>
-              </li>
-
+              </li> -->
               <!-- HR -->
-              <li>
+              <li v-if="samePermission('User can see Attendance Records')">
                 <router-link
                   to="/dashboard/manage-leaves-hr"
                   class="redirect-link"
@@ -95,43 +108,51 @@
                   <i class="icon fas fa-user-times"></i> Manage Employee Leaves
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('User can assign Projects to employees')">
+                <router-link
+                  to="/dashboard/assign-projects-employee"
+                  class="redirect-link"
+                >
+                  <i class="icon fas fa-user-times"></i> Assign Projects
+                </router-link>
+              </li>
+              
+              <li v-if="!samePermission('User can see Attendance Records')">
                 <router-link
                   to="/dashboard/attendance-hr"
                   class="redirect-link"
                 >
-                  <i class="icon fas fa-user-clock"></i> Manage Attendance
+                  <i class="icon fas fa-user-clock"></i> View Attendance
                 </router-link>
               </li>
-              <li>
+              <!-- <li>
                 <router-link
                   to="/dashboard/department-management"
                   class="redirect-link"
                 >
                   <i class="icon fas fa-building"></i> Department Management
                 </router-link>
-              </li>
-              <li>
+              </li> -->
+              <li v-if="!samePermission('User can get salary invoice')">
                 <router-link to="/dashboard/payroll-hr" class="redirect-link">
                   <i class="icon fas fa-money-check-alt"></i> Payroll
                 </router-link>
               </li>
-              <li>
+              <!-- <li>
                 <router-link
                   to="/dashboard/manage-projects-hr"
                   class="redirect-link"
                 >
                   <i class="icon fas fa-tasks"></i> Manage Projects HR
                 </router-link>
-              </li>
-              <li>
+              </li> -->
+              <!-- <li v-if="hasPermission('User can Check-in/Check-out')">
                 <router-link to="/dashboard/checkout" class="redirect-link">
                   <i class="icon fas fa-user-check"></i> Check-in/Check-out
                   Tracking
                 </router-link>
-              </li>
-
-              <li>
+              </li> -->
+              <!-- <li>
                 <router-link
                   to="/dashboard/employee-joining"
                   class="redirect-link"
@@ -139,15 +160,15 @@
                   <i class="icon fas fa-calendar-plus"></i> Employee Joining
                   Dates
                 </router-link>
-              </li>
+              </li> -->
 
               <!-- Employees -->
-              <li>
+              <li v-if="hasPermission('User can Check-in/Check-out')">
                 <router-link to="/dashboard/check" class="redirect-link">
                   <i class="icon fas fa-user-check"></i> Check-in/Check-out
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('')">
                 <router-link
                   to="/dashboard/attendance-employee"
                   class="redirect-link"
@@ -155,7 +176,7 @@
                   <i class="icon fas fa-calendar-alt"></i> View Attendance
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('User can submit Leave Applications')">
                 <router-link
                   to="/dashboard/leave-application"
                   class="redirect-link"
@@ -163,7 +184,7 @@
                   <i class="icon fas fa-file-alt"></i> Apply Leave
                 </router-link>
               </li>
-              <li>
+              <li v-if="!samePermission('User can see Working Hours')">
                 <router-link
                   to="/dashboard/working-hours"
                   class="redirect-link"
@@ -171,7 +192,7 @@
                   <i class="icon fas fa-clock"></i> Working Hours
                 </router-link>
               </li>
-              <li>
+              <li v-if="hasPermission('User can see their assigned projects')">
                 <router-link
                   to="/dashboard/assignedProjects"
                   class="redirect-link"
@@ -179,6 +200,7 @@
                   <i class="icon fas fa-clipboard-list"></i> Assigned Projects
                 </router-link>
               </li>
+              
             </ul>
           </nav>
         </div>
@@ -200,12 +222,14 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import DashView from "../components/dashcompo/DashView.vue";
 
+import store from '@/stores';
 export default {
   name: "Dashboard",
   setup() {
+
     const sidebarVisible = ref(false);
     const router = useRouter();
-
+    // store=useStore();
     const toggleSidebar = () => {
       sidebarVisible.value = !sidebarVisible.value;
     };
@@ -223,14 +247,41 @@ export default {
     );
     const hasPermission = (permission) => {
       return store.getters['roles/hasPermission'](permission);
+      //return true;
+    };
+    const samePermission = (permission) => {
+      const isPermission= store.getters['roles/hasPermission'](permission);
+      const role=store.getters['roles/userRole'];
+      console.log("Same Permission Role",role);
+      if(isPermission){
+        if(role=='employee'){return false}
+        if(role=="admin" || !(role=="hr"&& isPermission) ){
+          console.log("her!!!!!!!!!!!!!e");
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+      return false;
     };
     const goToProfileSettings = () => {
       // Logic to navigate to profile settings
     };
 
-    const logout = () => {
-      // Logic for logout
+    const logout = async () => {
+      
+      try {
+        // Dispatch the logout action from Vuex
+        await store.dispatch('auth/logout');
+
+        // Redirect to the login page
+         router.push('/');
+      } catch (error) {
+        console.error('Error during logout:', error);
+      } 
     };
+
 
     return {
       sidebarVisible,
@@ -238,7 +289,8 @@ export default {
       closeSidebar,
       logout,
       DashView,
-      hasPermission
+      hasPermission,
+      samePermission
     };
   },
 };

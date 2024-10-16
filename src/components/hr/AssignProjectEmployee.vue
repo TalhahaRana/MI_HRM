@@ -1,5 +1,5 @@
 <template>
-  <div class="form-card mt-5">
+  <div class="form-card">
     <h4 class="fw-bold">Assign Project</h4>
 
     <div class="form-group">
