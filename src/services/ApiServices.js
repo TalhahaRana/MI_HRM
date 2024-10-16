@@ -51,6 +51,38 @@ const ApiServices = {
         }
     },
 
+    async GetRequestWorkingHours(url, params = {}) {
+
+
+
+        try {
+
+            const headers = {
+
+                ...this.getAuthHeader(),
+
+                "Content-Type": "application/json", // Add custom header
+
+            };
+
+            const response = await axios.get(url, { headers, params }); // Include params here
+
+            alert(response.data.message); // Show a message alert on success
+
+            return response.data; // Return the response data for further processing
+
+        } catch (error) {
+
+            console.error("GET request failed:", error);
+
+            alert("An error occurred. Please try again later."); // Alert on error
+
+            throw error; // Rethrow the error for further handling if needed
+
+        }
+
+    },
+
     async PutRequest(url, data) {
         try {
             const headers = {

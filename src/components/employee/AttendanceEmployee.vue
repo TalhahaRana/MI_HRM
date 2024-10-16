@@ -55,32 +55,40 @@
     <div v-else>
       <p class="text-center">No records found for the selected date and frequency.</p>
     </div>
+
+    <div>
+      <AttendenceEmployeeChart/>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+ import AttendenceEmployeeChart from './AttendenceEmployeeChart.vue';
 
 export default {
-  data() {
-    return {
-      date: '',
-      frequency: '',
-    };
+  components: {
+    AttendenceEmployeeChart,
   },
-  computed: {
-    ...mapGetters('employee', ['allWorkingHours']),
-    workingHours() {
-      return this.allWorkingHours; // Get working hours from Vuex store
-    },
-  },
-  methods: {
-    async fetchWorkingHours() {
-      if (this.date && this.frequency) {
+  setup() {
+    const store = useStore();
+
+    // Reactive variables
+    const date = ref('');
+    const frequency = ref('');
+
+    // Computed property to access working hours from Vuex store
+    const workingHours = computed(() => store.getters['employee/allWorkingHours']);
+
+    // Method to fetch working hours
+    const fetchWorkingHours = async () => {
+      if (date.value && frequency.value) {
         try {
-          await this.$store.dispatch('employee/fetchWorkingHours', {
-            date: this.date,
-            frequency: this.frequency,
+          await store.dispatch('employee/fetchWorkingHours', {
+            date: date.value,
+            frequency: frequency.value,
           });
         } catch (error) {
           console.error('Error fetching working hours:', error);
@@ -89,7 +97,14 @@ export default {
       } else {
         alert('Please provide both Date and Frequency.');
       }
-    },
+    };
+
+    return {
+      date,
+      frequency,
+      workingHours,
+      fetchWorkingHours,
+    };
   },
 };
 </script>

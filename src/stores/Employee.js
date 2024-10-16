@@ -3,11 +3,13 @@ import ApiServices from "@/services/ApiServices";
 const state = {
     employees: [], // List of employees
     workingHours: [], // Store for employee working hours
+    statusCounts: { present: 0, absent: 0 },
 };
 
 const getters = {
     allEmployees: (state) => state.employees,
     allWorkingHours: (state) => state.workingHours,
+    statusCounts: (state) => state.statusCounts,
 };
 
 const actions = {
@@ -22,17 +24,46 @@ const actions = {
     },
 
     // Fetch working hours for a specific employee
-    async fetchWorkingHours({ commit }, { employeeId, frequency }) {
+    async fetchWorkingHours({ commit }, { date, frequency }) {
         try {
-            const response = await ApiServices.GetRequest(`/working-hours`, {
-                params: { employeeId, frequency },
-            });
-            commit("setWorkingHours", response); // Assuming the API returns the working hours data
+            // Construct the URL with query parameters directly in the string
+            const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+            console.log(date, frequency); // Debugging: log the date and frequency
+            commit("setWorkingHours", response.data.daily_working_hours); // Commit the response data
         } catch (error) {
-            throw error;
+            console.error('Error fetching working hours:', error); // Log the error
+            throw error; // Rethrow the error for handling in the component
         }
     },
 
+    async fetchEmployeeStatus({ commit }, { date, frequency }) {
+        try {
+            // Fetch working hours using the API
+            const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+            // Get the daily working hours from the API response
+            const dailyWorkingHours = response.data.daily_working_hours;
+
+            // Calculate the counts based on the status key
+            const statusCounts = dailyWorkingHours.reduce(
+                (counts, entry) => {
+                    if (entry.status === "present") {
+                        counts.present++;
+                    } else if (entry.status === "absent") {
+                        counts.absent++;
+                    }
+                    return counts;
+                }, { present: 0, absent: 0 } // Initial counts
+            );
+
+            // Commit the computed counts to the store
+            commit("setStatusCounts", statusCounts);
+        } catch (error) {
+            console.error("Error fetching employee status:", error);
+            throw error; // Rethrow the error for handling in the component
+        }
+    },
     // Add a new employee
     async addEmployee({ commit }, employeeData) {
         try {
@@ -83,6 +114,9 @@ const mutations = {
     setWorkingHours(state, workingHours) {
         state.workingHours = workingHours; // Store fetched working hours
     },
+    setStatusCounts(state, statusCounts) {
+        state.statusCounts = statusCounts;
+    }
 };
 
 export default {
