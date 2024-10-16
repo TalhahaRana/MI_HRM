@@ -1,186 +1,207 @@
 <template>
-    <div class="salary-slip-container">
-      <div class="header">
-        <h1>Salary Slip Generator</h1>
-      </div>
-  
-      <div class="form-group">
-        <label for="working-hours">Working Hours:</label>
-        <input type="number" v-model="employee.workingHours" disabled />
-      </div>
-  
-      <div class="form-group">
-        <label for="salary">Salary:</label>
-        <input type="number" v-model="employee.salary" disabled />
-      </div>
-  
-      <div class="form-group">
-        <label for="status">Status:</label>
-        <input type="text" v-model="employee.status" disabled />
-      </div>
-  
-      <div class="form-group">
-        <label for="month">Select Salary Month:</label>
-        <select v-model="selectedMonth" class="select-month">
-          <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
-        </select>
-      </div>
-  
-      <button @click="generatePDF" class="btn-download">Download Salary Slip (PDF)</button>
-  
-      <div v-if="showSlip" class="salary-slip-preview">
-        <h2>Salary Slip Preview for {{ selectedMonth }}</h2>
-        <div class="slip-details">
-          <p><strong>Working Hours:</strong> {{ employee.workingHours }} hours</p>
-          <p><strong>Salary:</strong> ${{ employee.salary }}</p>
-          <p><strong>Status:</strong> {{ employee.status }}</p>
-          <p><strong>Month:</strong> {{ selectedMonth }}</p>
-        </div>
+  <div class="salary-slip-container">
+    <div class="header">
+      <h1>Salary Slip Generator</h1>
+    </div>
+
+    <div class="form-group">
+      <label for="working-hours">Working Hours:</label>
+      <input type="text" v-model="employeeDetails.total_working_hours" disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="salary">Salary:</label>
+      <input type="number" v-model="employeeDetails.salary" disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="status">Status:</label>
+      <input type="text" v-model="employeeDetails.status" disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="paid-date">Paid Date:</label>
+      <input type="text" v-model="employeeDetails.paid_date" disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="position">Position:</label>
+      <input type="text" v-model="employeeDetails.employee_position" disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="department">Department:</label>
+      <input type="text" v-model="employeeDetails.employee_department" disabled />
+    </div>
+
+    <button @click="generatePDF" class="btn-download">Download Salary Slip (PDF)</button>
+
+    <div v-if="showSlip" class="salary-slip-preview">
+      <h2>Salary Slip Preview</h2>
+      <div class="slip-details">
+        <p><strong>Working Hours:</strong> {{ employeeDetails.total_working_hours }} hours</p>
+        <p><strong>Salary:</strong> ${{ employeeDetails.salary }}</p>
+        <p><strong>Status:</strong> {{ employeeDetails.status }}</p>
+        <p><strong>Paid Date:</strong> {{ employeeDetails.paid_date }}</p>
+        <p><strong>Position:</strong> {{ employeeDetails.employee_position }}</p>
+        <p><strong>Department:</strong> {{ employeeDetails.employee_department }}</p>
       </div>
     </div>
-  </template>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import jsPDF from 'jspdf';
+
+const store = useStore();
+const employeeDetails = ref({
+  total_working_hours: '00:00:00',
+  salary: 0,
+  status: 'unpaid',
+  paid_date: '',
+  employee_position: '',
+  employee_department: ''
+});
+
+// To show salary slip section after data load
+const showSlip = ref(false);
+
+// Fetch salary details for the authenticated employee when the component is mounted
+onMounted(async () => {
+  await store.dispatch('employee/fetchSalaryDetails'); // No need for employee ID
   
-  <script setup>
-  import { ref } from 'vue';
-  import jsPDF from 'jspdf';
-  
-  // Employee data (can come from an API in a real app)
-  const employee = ref({
-    workingHours: 160,
-    salary: 3000,
-    status: 'Active',
-  });
-  
-  // Months for selection
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  
-  // Selected month
-  const selectedMonth = ref('');
-  
-  // To show salary slip section after month selection
-  const showSlip = ref(false);
-  
-  // Function to generate the PDF using jsPDF
-  const generatePDF = () => {
-    if (selectedMonth.value) {
-      showSlip.value = true;
-  
-      // Create a new jsPDF document
-      const doc = new jsPDF();
-  
-      // Styling the PDF
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(24);
-      doc.text('Salary Slip', 105, 20, null, null, 'center');
-  
-      doc.setFontSize(16);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Month: ${selectedMonth.value}`, 20, 40);
-      doc.text(`Working Hours: ${employee.value.workingHours} hours`, 20, 50);
-      doc.text(`Salary: $${employee.value.salary}`, 20, 60);
-      doc.text(`Status: ${employee.value.status}`, 20, 70);
-  
-      // Adding a footer
-      doc.setFontSize(12);
-      doc.setTextColor(100);
-      doc.text('Generated by Payroll System', 105, 290, null, null, 'center');
-  
-      // Save the PDF with a generated filename
-      doc.save(`Salary_Slip_${selectedMonth.value}.pdf`);
-    } else {
-      alert('Please select a month to generate the salary slip');
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .salary-slip-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 30px;
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .header h1 {
-    text-align: center;
-    font-size: 28px;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  label {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-    display: block;
-  }
-  
-  input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  input:disabled {
-    background-color: #f1f1f1;
-  }
-  
-  .select-month {
-    background-color: #fff;
-    cursor: pointer;
-  }
-  
-  .btn-download {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .btn-download:hover {
-    background-color: #45a049;
-  }
-  
-  .salary-slip-preview {
-    margin-top: 30px;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-  }
-  
-  .salary-slip-preview h2 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  .slip-details p {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .slip-details strong {
-    color: #555;
-  }
-  </style>
-  
+  // Bind the fetched salary data to local ref
+  employeeDetails.value = store.getters['employee/employeeSalaryDetails'];
+});
+
+// Function to generate the PDF using jsPDF
+const generatePDF = () => {
+  showSlip.value = true;
+
+  // Create a new jsPDF document
+  const doc = new jsPDF();
+
+  // Styling the PDF
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(24);
+  doc.text('Salary Slip', 105, 20, null, null, 'center');
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Working Hours: ${employeeDetails.value.total_working_hours}`, 20, 50);
+  doc.text(`Salary: $${employeeDetails.value.salary}`, 20, 60);
+  doc.text(`Status: ${employeeDetails.value.status}`, 20, 70);
+  doc.text(`Paid Date: ${employeeDetails.value.paid_date || 'N/A'}`, 20, 80);
+  doc.text(`Position: ${employeeDetails.value.employee_position}`, 20, 90);
+  doc.text(`Department: ${employeeDetails.value.employee_department}`, 20, 100);
+
+  // Adding a footer
+  doc.setFontSize(12);
+  doc.setTextColor(100);
+  doc.text('Generated by Payroll System', 105, 290, null, null, 'center');
+
+  // Save the PDF
+  doc.save(`Salary_Slip.pdf`);
+};
+</script>
+
+<style scoped>
+.salary-slip-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.header h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+  display: block;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.input-field:focus,
+.input-select:focus {
+  outline: none;
+  border-color: #4B49AC;
+}
+
+input:disabled {
+  background-color: #f1f1f1;
+}
+
+.select-month {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.btn-download {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #4b49ac;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+  transition: background-color .3s ease-in;
+}
+
+.btn-download:hover {
+  background-color: #3e3a95;
+}
+
+.salary-slip-preview {
+  margin-top: 30px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.salary-slip-preview h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.slip-details p {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.slip-details strong {
+  color: #555;
+}
+</style>

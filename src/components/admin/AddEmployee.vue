@@ -54,9 +54,10 @@
               required
             >
               <option disabled value="">Select a Department</option>
-              <option v-for="dept in departments.data" :key="dept.id" :value="dept.name">
-                {{ dept.name }}
+              <option v-for="dept in departments.data" :key="dept.id" :value="dept.id">
+                              {{ dept.name }}
               </option>
+
             </select>
           </div>
         </div>
@@ -114,7 +115,7 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { useStore } from 'vuex'; // Assuming you are using Vuex for state management
+import { useStore } from 'vuex';
 
 export default {
   setup() {
@@ -141,20 +142,29 @@ export default {
       }
     });
 
-    const submitForm = () => {
-      const newEmployee = {
-        name: name.value,
-        email: email.value,
-        department: department.value,
-        role: role.value,
-        position: position.value,
-        pay: pay.value,
+    const submitForm = async () => {
+        const newEmployee = {
+          name: name.value,
+          email: email.value,
+          role: role.value,
+          department_id: department.value,  // Will remain as a string
+          position: position.value,
+          pay: pay.value,  // Will remain as a string
+        };
+
+        try {
+          console.log("Employee Data", newEmployee);
+          await store.dispatch('employee/addEmployee', newEmployee);
+          alert('Employee added successfully!');
+          resetForm();
+        } catch (error) {
+          console.error('Error adding employee:', error);
+          alert('There was an issue adding the employee.');
+        }
       };
 
-      console.log('New Employee:', newEmployee);
-      alert('Employee added successfully!');
 
-      // Reset form fields
+    const resetForm = () => {
       name.value = '';
       email.value = '';
       department.value = '';
@@ -164,6 +174,7 @@ export default {
     };
 
     const cancelForm = () => {
+      resetForm();
       alert('Form canceled');
     };
 

@@ -4,6 +4,7 @@ import AssignProject from "@/components/hr/AssignProject.vue";
 // Import all the components/views used in the routes
 import Login from "../views/auth/Login.vue";
 import ForgotPass from "@/views/auth/ForgotPass.vue";
+import SetPassword from "@/views/auth/SetPassword.vue";
 import AddEmployee from "@/components/admin/AddEmployee.vue";
 import AllEmployee from "@/components/admin/AllEmployee.vue";
 import Attendance from "@/components/admin/Attendance.vue";
@@ -26,6 +27,10 @@ import ManageLeaves from "@/components/admin/Leaves.vue"; // Import corrected
 import Payroll from "@/components/hr/Payroll.vue";
 import ManageProjectsHR from "@/components/hr/ManageProjects.vue";
 import DashView from "@/components/dashcompo/DashView.vue";
+import AllAssignedProjects from "@/components/admin/AllAssignedProjects.vue";
+import AssignProjectEmployee from "@/components/hr/AssignProjectEmployee.vue";
+import TwoFa from "@/views/TwoFa.vue";
+import QR from "@/views/QR.vue";
 //Profile
 import Profile from "@/components/profile.vue";
 
@@ -39,8 +44,24 @@ const router = createRouter({
       component: Login,
     },
     {
+      path: "/Twofa",
+      name: "TwoFa",
+      component: TwoFa,
+
+    },
+    {
+      path: "/QR",
+      name: "QR",
+      component: QR,
+    },
+    
+    {
       path: "/forgot-pass",
       component: ForgotPass,
+    },
+    {
+      path: "/password-setup",
+      component: SetPassword,
     },
     {
       path: "/dashboard",
@@ -60,11 +81,7 @@ const router = createRouter({
           name: "DashView",
           component: DashView, // Default child route for Dashboard
         },
-        {
-          path:"profile",
-          name: "Profile",
-          component: Profile
-        },
+       
         {
           path: "check",
           name: "CheckInOut",
@@ -177,7 +194,7 @@ const router = createRouter({
         },
         {
           path: "department-management",
-          component: HrDepartmentManagement,
+          component: DepartmentManagement,
           beforeEnter: (to, from, next) => {
             next(RouteService('User can manage all users department and position (update)', to));
           },
@@ -218,9 +235,13 @@ const router = createRouter({
           },
         },
         {
-          path:"AssignProject",
-          component:AssignProject
-        }
+          path:"assign-projects-employee",
+          component:AssignProjectEmployee
+        },
+        {
+          path:"all-assign-projects",
+          component:AllAssignedProjects
+        }
       ],
     },
   ],

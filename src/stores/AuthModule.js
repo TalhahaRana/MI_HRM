@@ -16,6 +16,13 @@ const actions = {
       throw error; 
     }
   },
+  async passwordSetup({commit},passwordData){
+    try{
+      const response=await ApiServices.PostRequest('/password-setup',passwordData)
+    }catch(error){
+      throw error;
+    }
+  },
   async logout({ commit }) {
     commit("clearUser");
     // Simulating an async operation with resolve()

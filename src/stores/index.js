@@ -7,6 +7,7 @@ import admin from './Admin';
 import hr from './Hr';
 import projects from './Projects';
 import department from './Department';
+import manageLeaves from './ManageLeaves'
 // Vue 3 style store setup
 export default createStore({
   modules: {
@@ -16,6 +17,7 @@ export default createStore({
     admin,
     hr,
     projects,
-    department
+    department,
+    manageLeaves
   },
 });

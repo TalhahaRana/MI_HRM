@@ -1,7 +1,8 @@
 <template>
   <div class="container mt-5 p-4 form-card">
-    <h3 class="mb-4">All Employees</h3>
+    <h3 class="mb-4">Manage Employees</h3>
 
+    <!-- Filters -->
     <div class="row mb-4">
       <!-- Search by Name -->
       <div class="col-md-4">
@@ -17,106 +18,231 @@
       <div class="col-md-4">
         <select class="form-control" v-model="selectedDepartment">
           <option value="">All Departments</option>
-          <option v-for="department in departments" :key="department" :value="department">
-            {{ department }}
+          <option
+            v-for="department in departments"
+            :key="department.id"
+            :value="department.id"
+          >
+            {{ department.name }}
           </option>
         </select>
       </div>
 
-      <!-- Filter by Designation -->
+      <!-- Filter by Role (HR/Employee) -->
       <div class="col-md-4">
-        <select class="form-control" v-model="selectedDesignation">
-          <option value="">All Designations</option>
-          <option v-for="designation in designations" :key="designation" :value="designation">
-            {{ designation }}
-          </option>
+        <select class="form-control" v-model="selectedRole">
+          <option value="">All Roles</option>
+          <option value="HR">HR</option>
+          <option value="Employee">Employee</option>
         </select>
       </div>
     </div>
 
     <!-- Employee Table -->
-    <table class="table table-bordered table-striped">
+    <table class="table table-hover">
       <thead class="thead-light">
         <tr>
+          <!-- <th>Id</th> -->
+          <th>User ID</th>
           <th>Name</th>
-          <th>Department</th>
           <th>Designation</th>
+          <th>Department</th>
+          <th>Date of Joining</th>
+          <th>Role</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="employee in filteredEmployees" :key="employee.id">
+          <!-- <td>{{ employee.id }}</td> -->
+          <td>{{ employee.user_id }}</td>
           <td>{{ employee.name }}</td>
-          <td>{{ employee.department }}</td>
-          <td>{{ employee.designation }}</td>
+          <td>{{ employee.position || 'N/A' }}</td>
+          <td>{{ getDepartmentName(employee.department_id) }}</td>
+          <td>{{ employee.date_of_joining || 'N/A' }}</td>
+          <td>{{ employee.role === 'HR' ? 'HR' : 'Employee' }}</td>
+          <td class="d-flex justify-content-around">
+            <button
+              class="btn btn-warning btn-sm"
+              @click="openEditModal(employee)"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              @click="deleteEmployee(employee.user_id)"
+            >
+              Delete
+            </button>
+          </td>
         </tr>
         <tr v-if="filteredEmployees.length === 0">
-          <td colspan="3" class="text-center">No employees found</td>
+          <td colspan="8" class="text-center">No employees found</td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Update Modal -->
+    <div
+      v-if="isModalOpen"
+      class="modal"
+      tabindex="-1"
+      role="dialog"
+      :class="{ open: isModalOpen }"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header form-card">
+            <h5 class="modal-title">Update Employee</h5>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateEmployee">
+              <div class="form-group">
+                <label for="employeeName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="employeeName"
+                  v-model="selectedEmployee.name"
+                  required
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="employeePosition">Position</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="employeePosition"
+                  v-model="selectedEmployee.position"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="employeeDepartment">Department</label>
+                <select
+                  class="form-control"
+                  id="employeeDepartment"
+                  v-model="selectedEmployee.department_id"
+                  required
+                >
+                  <option
+                    v-for="department in departments"
+                    :key="department.id"
+                    :value="department.id"
+                  >
+                    {{ department.name }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Update</button>
+              <button type="button" class="btn btn-secondary" @click="closeModal">
+                Close
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
 
-export default {
-  setup() {
-    // Static dummy employee data
-    const employees = ref([
-      { id: 1, name: 'John Doe', department: 'HR', designation: 'Manager' },
-      { id: 2, name: 'Jane Smith', department: 'Finance', designation: 'Accountant' },
-      { id: 3, name: 'Alice Johnson', department: 'IT', designation: 'Developer' },
-      { id: 4, name: 'Bob Brown', department: 'HR', designation: 'Assistant' },
-      { id: 5, name: 'Charlie Black', department: 'Finance', designation: 'Analyst' },
-    ]);
+// Setup store
+const store = useStore();
+const searchTerm = ref('');
+const selectedDepartment = ref('');
+const selectedRole = ref(''); // Filter for HR/Employee
+const isModalOpen = ref(false); // Modal state
+const selectedEmployee = ref({}); // Employee to edit
 
-    const searchTerm = ref('');            // Search by employee name
-    const selectedDepartment = ref('');    // Filter by department
-    const selectedDesignation = ref('');   // Filter by designation
+// Fetch employees and departments when the component is mounted
+onMounted(async () => {
+  await store.dispatch('employee/fetchEmployees'); // Fetch employees from employee store
+  await store.dispatch('department/fetchDepartmentsbyData'); // Fetch departments from department store
+});
 
-    // Filter employees based on search and selected filters
-    const filteredEmployees = computed(() => {
-      return employees.value.filter((employee) => {
-        const matchesName = employee.name.toLowerCase().includes(searchTerm.value.toLowerCase());
-        const matchesDepartment = !selectedDepartment.value || employee.department === selectedDepartment.value;
-        const matchesDesignation = !selectedDesignation.value || employee.designation === selectedDesignation.value;
-        return matchesName && matchesDepartment && matchesDesignation;
-      });
+// Get employees and departments from Vuex store
+const employees = computed(() => store.getters['employee/allEmployees'] || []);
+const departments = computed(() => store.getters['department/allDepartments'] || []); // Access department module
+
+// Map employee department_id to department name
+const getDepartmentName = (departmentId) => {
+  const department = departments.value.find(dep => dep.id === departmentId);
+  return department ? department.name : 'N/A';
+};
+
+// Filter employees based on search term, department, and role (HR or Employee)
+const filteredEmployees = computed(() => {
+  return employees.value
+    .filter(employee => {
+      const matchesSearch = employee.name.toLowerCase().includes(searchTerm.value.toLowerCase());
+      const matchesDepartment = !selectedDepartment.value || employee.department_id == selectedDepartment.value;
+      const matchesRole = !selectedRole.value || (employee.role === 'HR' ? 'HR' : 'Employee') === selectedRole.value;
+      return matchesSearch && matchesDepartment && matchesRole;
     });
+});
 
-    // Get unique departments
-    const departments = computed(() => {
-      return [...new Set(employees.value.map(emp => emp.department))];
-    });
+// Function to delete an employee
+const deleteEmployee = async (user_id) => {
+  const confirmed = confirm('Are you sure you want to delete this employee?');
+  if (confirmed) {
+    await store.dispatch('employee/deleteEmployee', user_id);
+    alert('Employee deleted successfully!');
+  }
+};
 
-    // Get unique designations
-    const designations = computed(() => {
-      return [...new Set(employees.value.map(emp => emp.designation))];
-    });
+// Function to open the edit modal
+const openEditModal = (employee) => {
+  selectedEmployee.value = { ...employee }; // Populate the modal with selected employee data
+  isModalOpen.value = true; // Open modal
+};
 
-    // Simulate fetching employees (in this case, just using static data)
-    onMounted(() => {
-      // In a real-world scenario, you'd fetch employee data from an API here
-    });
+// Function to close the modal
+const closeModal = () => {
+  isModalOpen.value = false; // Close modal
+};
 
-    return {
-      searchTerm,
-      selectedDepartment,
-      selectedDesignation,
-      filteredEmployees,
-      departments,
-      designations,
-    };
-  },
+// Function to update employee details
+const updateEmployee = async () => {
+  const updatedData = {
+    department_id: selectedEmployee.value.department_id,
+    position: selectedEmployee.value.position, // Only update position
+  };
+  await store.dispatch('employee/updateEmployee', { id: selectedEmployee.value.id, updatedData });
+  alert('Employee updated successfully!'); // Alert after successful update
+  closeModal(); // Close the modal
 };
 </script>
 
+
+
 <style scoped>
-.table {
-  margin-top: 20px;
+.form-card {
+  .modal {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.5);
 }
-thead {
-  background-color: #f8f9fa;
+
+
+
+
+.modal .modal-dialog {
+  transition: transform 0.3s ease; /* Transition for dialog */
+  transform: translateY(-100px);
+  top: 30%; /* Move up before entering */
+}
+
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
 }
 </style>

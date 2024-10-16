@@ -115,15 +115,16 @@ h2 {
 
 /* Submit button */
 button {
-  width: 100%;
-  padding: 10px;
-  background-color: var(--basic-button);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  width: 14%;
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #5a67d8;
+    border-color: #5a67d8;
+    border-radius: 20px;
 }
 
 button:hover {
