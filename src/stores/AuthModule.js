@@ -1,4 +1,5 @@
 import ApiServices from "@/services/ApiServices";
+import { useRouter } from "vue-router";
 const state = {
   user: null,
 };
@@ -10,7 +11,8 @@ const actions = {
   async login({ commit }, credentials) {
     try {
       const response = await ApiServices.PostRequest('/login', credentials);
-      commit("setUser", response.data.user);
+      console.log("Resssssssssssss",response.data);
+      commit("setUser", response.data);
       return response;
     } catch (error) {
       throw error; 
@@ -25,8 +27,14 @@ const actions = {
   },
   async logout({ commit }) {
     commit("clearUser");
-    // Simulating an async operation with resolve()
-    return Promise.resolve();
+    // Clear token from localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("permissions");
+    localStorage.removeItem("roles");
+    // Clear role and permissions from localStorage (assuming these are managed in another module)
+    await this.dispatch('roles/clearRoleAndPermissions'); // Assuming you have 'roles.js' module
+    // Redirect to login page
+
   },
 };
 

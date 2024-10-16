@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5 p-4 form-card">
+  <div class="container p-4 form-card">
     <h3 class="mb-4">Manage Employees</h3>
 
     <!-- Filters -->

@@ -55,13 +55,14 @@ const router = createRouter({
       name: "Dashboard",
       component: Dashboard,
       // beforeEnter: (to, from, next) => {
-      //   const result = RouteService("User can access dashboard", to);
+      //   const result = RouteService("User can get salary invoice");
       //   if (result === true) {
       //     next(); 
       //   } else {
       //     next(result); 
       //   }
       // },
+      beforeEnter: RouteService('User can get salary invoice', ['admin','employee','hr']),
       children: [
         {
           path: "",
@@ -77,50 +78,40 @@ const router = createRouter({
           path: "check",
           name: "CheckInOut",
           component: CheckInOut,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can Check-in/Check-out', to));
-          },
+          beforeEnter: RouteService('User can Check-in/Check-out', ['employee','hr']),
         },
         {
           path: "leave-application",
           name: "LeaveApplication",
           component: LeaveApplication,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can submit Leave Applications', to));
-          },
+          beforeEnter: RouteService('User can submit Leave Applications', ['employee','hr']),
         },
         {
           path: "attendance-employee",
           name: "AttendanceEmployee",
           component: AttendanceEmployee,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see Attendance Record of itself', to));
-          },
+          beforeEnter: RouteService('User can see Attendance Records', ['employee','hr']),
         },
         {
           path: "assignedProjects",
           name: "AssignedProjects",
           component: AssignedProjects,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see Assigned Projects', to));
-          },
+          beforeEnter: RouteService('User can see their assigned projects', ['employee']),
         },
         {
           path: "working-hours",
           name: "WorkingHours",
           component: WorkingHours,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see its Working Hours', to));
-          },
+          beforeEnter: RouteService('User can see Working Hours', ['employee','hr']),
         },
-        {
-          path: "attendance",
-          name: "Attendance",
-          component: Attendance,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see Attendance Record of all users', to));
-          },
-        },
+        // {
+        //   path: "attendance",
+        //   name: "Attendance",
+        //   component: Attendance,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can see Attendance Record of all users', to));
+        //   },
+        // },
         // {
         //   path: "department-management",
         //   name: "DepartmentManagement",
@@ -149,46 +140,40 @@ const router = createRouter({
           path: "add-employee",
           name: "AddEmployee",
           component: AddEmployee,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can add users (employee,hr)', to));
-          },
+          beforeEnter: RouteService('User can add users (employee,hr)', ['admin']),
         },
         {
           path: "all-employee",
           name: "AllEmployee",
           component: AllEmployee,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see all users', to));
-          },
+          beforeEnter: RouteService('User can see all employee', ['admin']),
         },
         {
           path: "projects",
           name: "Projects",
           component: Projects,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can create Projects', to));
-          },
+          beforeEnter: RouteService('User can create projects', ['admin']),
+          
         },
-        {
-          path: "manage-leaves",
-          component: ManageLeaves,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can view attendance records', to));
-          },
-        },
-        {
-          path: "checkout",
-          component: HrCheckoutCheckIn,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can Check-in/Check-out', to));
-          },
-        },
+        // {
+        //   path: "manage-leaves",
+        //   component: ManageLeaves,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can view attendance records', to));
+        //   },
+        // },
+        // {
+        //   path: "checkout",
+        //   component: HrCheckoutCheckIn,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can Check-in/Check-out', to));
+        //   },
+        // },
         {
           path: "department-management",
           component: DepartmentManagement,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can manage all users department and position (update)', to));
-          },
+          beforeEnter: RouteService('User can add department', ['admin']),
+          
         },
         {
           path: "employee-joining",
@@ -200,38 +185,36 @@ const router = createRouter({
         {
           path: "manage-leaves-hr",
           component: HrManageLeaves,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see Attendance Record of all users', to));
-          },
+          beforeEnter: RouteService('User can see Attendance Records', ['admin','hr']),
+          
         },
         {
           path: "attendance-hr",
           component: AttendanceHR,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can see Attendance Record of all users', to));
-          },
+          beforeEnter: RouteService('User can see Attendance Records', ['employee','hr']),
+          
         },
         {
           path: "payroll-hr",
           component: Payroll,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can manage payroll', to));
-          },
+          beforeEnter: RouteService('User can get salary invoice', ['employee','hr']),
         },
-        {
-          path: "manage-projects-hr",
-          component: ManageProjectsHR,
-          beforeEnter: (to, from, next) => {
-            next(RouteService('User can create Projects', to));
-          },
-        },
+        // {
+        //   path: "manage-projects-hr",
+        //   component: ManageProjectsHR,
+        //   beforeEnter: (to, from, next) => {
+        //     next(RouteService('User can create Projects', to));
+        //   },
+        // },
         {
           path:"assign-projects-employee",
-          component:AssignProjectEmployee
+          component:AssignProjectEmployee,
+          beforeEnter: RouteService('User can assign Projects to employees', ['hr']),
         },
         {
           path:"all-assign-projects",
-          component:AllAssignedProjects
+          component:AllAssignedProjects,
+          beforeEnter: RouteService('User can view employee assigned projects', ['admin','hr']),
         }
       ],
     },

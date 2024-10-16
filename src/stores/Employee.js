@@ -81,7 +81,7 @@ const actions = {
   // Delete an employee
 async deleteEmployee({ commit }, user_id) {
   try {
-    const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
+    const response = await ApiServices.DeleteRequest(`delete-employees/${user_id}`); // Ensure this uses user_id
     commit('removeEmployee', user_id); // Mutation to remove the employee from state
     return response;
   } catch (error) {

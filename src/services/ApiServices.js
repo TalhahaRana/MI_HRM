@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'http://192.168.15.115:8000/api'; // Set your base URL
+const baseURL = 'http://192.168.15.115:8000/api'; // sameer Set your base URL
+//const baseURL = 'http://192.168.15.44:8000/api';
 
 const ApiServices = {
   // Initialize the Axios defaults
@@ -67,7 +68,7 @@ const ApiServices = {
     try {
       console.log(`POST request to: ${baseURL}${url}`); // Add this line to log URL
       const response = await axios.post(url,data);
-      alert(response.data.message);
+      // alert(response.data.message);
       return response.data;
     } catch (error) {
       console.error('POST request failed:', error);
@@ -83,7 +84,7 @@ const ApiServices = {
 
       console.log(`POST request to: ${baseURL}${url}`); 
       const response = await axios.post(url, data, { headers });
-      alert(response.data.message);
+      // alert(response.data.message);
       return response.data;
     } catch (error) {
       console.error('POST request with header failed:', error);
@@ -105,7 +106,7 @@ const ApiServices = {
 
         const response = await axios.put(url, data, { headers });
 
-        alert(response.data.message); // Show a message alert on success
+        // alert(response.data.message); // Show a message alert on success
 
         return response.data; // Return the response data for further processing
 
@@ -113,7 +114,7 @@ const ApiServices = {
 
         console.error('PUT request failed:', error);
 
-        alert('An error occurred. Please try again later.'); // Alert on error
+        // alert('An error occurred. Please try again later.'); // Alert on error
 
         throw error; // Rethrow the error for further handling if needed
 

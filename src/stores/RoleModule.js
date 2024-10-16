@@ -15,7 +15,15 @@ const actions = {
     localStorage.setItem('userRole', role);
     localStorage.setItem('userPermissions', JSON.stringify(permissions));
   },
+
+  clearRoleAndPermissions({ commit }) {
+    commit('setUserRole', null);
+    commit('setPermissions', []);
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userPermissions');
+  },
 };
+
 const mutations = {
   setUserRole(state, role) {
     state.userRole = role;
@@ -26,7 +34,7 @@ const mutations = {
 };
 
 export default {
-  namespaced: true, // ensure this is true for namespacing
+  namespaced: true,
   state,
   getters,
   actions,

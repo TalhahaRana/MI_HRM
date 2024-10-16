@@ -51,16 +51,18 @@ export default {
     const password = ref("");
     const store = useStore();
     const router = useRouter();
+    console.log("Salman Ali");
     const handleLogin = async () => {
     const userData = { email: email.value, password: password.value };
   try {
     const response = await store.dispatch('auth/login', userData);
     console.log(response.data);
-  
     const { role, permissions,token } = response.data;
     localStorage.setItem("token",token);
     console.log("Local storage:  ...",localStorage.getItem("token"));
     console.log("ROle",role," Permission",permissions);
+    localStorage.setItem("permissions",JSON.stringify(permissions));
+    localStorage.setItem("roles",role);
     await store.dispatch('roles/setRoleAndPermissions', { role, permissions });
     console.log("permissions", response.permissions);
     // Check the user role from Vuex store
