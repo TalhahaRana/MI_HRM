@@ -3,7 +3,8 @@
     <div class="container">
       <div class="row align-items-center justify-content-center">
         <div class="col-md-6 img-login d-none d-md-block">
-          <img src="../../assets/images/login-img.png" alt="Login Illustration" class="img-fluid" />
+          <!-- <video src="../../assets/images/login.gif" class="img-fluid"></video> -->
+          <img src="../../assets/images/log.gif" alt="Login Illustration" class="img-fluid" />
         </div>
         <div class="col-12 col-md-6 mt-5">
           <div class="login-card">
@@ -92,26 +93,29 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
+  background: #fcfcff;
+  /* background-image: url("../../assets/images/bg.png"); */
+  /* background-image: url("../../assets/images/doodle.jpg"); */
+  /* background-image: linear-gradient(to top, #09203f 0%, #537895 100%); */
 }
 .login-card {
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); */
   text-align: center;
   margin: auto;
 }
 .login-content {
   width: 100%;
-  background: rgba(12, 12, 12, 0.2);
+  /* background: rgba(12, 12, 12, 0.2);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12.1px);
-  border: 1px solid rgba(12, 12, 12, 0.3);
+  border: 1px solid rgba(12, 12, 12, 0.3); */
   border-radius: 13px;
 }
 .left-side {
   padding: 20px;
-  color: white;
+  /* color: white; */
 }
 .left-side h3 {
   margin-bottom: 2px;
@@ -120,7 +124,7 @@ export default {
 }
 .left-side p {
   margin-bottom: 20px;
-  color: #ffffff;
+  /* color: #ffffff; */
 }
 .input-group {
   margin-bottom: 20px;
@@ -162,7 +166,7 @@ export default {
 }
 
 .forgot-password {
-  color: whitesmoke;
+  /* color: whitesmoke; */
   text-decoration: none;
 }
 

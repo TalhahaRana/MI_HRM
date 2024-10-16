@@ -1,186 +1,114 @@
 <template>
-  <div class="container mt-4  form-card">
-    <h2 class="text-center mb-4">Employee Attendance</h2>
-    <div class="row mb-3 align-items-end">
-      <div class="col-md-4">
-        <label for="date" class="form-label">Date</label>
-        <input
-          type="date"
-          id="date"
-          class="form-control"
-          v-model="selectedDate"
-        />
-      </div>
-      <div class="col-md-4">
-        <label for="month" class="form-label">Select Month</label>
-        <select id="month" class="form-select" v-model="selectedMonth">
-          <option disabled value="">Select Month</option>
-          <option
-            v-for="(month, index) in months"
-            :key="index"
-            :value="index + 1"
-          >
+  <div class="container mt-4 form-card">
+    <!-- Select Month Dropdown -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="selectedMonth" class="form-label">Select Month</label>
+        <select
+          v-model="selectedMonth"
+          id="selectedMonth"
+          class="form-select"
+        >
+          <option disabled value="">Choose a Month</option>
+          <option value="">All Months</option> <!-- Option to fetch all attendance -->
+          <option v-for="(month, index) in months" :key="index" :value="index + 1">
             {{ month }}
           </option>
         </select>
       </div>
-      <div class="col-md-4">
-        <label for="year" class="form-label">Select Year</label>
-        <select id="year" class="form-select" v-model="selectedYear">
-          <option disabled value="">Select Year</option>
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
-        </select>
+
+      <!-- Search Button -->
+      <div class="col-md-6 d-flex align-items-end">
+        <button @click="searchAttendance" class="btn btn-primary">
+          Filter Attendance
+        </button>
       </div>
     </div>
-    <div class="text-center mb-3">
-      <button class="btn btn-primary" @click="searchAttendance">
-        <i class="bi bi-search"></i> SEARCH
-      </button>
-    </div>
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered">
-        <thead class="table-light text-center">
+
+    <!-- Attendance Records Display -->
+    <div v-if="attendanceRecords && attendanceRecords.length" class="mt-4">
+      <h3>Attendance Records for Employee</h3>
+      <table class="table table-bordered">
+        <thead>
           <tr>
+            <!-- <th>Employee</th> -->
             <th>Date</th>
-            <th>Check In</th>
-            <th>Check Out</th>
-            <th>Duty Hours</th>
-            <th>Break</th>
-            <th>Overtime</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(record, index) in filteredRecords"
-            :key="index"
-            class="hover-row"
-          >
+          <tr v-for="(record, index) in attendanceRecords" :key="index">
+            <!-- <td>{{ record.name }}</td> -->
             <td>{{ record.date }}</td>
-            <td>{{ record.checkIn }}</td>
-            <td>{{ record.checkOut }}</td>
-            <td>{{ record.production }}</td>
-            <td>{{ record.breakTime }}</td>
-            <td>{{ record.overtime }}</td>
-          </tr>
-          <tr v-if="filteredRecords.length === 0">
-            <td colspan="6" class="text-center">
-              No records found for the selected criteria.
-            </td>
+            <td>{{ record.status }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-else class="mt-4 text-muted">
+      <p>No attendance records found.</p>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
-    const selectedDate = ref("");
-    const selectedMonth = ref("");
-    const selectedYear = ref("");
-
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const years = Array.from(
-      { length: 5 },
-      (_, i) => new Date().getFullYear() - i
-    );
-
-    const attendanceRecords = ref([
-      {
-        date: "2024-10-01",
-        checkIn: "10 AM",
-        checkOut: "7 PM",
-        production: "9 hrs",
-        breakTime: "1 hr",
-        overtime: "0",
-      },
-      {
-        date: "2024-10-02",
-        checkIn: "10 AM",
-        checkOut: "7 PM",
-        production: "8 hrs",
-        breakTime: "1 hr",
-        overtime: "0",
-      },
-      {
-        date: "2024-10-03",
-        checkIn: "10 AM",
-        checkOut: "7 PM",
-        production: "9 hrs",
-        breakTime: "1 hr",
-        overtime: "1",
-      },
-      {
-        date: "2024-09-30",
-        checkIn: "10 AM",
-        checkOut: "7 PM",
-        production: "8 hrs",
-        breakTime: "1 hr",
-        overtime: "0",
-      },
-      {
-        date: "2024-09-29",
-        checkIn: "10 AM",
-        checkOut: "7 PM",
-        production: "7 hrs",
-        breakTime: "1 hr",
-        overtime: "0",
-      },
+    const store = useStore();
+    const selectedMonth = ref(""); // Default is to show all attendance
+    const months = ref([
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
     ]);
 
-    const filteredRecords = computed(() => {
-      return attendanceRecords.value.filter((record) => {
-        const recordDate = new Date(record.date);
-        const matchesDate = selectedDate.value
-          ? record.date === selectedDate.value
-          : true;
-        const matchesMonth = selectedMonth.value
-          ? recordDate.getMonth() + 1 === selectedMonth.value
-          : true;
-        const matchesYear = selectedYear.value
-          ? recordDate.getFullYear() === selectedYear.value
-          : true;
+    // Computed property to get attendance records from the Vuex store
+    const attendanceRecords = computed(() => store.getters["employee/getAttendanceRecords"]);
 
-        return matchesDate && matchesMonth && matchesYear;
-      });
-    });
+    const searchAttendance = async () => {
+      try {
+        console.log("Fetching attendance for month:", selectedMonth.value || "All months");
 
-    const searchAttendance = () => {
-      // Filtering is handled automatically by the computed property
+        // Dispatch the Vuex action to fetch data
+        await store.dispatch("employee/fetchEmployeeAttendance", {
+          month: selectedMonth.value || "" // If no month selected, fetch all records
+        });
+
+      } catch (error) {
+        console.error("Error fetching attendance:", error);
+      }
     };
 
+    // Fetch all attendance records when the component is mounted
+    onMounted(() => {
+      searchAttendance(); // Automatically fetch attendance for all months
+    });
+
     return {
-      selectedDate,
       selectedMonth,
-      selectedYear,
       months,
-      years,
-      attendanceRecords,
-      filteredRecords,
       searchAttendance,
+      attendanceRecords,
     };
   },
 };
 </script>
+
+
+
+
+
+
+
+
+<style scoped>
+.container {
+  max-width: 800px;
+}
+</style>
+
 
 <style scoped>
 .table-responsive {

@@ -18,11 +18,12 @@
 
         <div class="col-7 row">
           <div class="profile-menu">
-            <button class="profile-settings-btn" @click="goToProfileSettings">
-              <i class="fas fa-user-circle"></i> Profile
+            
+            <button class="profile-settings-btn">
+              <img class="profile-icon"src="../assets/images/user.png" alt="">
             </button>
-            <button class="logout-btn" @click="logout">
-              <i class="fas fa-sign-out-alt"></i> Logout
+            <button class="logout-btn " @click="logout">
+              <img class="profile-icon" src="../assets/images/logout.gif" alt="">
             </button>
           </div>
         </div>
@@ -286,7 +287,6 @@ export default {
       sidebarVisible,
       toggleSidebar,
       closeSidebar,
-      goToProfileSettings,
       logout,
       DashView,
       hasPermission,
@@ -384,7 +384,7 @@ body {
   border: none;
   color: #6c7383;
   font-size: 16px;
-  margin-left: 20px;
+  margin-left: 7px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -423,9 +423,7 @@ body {
     display: block;
     /* Show when sidebar is toggled */
   }
-  .profile-menu {
-    margin-left: 60px;
-  }
+
   .wrapper {
     flex-direction: column;
   }
@@ -472,13 +470,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: end;
-  margin-left: 60px;
+  margin-left: 15px;
 }
 
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
+.profile-icon {
+  width: 35px;
 }
 </style>

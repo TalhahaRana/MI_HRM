@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const baseURL = 'http://192.168.15.115:8000/api'; // sameer Set your base URL
-//const baseURL = 'http://192.168.15.44:8000/api';
+const baseURL = 'http://192.168.15.115:8000/api'; // Set your base URL
+// const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL
+
 
 const ApiServices = {
   // Initialize the Axios defaults
