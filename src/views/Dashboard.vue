@@ -40,7 +40,7 @@
     </div>
 
     <!-- Navbar -->
-    <div class="container-fluid" style="background-color: #f5f7ff">
+    <div class="container-fluid bg" style="background-color: #f5f7ff">
       <div class="d-flex">
         <div
           :class="{
@@ -120,6 +120,9 @@ export default {
 .navbar-brand {
   font-size: 22px;
   color: rgb(7, 7, 7);
+}
+.bg{
+  height: 100vh;
 }
 
 /* Adjust the sidebar and main content */
