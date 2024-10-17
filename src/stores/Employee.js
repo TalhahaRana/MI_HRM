@@ -28,21 +28,21 @@ const actions = {
       throw error;
     }
   },
-  async fetchSalaryDetails({ commit }) {
-
+  async fetchSalaryDetails({ commit }, month) {
     try {
-
-      const response = await ApiServices.GetRequest("/salary-invoice"); // No need for employee ID
-
-      commit("setSalaryDetails", response.data); // Use the response data from the API
-
+      const response = await ApiServices.GetRequest(`/salary-invoice?month=${month}`);
+      commit("setSalaryDetails", response.data); // Update based on the API response structure
     } catch (error) {
-
+      console.error("Error fetching salary details:", error);
       throw error;
-
     }
-
   },
+
+
+
+
+
+
    // Fetch a single employee by ID
    async getEmployee({ commit }, id) {
     try {
