@@ -31,6 +31,8 @@ import AllAssignedProjects from "@/components/admin/AllAssignedProjects.vue";
 import AssignProjectEmployee from "@/components/hr/AssignProjectEmployee.vue";
 import TwoFa from "@/views/TwoFa.vue";
 import QR from "@/views/QR.vue";
+import Salaries from "@/components/admin/Salaries.vue";
+
 //Profile
 import Profile from "@/components/profile.vue";
 
@@ -207,6 +209,11 @@ const router = createRouter({
           path: "payroll-hr",
           component: Payroll,
           beforeEnter: RouteService('User can get salary invoice', ['employee','hr']),
+        },
+        {
+          path: "salaries",
+          component: Salaries,
+          beforeEnter: RouteService('User can get salary invoice', ['admin']),
         },
         // {
         //   path: "manage-projects-hr",

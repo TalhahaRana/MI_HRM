@@ -11,7 +11,13 @@
                   <i class="icon fas fa-address-card"></i> All Employees
                 </router-link>
               </li>
-              <li v-if="samePermission('User can see Working Hours')">
+              
+              <li v-if="samePermission('User can get salary invoice')">
+                <router-link to="/dashboard/salaries" class="redirect-link">
+                  <i class="icon fas fa-address-card"></i>Salary
+                </router-link>
+              </li>
+              <li v-if="samePermission('User can get salary invoice')">
                 <router-link
                   to="/dashboard/working-hours"
                   class="redirect-link"
@@ -57,7 +63,7 @@
               
               <li v-if="!samePermission('User can see Attendance Records')">
                 <router-link
-                  to="/dashboard/attendance-hr"
+                  to="/dashboard/attendance-employee"
                   class="redirect-link"
                 >
                   <i class="icon fas fa-user-clock"></i> View Attendance

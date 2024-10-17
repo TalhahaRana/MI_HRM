@@ -10,7 +10,7 @@
                   <img
                     width="150px"
                     height="45px"
-                    src="../assets/images/logo.jpg"
+                    src="../assets/images/logo.png"
                   />
                 </div>
                 <button

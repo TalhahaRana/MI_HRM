@@ -36,45 +36,57 @@
     </div>
 
     <div class="chart-container">
-      <Pie :chart-data="chartData" :options="chartOptions" />
+      <Chart :data="chartData" :options="chartOptions" type="pie" />
     </div>
   </div>
 </template>
 
 <script>
-import { Pie } from 'vue-chartjs';
-import { computed, ref, onMounted } from 'vue';
-import { useStore } from 'vuex';
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Chart } from "vue-chartjs";
+import { computed, ref, onMounted } from "vue";
+import { useStore } from "vuex";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 
+// Register the necessary components for Chart.js
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 export default {
-  name: 'EmployeeAttendanceChart',
+  name: "EmployeeAttendanceChart",
   components: {
-    Pie,
+    Chart,
   },
   setup() {
     const store = useStore();
-    const currentMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+    // Get the first day of the current month
+    const currentMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      .toISOString()
+      .split("T")[0];
 
     const selectedDate = ref(currentMonthFirstDay);
-    const selectedFrequency = ref('monthly');
+    const selectedFrequency = ref("monthly");
 
+    // Function to fetch attendance data
     const fetchAttendanceData = async () => {
       if (selectedDate.value && selectedFrequency.value) {
         try {
-          console.log('Fetching attendance data for:', selectedDate.value, selectedFrequency.value);
-          await store.dispatch('employeeAttendance/fetchEmployeeStatus', {
+          console.log("Fetching attendance data for:", selectedDate.value, selectedFrequency.value);
+          await store.dispatch("employee/fetchEmployeeStatus", {
             date: selectedDate.value,
             frequency: selectedFrequency.value,
           });
         } catch (error) {
-          console.error('Error fetching attendance data:', error);
-          alert('Failed to fetch attendance data.');
+          console.error("Error fetching attendance data:", error);
+          alert("Failed to fetch attendance data.");
         }
       } else {
-        alert('Please select both a date and frequency.');
+        alert("Please select both a date and frequency.");
       }
     };
 
@@ -82,34 +94,37 @@ export default {
       fetchAttendanceData();
     });
 
+    // Compute the attendance counts
     const attendanceCounts = computed(() => {
-      const counts = store.getters['employeeAttendance/statusCounts'] || { present: 0, absent: 0 };
+      const counts = store.getters["employee/statusCounts"] || { present: 0, absent: 0 };
       return counts;
     });
 
+    // Chart data (computed based on attendance counts)
     const chartData = computed(() => {
       return {
-        labels: ['Present', 'Absent'],
+        labels: ["Present", "Absent"],
         datasets: [
           {
-            label: 'Attendance',
-            backgroundColor: ['#70e000', '#ff686b'],
+            label: "Attendance",
+            backgroundColor: ["#70e000", "#ff686b"], // Green for present, red for absent
             data: [attendanceCounts.value.present, attendanceCounts.value.absent],
           },
         ],
       };
     });
 
+    // Chart options
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'top',
+          position: "top",
         },
         title: {
           display: true,
-          text: 'Employee Attendance Distribution',
+          text: "Employee Attendance Distribution",
         },
       },
     };

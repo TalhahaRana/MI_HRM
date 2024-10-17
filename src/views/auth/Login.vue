@@ -57,7 +57,7 @@ export default {
     const userData = { email: email.value, password: password.value };
   try {
     const response = await store.dispatch('auth/login', userData);
-    console.log(response.data);
+    console.log("respnseeeeeeeeee......",response.data);
     const { role, permissions,token } = response.data;
     localStorage.setItem("token",token);
     console.log("Local storage:  ...",localStorage.getItem("token"));
