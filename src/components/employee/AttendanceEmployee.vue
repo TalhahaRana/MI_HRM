@@ -1,114 +1,113 @@
 <template>
   <div class="container mt-4 form-card">
-    <!-- Select Month Dropdown -->
+    <h2 class="text-center mb-4">Employee Working Hours</h2>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="selectedMonth" class="form-label">Select Month</label>
-        <select
-          v-model="selectedMonth"
-          id="selectedMonth"
-          class="form-select"
-        >
-          <option disabled value="">Choose a Month</option>
-          <option value="">All Months</option> <!-- Option to fetch all attendance -->
-          <option v-for="(month, index) in months" :key="index" :value="index + 1">
-            {{ month }}
-          </option>
+        <label for="date" class="form-label">Date</label>
+        <input
+          type="date"
+          id="date"
+          class="form-control"
+          v-model="date"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="frequency" class="form-label">Frequency</label>
+        <select id="frequency" class="form-select" v-model="frequency" required>
+          <option value="" disabled>Select Frequency</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
         </select>
       </div>
-
-      <!-- Search Button -->
-      <div class="col-md-6 d-flex align-items-end">
-        <button @click="searchAttendance" class="btn btn-primary">
-          Filter Attendance
-        </button>
-      </div>
     </div>
-
-    <!-- Attendance Records Display -->
-    <div v-if="attendanceRecords && attendanceRecords.length" class="mt-4">
-      <h3>Attendance Records for Employee</h3>
-      <table class="table table-bordered">
-        <thead>
+    <div class="text-center mb-3">
+      <button class="btn btn-primary" @click="fetchWorkingHours">
+        <i class="bi bi-search"></i> FETCH WORKING HOURS
+      </button>
+    </div>
+    <div class="table-responsive" v-if="workingHours.length > 0">
+      <table class="table table-striped table-bordered">
+        <thead class="table-light text-center">
           <tr>
-            <!-- <th>Employee</th> -->
             <th>Date</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Working Hours</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(record, index) in attendanceRecords" :key="index">
-            <!-- <td>{{ record.name }}</td> -->
+          <tr
+            v-for="(record, index) in workingHours"
+            :key="index"
+            class="hover-row"
+          >
             <td>{{ record.date }}</td>
+            <td>{{ record.check_in }}</td>
+            <td>{{ record.check_out }}</td>
+            <td>{{ record.working_hours }}</td>
             <td>{{ record.status }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div v-else class="mt-4 text-muted">
-      <p>No attendance records found.</p>
+    <div v-else>
+      <p class="text-center">No records found for the selected date and frequency.</p>
     </div>
+
+    <div>
+      <AttendenceEmployeeChart/>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
+ import AttendenceEmployeeChart from './AttendenceEmployeeChart.vue';
 
 export default {
+  components: {
+    AttendenceEmployeeChart,
+  },
   setup() {
     const store = useStore();
-    const selectedMonth = ref(""); // Default is to show all attendance
-    const months = ref([
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ]);
 
-    // Computed property to get attendance records from the Vuex store
-    const attendanceRecords = computed(() => store.getters["employee/getAttendanceRecords"]);
+    // Reactive variables
+    const date = ref('');
+    const frequency = ref('');
 
-    const searchAttendance = async () => {
-      try {
-        console.log("Fetching attendance for month:", selectedMonth.value || "All months");
+    // Computed property to access working hours from Vuex store
+    const workingHours = computed(() => store.getters['employeeAttendance/allWorkingHours']);
 
-        // Dispatch the Vuex action to fetch data
-        await store.dispatch("employee/fetchEmployeeAttendance", {
-          month: selectedMonth.value || "" // If no month selected, fetch all records
-        });
-
-      } catch (error) {
-        console.error("Error fetching attendance:", error);
+    // Method to fetch working hours
+    const fetchWorkingHours = async () => {
+      if (date.value && frequency.value) {
+        try {
+          await store.dispatch('employeeAttendance/fetchWorkingHours', {
+            date: date.value,
+            frequency: frequency.value,
+          });
+        } catch (error) {
+          console.error('Error fetching working hours:', error);
+          alert('Error fetching working hours. Please try again.');
+        }
+      } else {
+        alert('Please provide both Date and Frequency.');
       }
     };
 
-    // Fetch all attendance records when the component is mounted
-    onMounted(() => {
-      searchAttendance(); // Automatically fetch attendance for all months
-    });
-
     return {
-      selectedMonth,
-      months,
-      searchAttendance,
-      attendanceRecords,
+      date,
+      frequency,
+      workingHours,
+      fetchWorkingHours,
     };
   },
 };
 </script>
-
-
-
-
-
-
-
-
-<style scoped>
-.container {
-  max-width: 800px;
-}
-</style>
-
 
 <style scoped>
 .table-responsive {
@@ -128,10 +127,6 @@ export default {
   background-color: #e9ecef; /* Light grey on hover */
 }
 
-.table tbody tr td:hover {
-  background-color: #e9ecef; /* Light grey for each cell on hover */
-}
-
 .btn-primary {
   background-color: var(--basic-button); /* Primary button color */
   border-color: white;
@@ -139,16 +134,5 @@ export default {
 
 .btn-primary:hover {
   background-color: #0056b3; /* Darker blue on hover */
-}
-
-@media (max-width: 576px) {
-  .container {
-    padding: 0 15px;
-  }
-}
-
-/* Additional styles for icons */
-.bi {
-  margin-right: 5px; /* Space between icon and text */
 }
 </style>
