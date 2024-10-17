@@ -119,7 +119,7 @@
               
               <li v-if="!samePermission('User can see Attendance Records')">
                 <router-link
-                  to="/dashboard/attendance-hr"
+                  to="/dashboard/attendance-employee"
                   class="redirect-link"
                 >
                   <i class="icon fas fa-user-clock"></i> View Attendance
