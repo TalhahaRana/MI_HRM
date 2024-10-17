@@ -5,7 +5,6 @@ const state = {
   salaryDetails: {}, // Salary details for the specific employee
   workingHour: "", // New state for working hours
   workingHours: [],
-
   assignedProjects: [],
   attendanceRecords: [],
 };
@@ -16,6 +15,7 @@ const getters = {
   getAssignedProjects: (state) => state.assignedProjects,
   getAttendanceRecords: (state) => state.attendanceRecords,
   getWorkingHours: (state) => state.workingHours,
+  statusCounts: (state) => state.statusCounts,
 };
 
 const actions = {
@@ -31,6 +31,33 @@ const actions = {
       throw error;
     }
   },
+  async fetchEmployeeStatus({ commit }, { date, frequency }) {
+    try {
+        // Fetch working hours using the API
+        const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+        // Get the daily working hours from the API response
+        const dailyWorkingHours = response.data.daily_working_hours;
+
+        // Calculate the counts based on the status key
+        const statusCounts = dailyWorkingHours.reduce(
+            (counts, entry) => {
+                if (entry.status === "present") {
+                    counts.present++;
+                } else if (entry.status === "absent") {
+                    counts.absent++;
+                }
+                return counts;
+            }, { present: 0, absent: 0 } // Initial counts
+        );
+
+        // Commit the computed counts to the store
+        commit("setStatusCounts", statusCounts);
+    } catch (error) {
+        console.error("Error fetching employee status:", error);
+        throw error; // Rethrow the error for handling in the component
+    }
+},
   async LeaveApplication({ commit }, leaveApplication) {
     try {
       const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
@@ -307,6 +334,9 @@ const mutations = {
   newLeaveApplication(state, leaveApplication) {
     // Logic to handle the leave application if needed
   },
+setStatusCounts(state, statusCounts) {
+  state.statusCounts = statusCounts;
+},
   //Arham
   setWorkingHours(state, workingHours) {
     state.workingHour = workingHours; // Update the state with fetched working hours

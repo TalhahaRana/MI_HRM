@@ -1,37 +1,37 @@
 import store from '@/stores';
+
 let RouteService = function routeGuard(permission, roles = []) {
-  // const store = useStore();
-  const userRole = localStorage.getItem("roles");
-  const perm=JSON.parse(localStorage.getItem("permissions"));
-  console.log("salman ali.......",userRole,"permission",perm);
-  const userPermissions = Array.isArray(perm) ? perm.includes(permission) : false;
-  console.log("User Permission ",userPermissions);
-  // const userRole =  store.getters['roles/userRole'];
-  // User Role
   return (to, from, next) => {
-    // const hasPermission = userPermissions.includes(permission);
+    // Get the user role and permission check from Vuex
+    const userRole = store.getters['roles/userRole'];
+    const hasPermission = store.getters['roles/hasPermission'](permission); // Checking if the user has the required permission
+
+    console.log("User Role: ", userRole);
+    console.log("Has Permission: ", hasPermission);
+
+    // Check if the user has the required role
     const hasRole = roles.includes(userRole);
-    console.log("Has Role",hasRole);
-    console.log("Permission",userPermissions);
-      if (roles.length > 0) {
-        if (userPermissions && hasRole) {
-          console.log("here");
-          next(); 
-        } else {
-          console.log("here salman");
-          next('/'); 
-        }
+
+    console.log("Has Role: ", hasRole);
+
+    if (roles.length > 0) {
+      if (hasPermission && hasRole) {
+        console.log("Access granted");
+        next(); // Allow access to the route
       } else {
-        if (userPermissions) {
-          console.log("here s");
-          next();
-        } else {
-          console.log("here q");
-          next('/');
-        }
+        console.log("Access denied");
+        next('/'); // Redirect to home if access is denied
       }
-    } 
- // next(); 
+    } else {
+      if (hasPermission) {
+        console.log("Access granted");
+        next(); // Allow access if only permission is needed
+      } else {
+        console.log("Access denied");
+        next('/'); // Redirect to home if access is denied
+      }
+    }
+  };
 };
 
 export default RouteService;
