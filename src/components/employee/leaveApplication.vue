@@ -78,7 +78,7 @@ export default {
 <style scoped>
 /* Container for the form */
 .form-container {
-  margin: 50px auto;
+  /* margin: 50px auto; */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);

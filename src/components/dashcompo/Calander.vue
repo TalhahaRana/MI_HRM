@@ -33,22 +33,49 @@ export default {
       selectedDate: null,
       days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       monthNames: [
-        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
       ],
     };
   },
   computed: {
     datesInMonth() {
       const dates = [];
-      const firstDayOfMonth = new Date(this.selectedYear, this.selectedMonth, 1).getDay();
-      const totalDaysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
+      const firstDayOfMonth = new Date(
+        this.selectedYear,
+        this.selectedMonth,
+        1
+      ).getDay();
+      const totalDaysInMonth = new Date(
+        this.selectedYear,
+        this.selectedMonth + 1,
+        0
+      ).getDate();
 
       // Get dates from the previous month to fill the calendar grid
-      const daysInPrevMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
+      const daysInPrevMonth = new Date(
+        this.selectedYear,
+        this.selectedMonth,
+        0
+      ).getDate();
       for (let i = firstDayOfMonth - 1; i >= 0; i--) {
         dates.push({
           day: daysInPrevMonth - i,
-          fullDate: new Date(this.selectedYear, this.selectedMonth - 1, daysInPrevMonth - i),
+          fullDate: new Date(
+            this.selectedYear,
+            this.selectedMonth - 1,
+            daysInPrevMonth - i
+          ),
           isCurrentMonth: false,
         });
       }
@@ -104,7 +131,7 @@ export default {
         date.fullDate.toDateString() === this.selectedDate.toDateString();
 
       return {
-        "calendar__date": true,
+        calendar__date: true,
         "calendar__date--today": isToday,
         "calendar__date--selected": isSelected,
         "calendar__date--other-month": !date.isCurrentMonth,
@@ -115,17 +142,17 @@ export default {
 </script>
 
 <style scoped>
-button{
+button {
   border: none;
   width: 37px;
 }
 .calendar {
   padding: 10px;
-    width: auto;
-    background: #dae7ff;
-    
-    /* margin: 31px; */
-    border-radius: 24px;
+  width: auto;
+  background: #dae7ff;
+  height: 340px;
+  /* margin: 31px; */
+  border-radius: 24px;
 }
 
 .calendar__header {
@@ -134,7 +161,6 @@ button{
   align-items: center;
   padding: 10px;
   background-color: #dae7ff;
-  ;
   border-radius: 10px 10px 0 0;
 }
 
@@ -169,13 +195,17 @@ button{
   padding: 1px 13px;
   border-radius: 13%;
   color: #ff0e38;
-
 }
 
 .calendar__date--selected {
   font-weight: bold;
   background-color: #b7e3ff;
-    border-radius: 13%;
-    color: #0000ff;
+  border-radius: 13%;
+  color: #0000ff;
+}
+@media (max-width: 1024px) {
+  .calendar {
+    height: 352px;
+  }
 }
 </style>

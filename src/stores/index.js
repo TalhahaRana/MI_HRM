@@ -8,6 +8,7 @@ import hr from './Hr';
 import projects from './Projects';
 import department from './Department';
 import manageLeaves from './ManageLeaves'
+import employeeAttendance from './EmployeeAttendance'
 // Vue 3 style store setup
 export default createStore({
   modules: {
@@ -18,6 +19,7 @@ export default createStore({
     hr,
     projects,
     department,
-    manageLeaves
+    manageLeaves,
+    employeeAttendance
   },
 });

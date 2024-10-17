@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5  form-card">
+    <div class="container mt-5 form-card">
       <h3 class="mb-4">Manage Employee Leave Applications</h3>
   
       <!-- Leave Table -->

@@ -1,5 +1,5 @@
 <template>
-    <div class="form-card mt-4">
+    <div class="form-card">
       <h4>Assigned Projects</h4>
       
       <!-- Search Bar, Status Filter Dropdown, and Date Range Filter -->
