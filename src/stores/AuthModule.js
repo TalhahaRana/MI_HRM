@@ -623,7 +623,7 @@ const state = {
   user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
   token: localStorage.getItem("token") || null,
   role: localStorage.getItem("role") || null,
-  permissions: [],
+  permissions: localStorage.getItem("permissions") ? JSON.parse(localStorage.getItem("permissions")) : [],
 };
 
 const getters = {
@@ -652,6 +652,21 @@ const actions = {
       throw error;
     }
   },
+   async updateUser({ commit }, userData) {
+    try {
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+      const response = await ApiServices.PutRequest(
+        "/user/update",
+        userData.updatedData, // Payload should be correctly structured here
+        { headers }
+      ),
+
+      alert("User updated successfully");
+      return response;
+    } catch (error) {
+      console.error("Failed to update user:", error);
 
   async verify2FACode({ commit }, twoFaCode) {
     try {
