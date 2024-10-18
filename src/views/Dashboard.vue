@@ -7,18 +7,9 @@
             <div class="col-5 row">
               <div class="d-flex align-items-center gap-5">
                 <div class="header-left">
-                  <img
-                    width="150px"
-                    height="45px"
-                    src="../assets/images/logo.png"
-                  />
+                  <img width="150px" height="45px" src="../assets/images/logo.png" />
                 </div>
-                <button
-                  class="btn"
-                  type="button"
-                  id="sidebarToggle"
-                  @click="toggleSidebar"
-                >
+                <button class="btn" type="button" id="sidebarToggle" @click="toggleSidebar">
                   <i class="fa-xl fa-solid fa-bars"></i>
                 </button>
               </div>
@@ -27,19 +18,21 @@
             <div class="col-7 row">
               <div class="profile-menu">
                 <button class="profile-settings-btn">
-                  <img
-                    class="profile-icon"
-                    src="../assets/images/user.png"
-                    alt=""
-                  />
+                  <img class="profile-icon" src="../assets/images/user.png" alt="">
                 </button>
-                <button class="logout-btn" @click="logout">
-                  <img
-                    class="profile-icon"
-                    src="../assets/images/logout.gif"
-                    alt=""
-                  />
+
+                <button class="Btn" @click="logout">
+                  <div class="sign">
+                    <svg viewBox="0 0 512 512">
+                      <path
+                        d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                      </path>
+                    </svg>
+                  </div>
+
+                  <div class="text">Logout</div>
                 </button>
+
               </div>
             </div>
           </div>
@@ -48,181 +41,13 @@
     </div>
 
     <!-- Navbar -->
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-md-3">
-          <nav
-            id="sidebar"
-            :class="{
-              'd-none d-md-block': !sidebarVisible,
-              'd-block': sidebarVisible,
-            }"
-          >
-            <ul class="list-unstyled components">
-              <li v-if="hasPermission('User can add users (employee,hr)')">
-                <router-link to="/dashboard/add-employee" class="redirect-link">
-                  <i class="icon fas fa-user-plus"></i> Add Employee
-                </router-link>
-              </li>
-              <li v-if="samePermission('User can see all employee')">
-                <router-link to="/dashboard/all-employee" class="redirect-link">
-                  <i class="icon fas fa-address-card"></i> All Employees
-                </router-link>
-              </li>
-              <li v-if="samePermission('User can see Working Hours')">
-                <router-link
-                  to="/dashboard/working-hours"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-clock"></i> Admin Working Hours
-                </router-link>
-              </li>
-              <!-- <li>
-                <router-link to="/dashboard/leaves" class="redirect-link">
-                  <i class="icon far fa-band-aid"></i> Manage Leaves
-                </router-link>
-              </li> -->
-              <li v-if="hasPermission('User can add department')">
-                <router-link
-                  to="/dashboard/department-management"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-building"></i> Manage Department
-                </router-link>
-              </li>
-              <li v-if="hasPermission('User can create projects')">
-                <router-link to="/dashboard/projects" class="redirect-link">
-                  <i class="icon fas fa-project-diagram"></i> Manage Projects
-                </router-link>
-              </li>
-              <li
-                v-if="hasPermission('User can view employee assigned projects')"
-              >
-                <router-link
-                  to="/dashboard/all-assign-projects"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-project-diagram"></i> Employee Assigned
-                  Projects
-                </router-link>
-              </li>
-
-              <!-- <li>
-                <router-link to="/dashboard/checkout" class="redirect-link">
-                  <i class="icon far fa-stopwatch"></i> Check-in/Check-out
-                </router-link>
-              </li> -->
-              <!-- <li>
-                <router-link
-                  to="/dashboard/manage-leaves"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-calendar-check"></i> Manage Attendance
-                </router-link>
-              </li> -->
-              <!-- HR -->
-              <li v-if="samePermission('User can see Attendance Records')">
-                <router-link
-                  to="/dashboard/manage-leaves-hr"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-user-times"></i> Manage Employee Leaves
-                </router-link>
-              </li>
-              <li v-if="hasPermission('User can assign Projects to employees')">
-                <router-link
-                  to="/dashboard/assign-projects-employee"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-user-times"></i> Assign Projects
-                </router-link>
-              </li>
-
-              <li v-if="!samePermission('User can see Attendance Records')">
-                <router-link
-                  to="/dashboard/attendance-hr"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-user-clock"></i> View Attendance
-                </router-link>
-              </li>
-              <!-- <li>
-                <router-link
-                  to="/dashboard/department-management"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-building"></i> Department Management
-                </router-link>
-              </li> -->
-              <li v-if="!samePermission('User can get salary invoice')">
-                <router-link to="/dashboard/payroll-hr" class="redirect-link">
-                  <i class="icon fas fa-money-check-alt"></i> Payroll
-                </router-link>
-              </li>
-              <!-- <li>
-                <router-link
-                  to="/dashboard/manage-projects-hr"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-tasks"></i> Manage Projects HR
-                </router-link>
-              </li> -->
-              <!-- <li v-if="hasPermission('User can Check-in/Check-out')">
-                <router-link to="/dashboard/checkout" class="redirect-link">
-                  <i class="icon fas fa-user-check"></i> Check-in/Check-out
-                  Tracking
-                </router-link>
-              </li> -->
-              <!-- <li>
-                <router-link
-                  to="/dashboard/employee-joining"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-calendar-plus"></i> Employee Joining
-                  Dates
-                </router-link>
-              </li> -->
-
-              <!-- Employees -->
-              <li v-if="hasPermission('User can Check-in/Check-out')">
-                <router-link to="/dashboard/check" class="redirect-link">
-                  <i class="icon fas fa-user-check"></i> Check-in/Check-out
-                </router-link>
-              </li>
-              <li v-if="hasPermission('')">
-                <router-link
-                  to="/dashboard/attendance-employee"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-calendar-alt"></i> View Attendance
-                </router-link>
-              </li>
-              <li v-if="hasPermission('User can submit Leave Applications')">
-                <router-link
-                  to="/dashboard/leave-application"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-file-alt"></i> Apply Leave
-                </router-link>
-              </li>
-              <li v-if="!samePermission('User can see Working Hours')">
-                <router-link
-                  to="/dashboard/working-hours"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-clock"></i> Working Hours
-                </router-link>
-              </li>
-              <li v-if="hasPermission('User can see their assigned projects')">
-                <router-link
-                  to="/dashboard/assignedProjects"
-                  class="redirect-link"
-                >
-                  <i class="icon fas fa-clipboard-list"></i> Assigned Projects
-                </router-link>
-              </li>
-            </ul>
-          </nav>
+    <div class="container-fluid bg" style="background-color: #f5f7ff">
+      <div class="d-flex">
+        <div :class="{
+          'sidebar-expanded': sidebarVisible,
+          'sidebar-collapsed': !sidebarVisible,
+        }">
+          <SideBar :visible="sidebarVisible" />
         </div>
         <div class="main-content">
           <router-view></router-view>
@@ -237,8 +62,7 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import SideBar from "./SideBar.vue";
 import DashView from "../components/dashcompo/DashView.vue";
-
-import store from "@/stores";
+import store from '@/stores';
 export default {
   name: "Dashboard",
   components: { SideBar, DashView },
@@ -254,48 +78,30 @@ export default {
       sidebarVisible.value = false;
     };
 
+
     watch(
       () => router.currentRoute.value,
       () => {
         closeSidebar(); // Automatically close sidebar on route change
       }
     );
-    const hasPermission = (permission) => {
-      return store.getters["roles/hasPermission"](permission);
-      //return true;
-    };
-    const samePermission = (permission) => {
-      const isPermission = store.getters["roles/hasPermission"](permission);
-      const role = store.getters["roles/userRole"];
-      console.log("Same Permission Role", role);
-      if (isPermission) {
-        if (role == "employee") {
-          return false;
-        }
-        if (role == "admin" || !(role == "hr" && isPermission)) {
-          console.log("her!!!!!!!!!!!!!e");
-          return true;
-        } else {
-          return false;
-        }
-      }
-      return false;
-    };
     const goToProfileSettings = () => {
       // Logic to navigate to profile settings
     };
 
     const logout = async () => {
+
       try {
         // Dispatch the logout action from Vuex
-        await store.dispatch("auth/logout");
+        await store.dispatch('auth/logout');
 
         // Redirect to the login page
-        router.push("/");
+        router.push('/');
       } catch (error) {
-        console.error("Error during logout:", error);
+        console.error('Error during logout:', error);
       }
     };
+
 
     return {
       sidebarVisible,
@@ -304,8 +110,6 @@ export default {
       goToProfileSettings,
       logout,
       DashView,
-      hasPermission,
-      samePermission,
     };
   },
 };
@@ -316,12 +120,14 @@ export default {
   font-size: 22px;
   color: rgb(7, 7, 7);
 }
+
 .bg {
   height: 100vh;
 }
 
 /* Adjust the sidebar and main content */
 .sidebar-expanded {
+  padding: 25px 4px;
   width: 250px;
   transition: width 0.3s ease-in-out;
 }
@@ -332,11 +138,13 @@ export default {
 }
 
 .main-content {
+  padding: 25px 14px;
+
   flex-grow: 1;
   transition: margin-left 0.3s ease-in-out;
 }
 
-.sidebar-collapsed ~ .main-content {
+.sidebar-collapsed~.main-content {
   margin-left: 0;
 }
 
@@ -348,8 +156,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: end;
-  margin-left: 60px;
+  margin-left: 15px;
+  gap : 10px;
 }
+
 .profile-icon {
   width: 35px;
 }
@@ -377,4 +187,78 @@ export default {
     display: none;
   }
 }
+/* From Uiverse.io by MUJTABA201566 */ 
+.Btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background-color: white;
+}
+
+/* plus sign */
+.sign {
+  width: 100%;
+  transition-duration: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign svg {
+  width: 17px;
+}
+
+.sign svg path {
+  fill: black;
+}
+/* text */
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  transition-duration: 0.3s;
+}
+/* hover effect on button width */
+.Btn:hover {
+  background-color: black;
+  width: 125px;
+  border-radius: 40px;
+  transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+  width: 30%;
+  transition-duration: 0.3s;
+  padding-left: 20px;
+}
+
+.Btn:hover .sign svg path {
+  fill: white;
+}
+
+/* hover effect button's text */
+.Btn:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-right: 10px;
+}
+/* button click effect*/
+.Btn:active {
+  transform: translate(2px, 2px);
+}
+
 </style>

@@ -1,101 +1,162 @@
 <template>
-<div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-today-bookings">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Employees</h5>
-                        <p class="card-text display-4">4006</p>
-                        <p class="text-muted">Last 30 days</p>
-                    </div>
-                </div>
+    <div class="row">
+      <!-- Left Side: Statistics Cards -->
+      <div class="col-md-6 mb-5 stats-card">
+        <div class="card p-4">
+          <h5 class="card-title">Statistics</h5>
+          <!-- Progress Bars -->
+          <div class="progress-card">
+            <p>Today Leave <span class="float-end">65</span></p>
+            <div class="progress">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 20%"></div>
             </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-total-bookings">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Hr's</h5>
-                        <p class="card-text display-4">13</p>
-                        <p class="text-muted">Last 30 days</p>
-                    </div>
-                </div>
+          </div>
+          <div class="progress-card mt-3">
+            <p>Total Absents <span class="float-end">92</span></p>
+            <div class="progress">
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 16%"></div>
             </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-number-meetings">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Departments</h5>
-                        <p class="card-text display-4">24</p>
-                        <p class="text-muted">2.00% (Increase)</p>
-                    </div>
-                </div>
+          </div>
+          <div class="progress-card mt-3">
+            <p>Completed Projects <span class="float-end">112</span></p>
+            <div class="progress">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 76%"></div>
             </div>
-
-            <div class="col-md-6 mb-4">
-                <div class="card text-center shadow-sm card-number-clients">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Ongoing Projects</h5>
-                        <p class="card-text display-4">55</p>
-                        <p class="text-muted">0.22% (Increase)</p>
-                    </div>
-                </div>
+          </div>
+          <div class="progress-card mt-3">
+            <p>Ongoing Projects <span class="float-end">212</span></p>
+            <div class="progress">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: 89%"></div>
             </div>
-</template>
-
-<script>
-</script>
-<style scoped>
-
-.card {
+          </div>
+         
+        </div>
+      </div>
+  
+      <!-- Right Side: 4 Cards in 2x2 grid -->
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-sm-6 mb-4">
+            <div class="card text-center shadow-sm card-today-bookings">
+              <div class="card-body">
+                <h5 class="card-title">Total Employees</h5>
+                <h5 class="card-text display-4">{{ employeeCount }}</h5>
+                <p class="text-muted">Last 30 days</p>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-sm-6 mb-4">
+            <div class="card text-center shadow-sm card-total-bookings">
+              <div class="card-body">
+                <h5 class="card-title">Total HRs</h5>
+                <p class="card-text display-4">{{ hrCount }}</p>
+                <p class="text-muted">Last 30 days</p>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-sm-6 mb-4">
+            <div class="card text-center shadow-sm card-number-meetings">
+              <div class="card-body">
+                <h5 class="card-title">Total Departments</h5>
+                <p class="card-text display-4">{{ departmentCount }}</p>
+                <p class="text-muted">2.00% (Increase)</p>
+              </div>
+            </div>
+          </div>
+  
+          <div class="col-sm-6 mb-4">
+            <div class="card text-center shadow-sm card-number-clients">
+              <div class="card-body">
+                <h5 class="card-title">Total Ongoing Projects</h5>
+                <p class="card-text display-4">55</p>
+                <p class="text-muted">0.22% (Increase)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { computed, onMounted } from 'vue';
+  import { useStore } from 'vuex';
+  
+  export default {
+    setup() {
+      const store = useStore();
+  
+      onMounted(async () => {
+        console.log('Fetching counts...');
+        await store.dispatch('employee/card');
+        console.log('Employee Count:', store.getters['employee/employeeCount']);
+        console.log('HR Count:', store.getters['employee/hrCount']);
+      });
+  
+      const employeeCount = computed(() => store.getters['employee/employeeCount']);
+      const hrCount = computed(() => store.getters['employee/hrCount']);
+      const departmentCount = computed(() => store.getters['employee/departmentCount']);
+  
+      return {
+        employeeCount,
+        hrCount,
+        departmentCount
+      };
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .card {
     border-radius: 15px;
-    color: white;
     background-color: #ffffff;
     box-shadow: 0px 5px 21px -5px #CDD1E1;
-}
 
-.card-today-bookings {
+  }
+  
+  .card-today-bookings {
     background-color: #7DA0FA;
-}
-
-.card-total-bookings {
+  }
+  
+  .card-total-bookings {
     background-color: #4747A1;
-}
-
-.card-number-meetings {
+  }
+  
+  .card-number-meetings {
     background-color: #7978E9;
-}
-
-.card-number-clients {
+  }
+  
+  .card-number-clients {
     background-color: #F3797E;
-}
-
-.card-title {
+  }
+  
+  .card-title {
     font-weight: bold;
-}
-
-.card-text {
+  }
+  
+  .card-text {
     font-size: 1.5rem;
-}
-
-.clock {
-
-    width: 300px;
-
-    height: 250px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-size: 48px;
-
-    background-color: cornflowerblue;
-
-    border: 2px solid #007bff;
-
+  }
+  
+  .progress-card {
+    margin-bottom: 15px;
+    border:1px solid rgb(221, 221, 221);
+    padding: 10px;
+  }
+  
+  .progress {
+    height: 8px;
+  }
+  
+  .progress-bar {
     border-radius: 10px;
+  }
+  
+  .float-end {
+    float: right;
+  }
 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-}
-</style>
+  </style>
+  

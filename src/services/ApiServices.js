@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
-const baseURL = "http://192.168.15.115:8000/api"; // Set your base URL
-// const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL
+// const baseURL = 'http://192.168.15.93:8000/api'; // Set your base URL
+const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL
+
 
 const ApiServices = {
   // Initialize the Axios defaults
@@ -21,49 +22,57 @@ const ApiServices = {
     try {
       const headers = {
         ...this.getAuthHeader(),
-        "Content-Type": "application/json", // Add custom header
+        'Content-Type': 'application/json', // Add custom header
       };
       const response = await axios.get(url, { headers });
       alert(response.data.message); // Show a message alert on success
       return response.data; // Return the response data for further processing
     } catch (error) {
-      console.error("GET request failed:", error);
-      alert("An error occurred. Please try again later."); // Alert on error
+      console.error('GET request failed:', error);
+      alert('An error occurred. Please try again later.'); // Alert on error
       throw error; // Rethrow the error for further handling if needed
     }
   },
 
   async GetRequestWorkingHours(url, params = {}) {
+
     try {
-      const headers = {
-        ...this.getAuthHeader(),
-
-        "Content-Type": "application/json", // Add custom header
-      };
-
-      const response = await axios.get(url, { headers, params }); // Include params here
-
-      alert(response.data.message); // Show a message alert on success
-
-      return response.data; // Return the response data for further processing
+    
+    const headers = {
+    
+    ...this.getAuthHeader(),
+    
+    "Content-Type": "application/json", // Add custom header
+    
+    };
+    
+    const response = await axios.get(url, { headers, params }); // Include params here
+    
+    alert(response.data.message); // Show a message alert on success
+    
+    return response.data; // Return the response data for further processing
+    
     } catch (error) {
-      console.error("GET request failed:", error);
-
-      alert("An error occurred. Please try again later."); // Alert on error
-
-      throw error; // Rethrow the error for further handling if needed
+    
+    console.error("GET request failed:", error);
+    
+    alert("An error occurred. Please try again later."); // Alert on error
+    
+    throw error; // Rethrow the error for further handling if needed
+    
     }
-  },
+    
+    },  
 
   // Method for POST requests with async/await
   async PostRequest(url, data) {
     try {
       console.log(`POST request to: ${baseURL}${url}`); // Add this line to log URL
-      const response = await axios.post(url, data);
+      const response = await axios.post(url,data);
       // alert(response.data.message);
       return response.data;
     } catch (error) {
-      console.error("POST request failed:", error);
+      console.error('POST request failed:', error);
       throw error;
     }
   },
@@ -71,64 +80,82 @@ const ApiServices = {
     try {
       const headers = {
         ...this.getAuthHeader(),
-        "Content-Type": "application/json", // Add custom header
+        'Content-Type': 'application/json', // Add custom header
       };
 
-      console.log(`POST request to: ${baseURL}${url}`);
+      console.log(`POST request to: ${baseURL}${url}`); 
       const response = await axios.post(url, data, { headers });
       // alert(response.data.message);
       return response.data;
     } catch (error) {
-      console.error("POST request with header failed:", error);
+      console.error('POST request with header failed:', error);
       throw error;
     }
   },
   async PutRequest(url, data) {
+
     try {
-      const headers = {
-        ...this.getAuthHeader(),
 
-        "Content-Type": "application/json", // Add custom header
-      };
-      console.log(`PUT request to: ${baseURL}${url}`);
+        const headers = {
 
-      const response = await axios.put(url, data, { headers });
+            ...this.getAuthHeader(),
 
-      // alert(response.data.message); // Show a message alert on success
+            'Content-Type': 'application/json', // Add custom header
 
-      return response.data; // Return the response data for further processing
+        };
+        console.log(`PUT request to: ${baseURL}${url}`);
+
+        const response = await axios.put(url, data, { headers });
+
+        // alert(response.data.message); // Show a message alert on success
+
+        return response.data; // Return the response data for further processing
+
     } catch (error) {
-      console.error("PUT request failed:", error);
 
-      // alert('An error occurred. Please try again later.'); // Alert on error
+        console.error('PUT request failed:', error);
 
-      throw error; // Rethrow the error for further handling if needed
+        // alert('An error occurred. Please try again later.'); // Alert on error
+
+        throw error; // Rethrow the error for further handling if needed
+
     }
-  },
 
-  // Method for DELETE requests with async/await
+},
 
-  async DeleteRequest(url) {
+
+
+// Method for DELETE requests with async/await
+
+async DeleteRequest(url) {
+
     try {
-      const headers = {
-        ...this.getAuthHeader(),
 
-        "Content-Type": "application/json", // Add custom header
-      };
+        const headers = {
 
-      const response = await axios.delete(`${url}`, { headers });
+            ...this.getAuthHeader(),
 
-      alert(response.data.message); // Show a message alert on success
+            'Content-Type': 'application/json', // Add custom header
 
-      return response.data; // Return the response data for further processing
+        };
+
+        const response = await axios.delete(`${url}`, { headers });
+
+        alert(response.data.message); // Show a message alert on success
+
+        return response.data; // Return the response data for further processing
+
     } catch (error) {
-      console.error("DELETE request failed:", error);
 
-      alert("An error occurred. Please try again later."); // Alert on error
+        console.error('DELETE request failed:', error);
 
-      throw error; // Rethrow the error for further handling if needed
+        alert('An error occurred. Please try again later.'); // Alert on error
+
+        throw error; // Rethrow the error for further handling if needed
+
     }
-  },
+
+}
 };
 
 export default ApiServices;
