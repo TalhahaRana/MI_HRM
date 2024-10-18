@@ -82,7 +82,7 @@ const passwordMismatch = computed(
 const store = useStore(); // Use the Vuex store
 
 // Method to handle profile update
-// Method to handle profile update
+
 const updateProfile = async () => {
   const updatedProfile = {
     name: name.value,
@@ -92,7 +92,6 @@ const updateProfile = async () => {
   try {
     console.log("Updating profile with:", updatedProfile);
     await store.dispatch("auth/updateUser", { updatedData: updatedProfile });
-    alert("Profile updated successfully!");
   } catch (error) {
     console.error("Failed to update profile:", error);
     alert("An error occurred while updating the profile.");

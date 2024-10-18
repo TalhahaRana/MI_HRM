@@ -12,15 +12,16 @@
 
         <!-- Filters -->
         <div class="filter-section">
-            <input type="text" v-model="filters.employeeName" placeholder="Search Employee Name" class="input-field" />
-            <select v-model="filters.leaveType" class="input-select">
-                <option value="">Select Leave Type</option>
-                <option v-for="type in leaveTypes" :key="type">{{ type }}</option>
-            </select>
-            <input type="date" v-model="filters.fromDate" class="input-field" />
-            <input type="date" v-model="filters.toDate" class="input-field" />
+            <input
+                type="text"
+                v-model="filters.employeeName"
+                placeholder="Search Employee Name"
+                class="input-field"
+            />
             <button @click="searchLeaves" class="btn-search">Search</button>
         </div>
+        <div v-if="error" class="error-message text-danger py-1">{{ error }}</div>
+        <div v-if="successMessage" class="success-message text-success py-1">{{ successMessage }}</div>
 
         <!-- Pending Leaves Table -->
         <h3 class="section-title">Pending Leaves</h3>
@@ -37,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="leave in pendingLeaves" :key="leave.id">
+                    <tr v-for="leave in filteredPendingLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
                         <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
@@ -52,7 +53,7 @@
             </table>
         </div>
 
-        <!-- Accepted and Rejected Leaves -->
+        <!-- Accepted Leaves Table -->
         <h3 class="section-title">Accepted Leaves</h3>
         <div class="leave-table-wrapper">
             <table class="leave-table">
@@ -66,7 +67,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="leave in acceptedLeaves" :key="leave.id">
+                    <tr v-for="leave in filteredAcceptedLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
                         <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
@@ -77,6 +78,7 @@
             </table>
         </div>
 
+        <!-- Rejected Leaves Table -->
         <h3 class="section-title">Rejected Leaves</h3>
         <div class="leave-table-wrapper">
             <table class="leave-table">
@@ -90,7 +92,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="leave in rejectedLeaves" :key="leave.id">
+                    <tr v-for="leave in filteredRejectedLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
                         <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
@@ -102,11 +104,6 @@
         </div>
     </div>
 </template>
-
-<!-- <template>
-    <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
-</template> -->
 
 <script setup>
 import { ref, computed, watch } from 'vue';
@@ -142,22 +139,50 @@ const rejectLeave = async (leaveId) => {
 
 // Watch for changes in error and reset success message
 watch(error, () => {
-  if (error.value) {
-    successMessage.value = ''; // Clear success message if there's an error
-  }
+    if (error.value) {
+        successMessage.value = ''; // Clear success message if there's an error
+    }
 });
 
+// Filtered Pending Leaves based on employeeName
+const filteredPendingLeaves = computed(() => {
+    return pendingLeaves.value.filter(leave =>
+        leave.employee_name.toLowerCase().includes(filters.value.employeeName.toLowerCase())
+    );
+});
+
+// Filtered Accepted Leaves based on employeeName
+const filteredAcceptedLeaves = computed(() => {
+    return acceptedLeaves.value.filter(leave =>
+        leave.employee_name.toLowerCase().includes(filters.value.employeeName.toLowerCase())
+    );
+});
+
+// Filtered Rejected Leaves based on employeeName
+const filteredRejectedLeaves = computed(() => {
+    return rejectedLeaves.value.filter(leave =>
+        leave.employee_name.toLowerCase().includes(filters.value.employeeName.toLowerCase())
+    );
+});
+
+// Search leaves across all tables
 const searchLeaves = () => {
-    // Implement search functionality based on filters
+    // Filtering happens reactively through the computed properties, so no need for explicit search logic
 };
 
+// Stats including filteredPendingLeaves length
 const stats = ref([
     { title: 'Today Presents', value: '12 / 60' },
-    { title: 'Planned Leaves', value: '8 Today' },
-    { title: 'Unplanned Leaves', value: '0 Today' },
-    { title: 'Pending Requests', value: `${pendingLeaves.value.length}` },
+    { title: 'Pending Requests', value: `${filteredPendingLeaves.value.length}` },
 ]);
+
+// Watch the length of filteredPendingLeaves to update stats reactively
+watch(filteredPendingLeaves, (newPendingLeaves) => {
+    stats.value[1].value = `${newPendingLeaves.length}`;
+});
 </script>
+
+
 
 
 <style scoped>
@@ -207,7 +232,7 @@ const stats = ref([
 .filter-section {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 25px;
     margin-bottom: 30px;
 }
 
