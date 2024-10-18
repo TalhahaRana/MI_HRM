@@ -1,6 +1,6 @@
 const state = {
   userRole: localStorage.getItem('userRole') || null,
-  permissions: JSON.parse(localStorage.getItem('userPermissions')) || [],
+  permissions:[],
 };
 
 const getters = {

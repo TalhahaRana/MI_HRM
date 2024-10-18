@@ -60,6 +60,14 @@
                   <i class="icon fas fa-user-times"></i> Assign Projects
                 </router-link>
               </li>
+              <li v-if="hasPermission('User can assign Projects to employees')">
+                <router-link
+                  to="/dashboard/assign-projects-employee"
+                  class="redirect-link"
+                >
+                  <i class="icon fas fa-user-times"></i> Employee DashBoard
+                </router-link>
+              </li>
               
               <li v-if="!samePermission('User can see Attendance Records')">
                 <router-link

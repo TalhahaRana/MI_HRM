@@ -5,11 +5,8 @@ const state = {
   salaryDetails: {}, // Salary details for the specific employee
   workingHour: "", // New state for working hours
   workingHours: [],
-  workingHoursAttendance: [],
   assignedProjects: [],
   attendanceRecords: [],
-  statusCounts: { present: 0, absent: 0 },
-  attendanceDetails: {},
 };
 
 const getters = {
@@ -19,9 +16,6 @@ const getters = {
   getAttendanceRecords: (state) => state.attendanceRecords,
   getWorkingHours: (state) => state.workingHours,
   statusCounts: (state) => state.statusCounts,
-  allWorkingHours: (state) => state.workingHours,
-  allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
-  getAttendanceDetails: (state) => state.attendanceDetails,
 };
 
 const actions = {
@@ -36,17 +30,6 @@ const actions = {
       console.error("Error fetching employees:", error);
       throw error;
     }
-  },
-  //samia
-
-  async allAttendance({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest("/get-all-attendance");
-      commit("attendanceDetails", response.data); // This should match the mutation name
-    } catch (error) {
-      throw error;
-    }
-
   },
   async fetchEmployeeStatus({ commit }, { date, frequency }) {
     try {
@@ -192,6 +175,23 @@ async updateEmployee({ commit }, employeeData) {
   },
   // Check-in action
 
+  async checkIn({ commit }) {
+    try {
+      const response = await ApiServices.PostRequestHeader(
+        "/attendance/check-in",
+
+        {}
+      );
+
+      alert(response.message);
+
+      // Optionally commit any mutations if needed
+    } catch (error) {
+      console.error("Check-in failed:", error);
+
+      alert("Check-in failed. Please try again.");
+    }
+  },
   // Fetch attendance records of the logged-in employee based on the token
   async fetchEmployeeAttendance({ commit }, { month }) {
     try {
@@ -211,30 +211,23 @@ async updateEmployee({ commit }, employeeData) {
     }
   },
 
-    // Check-out Check-in action
+  // Check-out action
 
-    async checkInOut({ commit }, type) {
-      try {
-        const response = await ApiServices.PostRequestHeader(
-          "/attendance/checkin-out",
-          { type }
-        );
-  
-        alert(response.message);
-        return response.data ? response.data["working hours"] : null;
-      } catch (error) {
-        console.error(
-          `${type.charAt(0).toUpperCase() + type.slice(1)} failed:`,
-          error
-        );
-        alert(
-          `${
-            type.charAt(0).toUpperCase() + type.slice(1)
-          } failed. Please try again.`
-        );
-        return null;
-      }
-    },
+  async checkOut({ commit }) {
+    try {
+      const response = await ApiServices.PostRequestHeader(
+        "/attendance/check-out",
+
+        {}
+      );
+
+      alert(response.message);
+    } catch (error) {
+      console.error("Check-out failed:", error);
+
+      alert("Check-out failed. Please try again.");
+    }
+  },
 
   async fetchWorkingHours({ commit }) {
     try {
@@ -265,18 +258,7 @@ async updateEmployee({ commit }, employeeData) {
       console.error("Fetch working hours failed:", error);
     }
   },
-  async fetchWorkingHoursAttendance({ commit }, { date, frequency }) {
-    try {
-        // Construct the URL with query parameters directly in the string
-        const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
 
-        console.log(date, frequency); // Debugging: log the date and frequency
-        commit("setWorkingHoursAttendance", response.data.daily_working_hours); // Commit the response data
-    } catch (error) {
-        console.error('Error fetching working hours:', error); // Log the error
-        throw error; // Rethrow the error for handling in the component
-    }
-},
   async fetchAssignedProjects({ commit }) {
     try {
       const response = await ApiServices.GetRequest(
@@ -348,15 +330,10 @@ const mutations = {
   setWorkingHours(state, workingHours) {
     state.workingHours = workingHours; // Update the state with fetched working hours
   },
-  setWorkingHoursAttendance(state, workingHours) {
-    state.workingHoursAttendance = workingHours; // Update the state with fetched working hours
-  },
+
   newLeaveApplication(state, leaveApplication) {
     // Logic to handle the leave application if needed
   },
-attendanceDetails(state, attendanceDetails) {
-  state.attendanceDetails = attendanceDetails; // Fixed typo
-},
 setStatusCounts(state, statusCounts) {
   state.statusCounts = statusCounts;
 },

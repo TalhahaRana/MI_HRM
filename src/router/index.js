@@ -33,6 +33,7 @@ import TwoFa from "@/views/TwoFa.vue";
 import QR from "@/views/QR.vue";
 import Salaries from "@/components/admin/Salaries.vue";
 import EmpWorkingHours from "@/components/admin/EmpWorkingHours.vue";
+import EmployeeDashboard from "@/components/employee/EmployeeDashboard.vue";
 
 //Profile
 import Profile from "@/components/profile.vue";
@@ -50,14 +51,13 @@ const router = createRouter({
       path: "/Twofa",
       name: "TwoFa",
       component: TwoFa,
-
     },
     {
       path: "/QR",
       name: "QR",
       component: QR,
     },
-    
+
     {
       path: "/forgot-pass",
       component: ForgotPass,
@@ -73,48 +73,74 @@ const router = createRouter({
       // beforeEnter: (to, from, next) => {
       //   const result = RouteService("User can get salary invoice");
       //   if (result === true) {
-      //     next(); 
+      //     next();
       //   } else {
-      //     next(result); 
+      //     next(result);
       //   }
       // },
-      beforeEnter: RouteService('User can get salary invoice', ['admin','employee','hr']),
+      beforeEnter: RouteService("User can get salary invoice", [
+        "admin",
+        "employee",
+        "hr",
+      ]),
       children: [
         {
           path: "",
           name: "DashView",
           component: DashView, // Default child route for Dashboard
         },
-       
+
         {
           path: "check",
           name: "CheckInOut",
           component: CheckInOut,
-          beforeEnter: RouteService('User can Check-in/Check-out', ['employee','hr']),
+          beforeEnter: RouteService("User can Check-in/Check-out", [
+            "employee",
+            "hr",
+          ]),
         },
         {
           path: "leave-application",
           name: "LeaveApplication",
           component: LeaveApplication,
-          beforeEnter: RouteService('User can submit Leave Applications', ['employee','hr']),
+          beforeEnter: RouteService("User can submit Leave Applications", [
+            "employee",
+            "hr",
+          ]),
         },
         {
           path: "attendance-employee",
           name: "AttendanceEmployee",
           component: AttendanceEmployee,
-          beforeEnter: RouteService('User can see Attendance Records', ['employee','hr']),
+          beforeEnter: RouteService("User can see Attendance Records", [
+            "employee",
+            "hr",
+          ]),
+        },
+        {
+          path: "employeeDashboard",
+          name: "EmployeeDashboard",
+          component: EmployeeDashboard,
+          beforeEnter: RouteService("User can see their assigned projects", [
+            "employee",
+          ]),
         },
         {
           path: "assignedProjects",
           name: "AssignedProjects",
           component: AssignedProjects,
-          beforeEnter: RouteService('User can see their assigned projects', ['employee']),
+          beforeEnter: RouteService("User can see their assigned projects", [
+            "employee",
+          ]),
         },
         {
           path: "working-hours",
           name: "WorkingHours",
           component: WorkingHours,
-          beforeEnter: RouteService('User can see Working Hours', ['employee','hr']),
+          beforeEnter: RouteService("User can see Working Hours", [
+            "employee",
+            "hr",
+          ]),
         },
         // {
         //   path: "attendance",
@@ -152,20 +178,21 @@ const router = createRouter({
           path: "add-employee",
           name: "AddEmployee",
           component: AddEmployee,
-          beforeEnter: RouteService('User can add users (employee,hr)', ['admin']),
+          beforeEnter: RouteService("User can add users (employee,hr)", [
+            "admin",
+          ]),
         },
         {
           path: "all-employee",
           name: "AllEmployee",
           component: AllEmployee,
-          beforeEnter: RouteService('User can see all employee', ['admin']),
+          beforeEnter: RouteService("User can see all employee", ["admin"]),
         },
         {
           path: "projects",
           name: "Projects",
           component: Projects,
-          beforeEnter: RouteService('User can create projects', ['admin']),
-          
+          beforeEnter: RouteService("User can create projects", ["admin"]),
         },
         // {
         //   path: "manage-leaves",
@@ -184,8 +211,7 @@ const router = createRouter({
         {
           path: "department-management",
           component: DepartmentManagement,
-          beforeEnter: RouteService('User can add department', ['admin']),
-          
+          beforeEnter: RouteService("User can add department", ["admin"]),
         },
         {
           path: "employee-joining",
@@ -197,29 +223,39 @@ const router = createRouter({
         {
           path: "manage-leaves-hr",
           component: HrManageLeaves,
-          beforeEnter: RouteService('User can see Attendance Records', ['admin','hr']),
-          
+          beforeEnter: RouteService("User can see Attendance Records", [
+            "admin",
+            "hr",
+          ]),
         },
         {
-          path:"all-working-hours",
-          component:EmpWorkingHours,
-          beforeEnter: RouteService('User can see Attendance Records', ['admin','hr']),
+          path: "all-working-hours",
+          component: EmpWorkingHours,
+          beforeEnter: RouteService("User can see Attendance Records", [
+            "admin",
+            "hr",
+          ]),
         },
         {
           path: "attendance-hr",
           component: AttendanceHR,
-          beforeEnter: RouteService('User can see Attendance Records', ['employee','hr']),
-          
+          beforeEnter: RouteService("User can see Attendance Records", [
+            "employee",
+            "hr",
+          ]),
         },
         {
           path: "payroll-hr",
           component: Payroll,
-          beforeEnter: RouteService('User can get salary invoice', ['employee','hr']),
+          beforeEnter: RouteService("User can get salary invoice", [
+            "employee",
+            "hr",
+          ]),
         },
         {
           path: "salaries",
           component: Salaries,
-          beforeEnter: RouteService('User can get salary invoice', ['admin']),
+          beforeEnter: RouteService("User can get salary invoice", ["admin"]),
         },
         // {
         //   path: "manage-projects-hr",
@@ -229,15 +265,20 @@ const router = createRouter({
         //   },
         // },
         {
-          path:"assign-projects-employee",
-          component:AssignProjectEmployee,
-          beforeEnter: RouteService('User can assign Projects to employees', ['hr']),
+          path: "assign-projects-employee",
+          component: AssignProjectEmployee,
+          beforeEnter: RouteService("User can assign Projects to employees", [
+            "hr",
+          ]),
         },
         {
-          path:"all-assign-projects",
-          component:AllAssignedProjects,
-          beforeEnter: RouteService('User can view employee assigned projects', ['admin','hr']),
-        }
+          path: "all-assign-projects",
+          component: AllAssignedProjects,
+          beforeEnter: RouteService(
+            "User can view employee assigned projects",
+            ["admin", "hr"]
+          ),
+        },
       ],
     },
   ],
