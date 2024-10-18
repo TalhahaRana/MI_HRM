@@ -80,7 +80,7 @@
   const salaryDetails = ref(null);
   
   // Function to check and fetch salary details
-  import dayjs from 'dayjs'; // Import dayjs for date manipulation
+  // import dayjs from 'dayjs'; // Import dayjs for date manipulation
   
   const checkSalary = async () => {
     if (selectedEmployee.value && selectedMonthYear.value) {
