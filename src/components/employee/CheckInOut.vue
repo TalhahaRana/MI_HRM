@@ -394,29 +394,14 @@ export default {
   }
 }
 </style> -->
-
 <template>
   <div class="container mt-4 form-card">
     <div class="card">
       <div class="card-body text-center">
-        <div class="arc-container">
-          <svg width="100%" height="150" viewBox="0 0 200 100">
-            <!-- Background arc -->
-            <path
-              d="M 20 80 A 80 80 0 0 1 180 80"
-              fill="none"
-              stroke="#e0e0e0"
-              stroke-width="10"
-            />
-            <!-- Dynamic arc filling based on working hours -->
-            <path
-              :d="arcPath"
-              fill="none"
-              stroke="#4b49ac"
-              stroke-width="10"
-              stroke-linecap="round"
-            />
-          </svg>
+        <!-- Icons for moon and sun -->
+        <div class="arc-icons">
+          <i class="fas fa-moon moon-icon"></i>
+          <i class="fas fa-sun sun-icon"></i>
         </div>
 
         <div class="row mt-3 p-5">
@@ -427,7 +412,11 @@ export default {
           </div>
 
           <div class="col-4 text-center">
-            <img src="../../assets/images/Untitled_design-removebg-preview.png" alt="custom image" class="custom-image" />
+            <img
+              src="../../assets/images/Untitled_design-removebg-preview.png"
+              alt="custom image"
+              class="custom-image"
+            />
           </div>
 
           <div class="col-4 text-center check-block">
@@ -453,7 +442,6 @@ export default {
     const checkInTime = ref("00:00");
     const checkOutTime = ref("00:00");
     const workingHours = ref("00:00");
-    const arcPath = ref("");
 
     const handleCheckIn = () => {
       const now = new Date();
@@ -462,9 +450,6 @@ export default {
 
       // Reset working hours at check-in
       workingHours.value = "00:00";
-
-      // Update dynamic arc path
-      updateArc(checkInTime.value, 0); // Start filling from check-in
     };
 
     const handleCheckOut = () => {
@@ -482,39 +467,9 @@ export default {
       const diff = checkOutDate - checkInDate;
       const hours = Math.floor(diff / 3600000);
       const minutes = Math.floor((diff % 3600000) / 60000);
-      workingHours.value = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-
-      // Update dynamic arc path for check-out
-      updateArc(checkInTime.value, workingHours.value); // Fill arc based on working hours
-    };
-
-    const updateArc = (checkIn, workingHours) => {
-      const arcRadius = 80;
-      const startX = 20;
-      const endX = 180;
-
-      // Define moon, sun, and middle points in the arc
-      const moonStartX = startX; // Moon
-      const sunEndX = endX; // Sun
-
-      // Convert check-in time to minutes
-      const [checkInHour, checkInMinute] = checkIn.split(":").map(Number);
-      const totalCheckInMinutes = checkInHour * 60 + checkInMinute;
-
-      // Calculate how many minutes to fill (7.5 hours = 450 minutes)
-      const fillDuration = 450; // in minutes
-      const workingHoursMinutes = workingHours ? (Number(workingHours.split(":")[0]) * 60 + Number(workingHours.split(":")[1])) : 0;
-
-      // Calculate how much to fill based on the check-in time and working hours
-      const fillPercentage = (workingHoursMinutes / fillDuration) * 100;
-
-      // Calculate the x position based on check-in time
-      const x = moonStartX + ((sunEndX - moonStartX) * (totalCheckInMinutes / 60) / (fillDuration / 60)); // Position based on time
-
-      // Adjust arc to fill based on check-in time
-      const largeArcFlag = fillPercentage > 50 ? 1 : 0;
-
-      arcPath.value = `M ${moonStartX} 80 A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} 1 ${x} 80`;
+      workingHours.value = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`;
     };
 
     return {
@@ -523,38 +478,40 @@ export default {
       workingHours,
       handleCheckIn,
       handleCheckOut,
-      arcPath,
     };
   },
 };
 </script>
 
-
 <style scoped>
-.arc-container {
+.container {
+  max-width: 600px;
+}
+
+.arc-icons {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
-svg {
-  margin-bottom: 20px;
+.moon-icon, .sun-icon {
+  font-size: 24px;
 }
 
 .check-block {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow */
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
 }
 
 .custom-image {
   width: 100%;
-  height: auto; /* Allow height to adjust based on aspect ratio */
-  max-height: 150px; /* Set a max height to maintain a consistent look */
-  object-fit: cover; /* Change to 'cover' if you want the image to fill the space */
+  object-fit: cover;
+  height: auto;
 }
-
 
 .working-hours {
   margin-top: 20px;
 }
 </style>
+

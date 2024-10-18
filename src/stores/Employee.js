@@ -1,399 +1,801 @@
+// import ApiServices from "@/services/ApiServices";
+
+// const state = {
+//     employees: [], // List of employees
+//     salaryDetails: {}, // Salary details for the specific employee
+//     workingHour: "", // New state for working hours
+//     workingHours: [],
+//     workingHoursAttendance: [],
+//     assignedProjects: [],
+//     attendanceRecords: [],
+//     statusCounts: { present: 0, absent: 0 },
+// };
+
+// const getters = {
+//     allEmployees: (state) => state.employees,
+//     employeeSalaryDetails: (state) => state.salaryDetails,
+//     getAssignedProjects: (state) => state.assignedProjects,
+//     getAttendanceRecords: (state) => state.attendanceRecords,
+//     getWorkingHours: (state) => state.workingHours,
+//     statusCounts: (state) => state.statusCounts,
+//     allWorkingHours: (state) => state.workingHours,
+//     allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
+// };
+
+// const actions = {
+//     // Fetch all employees
+//     async fetchEmployees({ commit }) {
+//         try {
+//             const response = await ApiServices.GetRequest("/get-all-employees");
+//             if (response && response.data) {
+//                 commit("setEmployees", response.data);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching employees:", error);
+//             throw error;
+//         }
+//     },
+//     async fetchEmployeeStatus({ commit }, { date, frequency }) {
+//         try {
+//             // Fetch working hours using the API
+//             const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+//             // Get the daily working hours from the API response
+//             const dailyWorkingHours = response.data.daily_working_hours;
+
+//             // Calculate the counts based on the status key
+//             const statusCounts = dailyWorkingHours.reduce(
+//                 (counts, entry) => {
+//                     if (entry.status === "present") {
+//                         counts.present++;
+//                     } else if (entry.status === "absent") {
+//                         counts.absent++;
+//                     }
+//                     return counts;
+//                 }, { present: 0, absent: 0 } // Initial counts
+//             );
+
+//             // Commit the computed counts to the store
+//             commit("setStatusCounts", statusCounts);
+//         } catch (error) {
+//             console.error("Error fetching employee status:", error);
+//             throw error; // Rethrow the error for handling in the component
+//         }
+//     },
+//     async LeaveApplication({ commit }, leaveApplication) {
+//         try {
+//             const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
+//             commit("newLeaveApplication", response.data);
+//         } catch (error) {
+//             console.error("Error submitting leave application:", error);
+//             throw error;    
+//         }  
+//     },
+//     async fetchSalaryDetails({ commit }) {
+//         try {
+//             const response = await ApiServices.GetRequest("/salary-invoice"); // No need for employee ID
+
+//             commit("setSalaryDetails", response.data); // Use the response data from the API
+//         } catch (error) {
+//             throw error;
+//         }
+//     },
+//     // Fetch a single employee by ID
+//     async getEmployee({ commit }, id) {
+//         try {
+//             const response = await ApiServices.GetRequest(`/employees/${id}`);
+//             if (response && response.data) {
+//                 commit("setEmployees", [response.data]); // Commit single employee as an array for consistency
+//             }
+//         } catch (error) {
+//             console.error("Error fetching employee:", error);
+//             throw error;
+//         }
+//     },
+
+//     // Add a new employee
+//     async addEmployee({ commit }, employeeData) {
+//         try {
+//             const response = await ApiServices.PostRequestHeader(
+//                 "/register",
+//                 employeeData
+//             );
+//             commit("newEmployee", response); // Assuming the API returns the created employee
+//         } catch (error) {
+//             throw error;
+//         }
+//     },
+
+//     // Update an existing employee
+//     async updateEmployee({ commit }, { id, updatedData }) {
+//         try {
+//             const response = await ApiServices.PutRequest(
+//                 `/employees/${id}`,
+//                 updatedData
+//             );
+//             commit("updateEmployee", response); // Assuming API returns updated employee
+//         } catch (error) {
+//             throw error;
+//         }
+//     },
+
+//     // Delete an employee
+//     //   async deleteEmployee({ commit }, user_id) {
+//     //     try {
+//     //       const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
+//     //       commit("removeEmployee", user_id); // Mutation to remove the employee from state
+//     //       return response;
+//     //     } catch (error) {
+//     //       console.error("Error deleting employee:", error);
+//     //       throw error;
+//     //     }
+//     //   },
+
+//     async deleteEmployee({ commit }, user_id) {
+//         try {
+//             const response = await ApiServices.DeleteRequest(`delete-employees/${user_id}`); // Ensure this uses user_id
+//             commit('removeEmployee', user_id); // Mutation to remove the employee from state
+//             return response;
+//         } catch (error) {
+//             console.error('Error deleting employee:', error);
+//             throw error;
+//         }
+//     },
+//     // Fetch working hours for an employee
+//     async fetchEmployeeWorkingHours({ commit }, payload) {
+//         try {
+//             const response = await ApiServices.GetRequestWorkingHours(
+//                 "/get-employee/working-hours",
+//                 payload
+//             );
+//             console.log("Working hours response:", response.data);
+
+//             // Ensure response data is in the expected format before committing
+//             commit("SET_WORKING_HOURS", response.data);
+//         } catch (error) {
+//             console.error("Error fetching working hours:", error);
+//             throw error;
+//         }
+//     },
+//     async updateEmployee({ commit }, employeeData) {
+//         try {
+
+//             // Check if id is defined
+//             if (!employeeData.id) {
+//                 throw new Error("Employee ID is required");
+//             }
+//             const response = await ApiServices.PutRequest(
+//                 `/update-employees/update/${employeeData.id}`,
+//                 employeeData.updatedData
+//             ); // Update here
+//             alert("Employee updated successfully");
+//             return response; // Return the response for further use if needed
+//         } catch (error) {
+//             console.error("Failed to update employee:", error);
+//             alert("An error occurred while updating the employee."); // Alert on error
+//             throw error; // Rethrow the error if needed
+
+//         }
+//     },
+//     // Check-in action
+
+//     async checkIn({ commit }) {
+//         try {
+//             const response = await ApiServices.PostRequestHeader(
+//                 "/attendance/check-in",
+
+//                 {}
+//             );
+
+//             alert(response.message);
+
+//             // Optionally commit any mutations if needed
+//         } catch (error) {
+//             console.error("Check-in failed:", error);
+
+//             alert("Check-in failed. Please try again.");
+//         }
+//     },
+//     // Fetch attendance records of the logged-in employee based on the token
+//     async fetchEmployeeAttendance({ commit }, { month }) {
+//         try {
+//             const params = { month: month || "" }; // If no month, fetch all
+//             const response = await ApiServices.GetRequest("/get-employees-attendence", params);
+
+//             if (response.status_code === "200, OK") {
+//                 console.log("Attendance data received:", response.data);
+//                 commit("setAttendanceRecords", response.data); // Commit the data to the store
+//             } else {
+//                 console.error("Failed to fetch attendance:", response.message);
+//                 throw new Error("Failed to fetch attendance records");
+//             }
+//         } catch (error) {
+//             console.error("Error fetching employee attendance:", error);
+//             throw error;
+//         }
+//     },
+
+//     // Check-out action
+
+//     async checkOut({ commit }) {
+//         try {
+//             const response = await ApiServices.PostRequestHeader(
+//                 "/attendance/check-out",
+
+//                 {}
+//             );
+
+//             alert(response.message);
+//         } catch (error) {
+//             console.error("Check-out failed:", error);
+
+//             alert("Check-out failed. Please try again.");
+//         }
+//     },
+
+//     async fetchWorkingHours({ commit }) {
+//         try {
+//             const today = new Date().toISOString().split("T")[0]; // Get today's date
+
+//             const params = {
+//                 date: today,
+
+//                 frequency: "daily", // Specify the frequency as needed
+//             };
+
+//             const response = await ApiServices.GetRequestWorkingHours(
+//                 "/get-employee/working-hours",
+
+//                 params
+//             );
+
+//             if (response.status_code === "200, OK") {
+//                 const todayEntry = response.data.daily_working_hours.find(
+//                     (entry) => entry.date === today
+//                 );
+
+//                 commit("setCurrentWorkingDay", todayEntry || null);
+
+//                 commit("setWorkingHours", todayEntry ? todayEntry.working_hours : null); // Store today's working hours
+//             }
+//         } catch (error) {
+//             console.error("Fetch working hours failed:", error);
+//         }
+//     },
+//     async fetchWorkingHoursAttendance({ commit }, { date, frequency }) {
+//         try {
+//             // Construct the URL with query parameters directly in the string
+//             const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+//             console.log(date, frequency); // Debugging: log the date and frequency
+//             commit("setWorkingHoursAttendance", response.data.daily_working_hours); // Commit the response data
+//         } catch (error) {
+//             console.error('Error fetching working hours:', error); // Log the error
+//             throw error; // Rethrow the error for handling in the component
+//         }
+//     },
+
+
+
+//     async updateProjectStatus({ commit }, { id, status }) {
+//         try {
+//             const response = await ApiServices.PostRequestHeader(
+//                 "projects/update-status",
+
+//                 {
+//                     project_id: id, // Use 'project_id' for the payload
+
+//                     status: status,
+//                 }
+//             );
+
+//             if (response.status_code === "200, OK") {
+//                 commit("updateProjectStatus", response.data);
+
+//                 return response.message;
+//             } else {
+//                 console.error("Failed to update status:", response.message);
+
+//                 return null;
+//             }
+//         } catch (error) {
+//             console.error("Error updating project status:", error);
+
+//             return null;
+//         }
+//     },
+
+
+// };
+
+// const mutations = {
+//     setEmployees(state, employees) {
+//         state.employees = employees;
+//     },
+//     newEmployee(state, employee) {
+//         state.employees.push(employee);
+//     },
+//     updateEmployee(state, updatedEmployee) {
+//         const index = state.employees.findIndex((e) => e.id === updatedEmployee.id);
+//         if (index !== -1) {
+//             state.employees.splice(index, 1, updatedEmployee);
+//         }
+//     },
+//     removeEmployee(state, id) {
+//         state.employees = state.employees.filter((employee) => employee.id !== id);
+//     },
+//     setSalaryDetails(state, salaryDetails) {
+//         state.salaryDetails = salaryDetails; // Update the salary details state
+//     },
+//     setAttendanceRecords(state, attendanceRecords) {
+//         state.attendanceRecords = attendanceRecords; // Update the state with fetched attendance records
+//     },
+//     //Arham
+//     setWorkingHours(state, workingHours) {
+//         state.workingHours = workingHours; // Update the state with fetched working hours
+//     },
+//     setWorkingHoursAttendance(state, workingHours) {
+//         state.workingHoursAttendance = workingHours; // Update the state with fetched working hours
+//     },
+//     newLeaveApplication(state, leaveApplication) {
+//         // Logic to handle the leave application if needed
+//           },
+//     setStatusCounts(state, statusCounts) {
+//         state.statusCounts = statusCounts;
+//     },
+//     //Arham
+//     setWorkingHours(state, workingHours) {
+//         state.workingHour = workingHours; // Update the state with fetched working hours
+//     },
+//     SET_WORKING_HOURS(state, payload) {
+//         state.workingHours = payload;
+//     },
+//     setAssignedProjects(state, projects) {
+//         if (Array.isArray(projects)) {
+//             state.assignedProjects = projects;
+//         } else {
+//             console.error("Expected an array, got:", projects);
+
+//             state.assignedProjects = []; // Fallback to an empty array
+//         }
+//     },
+
+//     updateProjectStatus(state, updatedProject) {
+//         const index = state.assignedProjects.findIndex(
+//             (project) => project.id === updatedProject.id
+//         );
+
+//         if (index !== -1) {
+//             // Update the project's status in the state
+
+//             state.assignedProjects[index].status = updatedProject.status;
+//         }
+//     },
+// };
+
+// export default {
+//     namespaced: true,
+//     state,
+//     getters,
+//     actions,
+//     mutations,
+// };
+
+
 import ApiServices from "@/services/ApiServices";
 
 const state = {
-  employees: [], // List of employees
-  salaryDetails: {}, // Salary details for the specific employee
-  workingHour: "", // New state for working hours
-  workingHours: [],
-  workingHoursAttendance: [],
-  assignedProjects: [],
-  attendanceRecords: [],
-  statusCounts: { present: 0, absent: 0 },
-  attendanceDetails: {},
+    employees: [], // List of employees
+    salaryDetails: {}, // Salary details for the specific employee
+    workingHour: "", // New state for working hours
+    workingHours: [],
+    workingHoursAttendance: [],
+    assignedProjects: [],
+    attendanceRecords: [],
+    statusCounts: { present: 0, absent: 0 },
+    attendanceDetails: {},
+    announcements: [],
 };
 
 const getters = {
-  allEmployees: (state) => state.employees,
-  employeeSalaryDetails: (state) => state.salaryDetails,
-  getAssignedProjects: (state) => state.assignedProjects,
-  getAttendanceRecords: (state) => state.attendanceRecords,
-  getWorkingHours: (state) => state.workingHours,
-  statusCounts: (state) => state.statusCounts,
-  allWorkingHours: (state) => state.workingHours,
-  allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
-  getAttendanceDetails: (state) => state.attendanceDetails,
+    allEmployees: (state) => state.employees,
+    employeeSalaryDetails: (state) => state.salaryDetails,
+    getAssignedProjects: (state) => state.assignedProjects,
+    getAttendanceRecords: (state) => state.attendanceRecords,
+    getWorkingHours: (state) => state.workingHours,
+    statusCounts: (state) => state.statusCounts,
+    allWorkingHours: (state) => state.workingHours,
+    allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
+    getAttendanceDetails: (state) => state.attendanceDetails,
+    getAnnouncements: (state) => state.announcements,
 };
 
 const actions = {
-  // Fetch all employees
-  async fetchEmployees({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest("/get-all-employees");
-      if (response && response.data) {
-        commit("setEmployees", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-      throw error;
-    }
-  },
-  //samia
+    // Fetch all employees
+    async fetchEmployees({ commit }) {
+        try {
+            const response = await ApiServices.GetRequest("/get-all-employees");
+            if (response && response.data) {
+                commit("setEmployees", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+            throw error;
+        }
+    },
+    //samia
 
-  async allAttendance({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest("/get-all-attendance");
-      commit("attendanceDetails", response.data); // This should match the mutation name
-    } catch (error) {
-      throw error;
-    }
+    async allAttendance({ commit }) {
+        try {
+            const response = await ApiServices.GetRequest("/get-all-attendance");
+            commit("attendanceDetails", response.data); // This should match the mutation name
+        } catch (error) {
+            throw error;
+        }
 
-  },
-  async fetchEmployeeStatus({ commit }, { date, frequency }) {
-    try {
-        // Fetch working hours using the API
-        const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+    },
+    async fetchEmployeeStatus({ commit }, { date, frequency }) {
+        try {
+            // Fetch working hours using the API
+            const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
 
-        // Get the daily working hours from the API response
-        const dailyWorkingHours = response.data.daily_working_hours;
+            // Get the daily working hours from the API response
+            const dailyWorkingHours = response.data.daily_working_hours;
 
-        // Calculate the counts based on the status key
-        const statusCounts = dailyWorkingHours.reduce(
-            (counts, entry) => {
-                if (entry.status === "present") {
-                    counts.present++;
-                } else if (entry.status === "absent") {
-                    counts.absent++;
-                }
-                return counts;
-            }, { present: 0, absent: 0 } // Initial counts
-        );
+            // Calculate the counts based on the status key
+            const statusCounts = dailyWorkingHours.reduce(
+                (counts, entry) => {
+                    if (entry.status === "present") {
+                        counts.present++;
+                    } else if (entry.status === "absent") {
+                        counts.absent++;
+                    }
+                    return counts;
+                }, { present: 0, absent: 0 } // Initial counts
+            );
 
-        // Commit the computed counts to the store
-        commit("setStatusCounts", statusCounts);
-    } catch (error) {
-        console.error("Error fetching employee status:", error);
-        throw error; // Rethrow the error for handling in the component
-    }
-},
-  async LeaveApplication({ commit }, leaveApplication) {
-    try {
-      const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
-      commit("newLeaveApplication", response.data);
-    } catch (error) {
-      console.error("Error submitting leave application:", error);
-      throw error;
-    }
-  },
-  async fetchSalaryDetails({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest("/salary-invoice"); // No need for employee ID
+            // Commit the computed counts to the store
+            commit("setStatusCounts", statusCounts);
+        } catch (error) {
+            console.error("Error fetching employee status:", error);
+            throw error; // Rethrow the error for handling in the component
+        }
+    },
+    async LeaveApplication({ commit }, leaveApplication) {
+        try {
+            const response = await ApiServices.PostRequestHeader("/submit/leave", leaveApplication);
+            commit("newLeaveApplication", response.data);
+        } catch (error) {
+            console.error("Error submitting leave application:", error);
+            throw error;
+        }
+    },
+    async fetchSalaryDetails({ commit }) {
+        try {
+            const response = await ApiServices.GetRequest("/salary-invoice"); // No need for employee ID
 
-      commit("setSalaryDetails", response.data); // Use the response data from the API
-    } catch (error) {
-      throw error;
-    }
-  },
-  // Fetch a single employee by ID
-  async getEmployee({ commit }, id) {
-    try {
-      const response = await ApiServices.GetRequest(`/employees/${id}`);
-      if (response && response.data) {
-        commit("setEmployees", [response.data]); // Commit single employee as an array for consistency
-      }
-    } catch (error) {
-      console.error("Error fetching employee:", error);
-      throw error;
-    }
-  },
+            commit("setSalaryDetails", response.data); // Use the response data from the API
+        } catch (error) {
+            throw error;
+        }
+    },
+    // Fetch a single employee by ID
+    async getEmployee({ commit }, id) {
+        try {
+            const response = await ApiServices.GetRequest(`/employees/${id}`);
+            if (response && response.data) {
+                commit("setEmployees", [response.data]); // Commit single employee as an array for consistency
+            }
+        } catch (error) {
+            console.error("Error fetching employee:", error);
+            throw error;
+        }
+    },
 
-  // Add a new employee
-  async addEmployee({ commit }, employeeData) {
-    try {
-      const response = await ApiServices.PostRequestHeader(
-        "/register",
-        employeeData
-      );
-      commit("newEmployee", response); // Assuming the API returns the created employee
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Add a new employee
+    async addEmployee({ commit }, employeeData) {
+        try {
+            const response = await ApiServices.PostRequestHeader(
+                "/register",
+                employeeData
+            );
+            commit("newEmployee", response); // Assuming the API returns the created employee
+        } catch (error) {
+            throw error;
+        }
+    },
 
-  // Update an existing employee
-  async updateEmployee({ commit }, { id, updatedData }) {
-    try {
-      const response = await ApiServices.PutRequest(
-        `/employees/${id}`,
-        updatedData
-      );
-      commit("updateEmployee", response); // Assuming API returns updated employee
-    } catch (error) {
-      throw error;
-    }
-  },
+    // Update an existing employee
+    async updateEmployee({ commit }, { id, updatedData }) {
+        try {
+            const response = await ApiServices.PutRequest(
+                `/employees/${id}`,
+                updatedData
+            );
+            commit("updateEmployee", response); // Assuming API returns updated employee
+        } catch (error) {
+            throw error;
+        }
+    },
 
-  // Delete an employee
-//   async deleteEmployee({ commit }, user_id) {
-//     try {
-//       const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
-//       commit("removeEmployee", user_id); // Mutation to remove the employee from state
-//       return response;
-//     } catch (error) {
-//       console.error("Error deleting employee:", error);
-//       throw error;
-//     }
-//   },
+    // Delete an employee
+    //   async deleteEmployee({ commit }, user_id) {
+    //     try {
+    //       const response = await ApiServices.delete(`delete-employees/${user_id}`); // Ensure this uses user_id
+    //       commit("removeEmployee", user_id); // Mutation to remove the employee from state
+    //       return response;
+    //     } catch (error) {
+    //       console.error("Error deleting employee:", error);
+    //       throw error;
+    //     }
+    //   },
 
-async deleteEmployee({ commit }, user_id) {
-  try {
-    const response = await ApiServices.DeleteRequest(`delete-employees/${user_id}`); // Ensure this uses user_id
-    commit('removeEmployee', user_id); // Mutation to remove the employee from state
-    return response;
-  } catch (error) {
-    console.error('Error deleting employee:', error);
-    throw error;
-  }
-},
-  // Fetch working hours for an employee
-async fetchEmployeeWorkingHours({ commit }, payload) {
-  try {
-    const response = await ApiServices.GetRequestWorkingHours(
-      "/get-employee/working-hours",
-      payload
-    );
-    console.log("Working hours response:", response.data);
+    async deleteEmployee({ commit }, user_id) {
+        try {
+            const response = await ApiServices.DeleteRequest(`delete-employees/${user_id}`); // Ensure this uses user_id
+            commit('removeEmployee', user_id); // Mutation to remove the employee from state
+            return response;
+        } catch (error) {
+            console.error('Error deleting employee:', error);
+            throw error;
+        }
+    },
+    // Fetch working hours for an employee
+    async fetchEmployeeWorkingHours({ commit }, payload) {
+        try {
+            const response = await ApiServices.GetRequestWorkingHours(
+                "/get-employee/working-hours",
+                payload
+            );
+            console.log("Working hours response:", response.data);
 
-    // Ensure response data is in the expected format before committing
-    commit("SET_WORKING_HOURS", response.data);
-  } catch (error) {
-    console.error("Error fetching working hours:", error);
-    throw error;
-  }
-},
-async updateEmployee({ commit }, employeeData) {
-  try {
+            // Ensure response data is in the expected format before committing
+            commit("SET_WORKING_HOURS", response.data);
+        } catch (error) {
+            console.error("Error fetching working hours:", error);
+            throw error;
+        }
+    },
+    async updateEmployee({ commit }, employeeData) {
+        try {
 
-      // Check if id is defined
-      if (!employeeData.id) {
-        throw new Error("Employee ID is required");
-      }
-      const response = await ApiServices.PutRequest(
-        `/update-employees/update/${employeeData.id}`,
-        employeeData.updatedData
-      ); // Update here
-      alert("Employee updated successfully");
-      return response; // Return the response for further use if needed
-    } catch (error) {
-      console.error("Failed to update employee:", error);
-      alert("An error occurred while updating the employee."); // Alert on error
-      throw error; // Rethrow the error if needed
+            // Check if id is defined
+            if (!employeeData.id) {
+                throw new Error("Employee ID is required");
+            }
+            const response = await ApiServices.PutRequest(
+                `/update-employees/update/${employeeData.id}`,
+                employeeData.updatedData
+            ); // Update here
+            alert("Employee updated successfully");
+            return response; // Return the response for further use if needed
+        } catch (error) {
+            console.error("Failed to update employee:", error);
+            alert("An error occurred while updating the employee."); // Alert on error
+            throw error; // Rethrow the error if needed
 
-    }
-  },
-  // Check-in action
+        }
+    },
+    // Check-in action
 
-  // Fetch attendance records of the logged-in employee based on the token
-  async fetchEmployeeAttendance({ commit }, { month }) {
-    try {
-      const params = { month: month || "" }; // If no month, fetch all
-      const response = await ApiServices.GetRequest("/get-employees-attendence", params);
-      
-      if (response.status_code === "200, OK") {
-        console.log("Attendance data received:", response.data);
-        commit("setAttendanceRecords", response.data); // Commit the data to the store
-      } else {
-        console.error("Failed to fetch attendance:", response.message);
-        throw new Error("Failed to fetch attendance records");
-      }
-    } catch (error) {
-      console.error("Error fetching employee attendance:", error);
-      throw error;
-    }
-  },
+    // Fetch attendance records of the logged-in employee based on the token
+    async fetchEmployeeAttendance({ commit }, { month }) {
+        try {
+            const params = { month: month || "" }; // If no month, fetch all
+            const response = await ApiServices.GetRequest("/get-employees-attendence", params);
+
+            if (response.status_code === "200, OK") {
+                console.log("Attendance data received:", response.data);
+                commit("setAttendanceRecords", response.data); // Commit the data to the store
+            } else {
+                console.error("Failed to fetch attendance:", response.message);
+                throw new Error("Failed to fetch attendance records");
+            }
+        } catch (error) {
+            console.error("Error fetching employee attendance:", error);
+            throw error;
+        }
+    },
 
     // Check-out Check-in action
 
     async checkInOut({ commit }, type) {
-      try {
-        const response = await ApiServices.PostRequestHeader(
-          "/attendance/checkin-out",
-          { type }
-        );
-  
-        alert(response.message);
-        return response.data ? response.data["working hours"] : null;
-      } catch (error) {
-        console.error(
-          `${type.charAt(0).toUpperCase() + type.slice(1)} failed:`,
-          error
-        );
-        alert(
-          `${
+        try {
+            const response = await ApiServices.PostRequestHeader(
+                "/attendance/checkin-out", { type }
+            );
+
+            alert(response.message);
+            return response.data ? response.data["working hours"] : null;
+        } catch (error) {
+            console.error(
+                `${type.charAt(0).toUpperCase() + type.slice(1)} failed:`,
+                error
+            );
+            alert(
+                `${
             type.charAt(0).toUpperCase() + type.slice(1)
           } failed. Please try again.`
-        );
-        return null;
-      }
+            );
+            return null;
+        }
     },
 
-  async fetchWorkingHours({ commit }) {
-    try {
-      const today = new Date().toISOString().split("T")[0]; // Get today's date
+    async fetchWorkingHours({ commit }) {
+        try {
+            const today = new Date().toISOString().split("T")[0]; // Get today's date
 
-      const params = {
-        date: today,
+            const params = {
+                date: today,
 
-        frequency: "daily", // Specify the frequency as needed
-      };
+                frequency: "daily", // Specify the frequency as needed
+            };
 
-      const response = await ApiServices.GetRequestWorkingHours(
-        "/get-employee/working-hours",
+            const response = await ApiServices.GetRequestWorkingHours(
+                "/get-employee/working-hours",
 
-        params
-      );
+                params
+            );
 
-      if (response.status_code === "200, OK") {
-        const todayEntry = response.data.daily_working_hours.find(
-          (entry) => entry.date === today
-        );
+            if (response.status_code === "200, OK") {
+                const todayEntry = response.data.daily_working_hours.find(
+                    (entry) => entry.date === today
+                );
 
-        commit("setCurrentWorkingDay", todayEntry || null);
+                commit("setCurrentWorkingDay", todayEntry || null);
 
-        commit("setWorkingHours", todayEntry ? todayEntry.working_hours : null); // Store today's working hours
-      }
-    } catch (error) {
-      console.error("Fetch working hours failed:", error);
-    }
-  },
-  async fetchWorkingHoursAttendance({ commit }, { date, frequency }) {
-    try {
-        // Construct the URL with query parameters directly in the string
-        const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
-
-        console.log(date, frequency); // Debugging: log the date and frequency
-        commit("setWorkingHoursAttendance", response.data.daily_working_hours); // Commit the response data
-    } catch (error) {
-        console.error('Error fetching working hours:', error); // Log the error
-        throw error; // Rethrow the error for handling in the component
-    }
-},
-  async fetchAssignedProjects({ commit }) {
-    try {
-      const response = await ApiServices.GetRequest(
-        "/get-employee/assigned-projects"
-      );
-
-      if (response.status_code === "200, OK") {
-        commit("setAssignedProjects", response.data); // Commit the 'data' part of the response
-      } else {
-        console.error("Failed to fetch projects:", response.message);
-      }
-    } catch (error) {
-      console.error("Error fetching assigned projects:", error);
-    }
-  },
-
-  async updateProjectStatus({ commit }, { id, status }) {
-    try {
-      const response = await ApiServices.PostRequestHeader(
-        "projects/update-status",
-
-        {
-          project_id: id, // Use 'project_id' for the payload
-
-          status: status,
+                commit("setWorkingHours", todayEntry ? todayEntry.working_hours : null); // Store today's working hours
+            }
+        } catch (error) {
+            console.error("Fetch working hours failed:", error);
         }
-      );
+    },
+    async fetchWorkingHoursAttendance({ commit }, { date, frequency }) {
+        try {
+            // Construct the URL with query parameters directly in the string
+            const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
 
-      if (response.status_code === "200, OK") {
-        commit("updateProjectStatus", response.data);
+            console.log(date, frequency); // Debugging: log the date and frequency
+            commit("setWorkingHoursAttendance", response.data.daily_working_hours); // Commit the response data
+        } catch (error) {
+            console.error('Error fetching working hours:', error); // Log the error
+            throw error; // Rethrow the error for handling in the component
+        }
+    },
+    async fetchAssignedProjects({ commit }) {
+        try {
+            const response = await ApiServices.GetRequest(
+                "/get-employee/assigned-projects"
+            );
 
-        return response.message;
-      } else {
-        console.error("Failed to update status:", response.message);
+            if (response.status_code === "200, OK") {
+                commit("setAssignedProjects", response.data); // Commit the 'data' part of the response
+            } else {
+                console.error("Failed to fetch projects:", response.message);
+            }
+        } catch (error) {
+            console.error("Error fetching assigned projects:", error);
+        }
+    },
 
-        return null;
-      }
-    } catch (error) {
-      console.error("Error updating project status:", error);
+    async updateProjectStatus({ commit }, { id, status }) {
+        try {
+            const response = await ApiServices.PostRequestHeader(
+                "projects/update-status",
 
-      return null;
-    }
-  },
+                {
+                    project_id: id, // Use 'project_id' for the payload
+
+                    status: status,
+                }
+            );
+
+            if (response.status_code === "200, OK") {
+                commit("updateProjectStatus", response.data);
+
+                return response.message;
+            } else {
+                console.error("Failed to update status:", response.message);
+
+                return null;
+            }
+        } catch (error) {
+            console.error("Error updating project status:", error);
+
+            return null;
+        }
+    },
+
+    async fetchAnnouncements({ commit }) {
+        try {
+            const response = await ApiServices.GetRequest("/get-announcements");
+            if (response && response.data) {
+                commit("setAnnouncements", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching announcements:", error);
+            throw error;
+        }
+    },
 };
 
 const mutations = {
-  setEmployees(state, employees) {
-    state.employees = employees;
-  },
-  newEmployee(state, employee) {
-    state.employees.push(employee);
-  },
-  updateEmployee(state, updatedEmployee) {
-    const index = state.employees.findIndex((e) => e.id === updatedEmployee.id);
-    if (index !== -1) {
-      state.employees.splice(index, 1, updatedEmployee);
-    }
-  },
-  removeEmployee(state, id) {
-    state.employees = state.employees.filter((employee) => employee.id !== id);
-  },
-  setSalaryDetails(state, salaryDetails) {
-    state.salaryDetails = salaryDetails; // Update the salary details state
-  },
-  setAttendanceRecords(state, attendanceRecords) {
-    state.attendanceRecords = attendanceRecords; // Update the state with fetched attendance records
-  },
-  //Arham
-  setWorkingHours(state, workingHours) {
-    state.workingHours = workingHours; // Update the state with fetched working hours
-  },
-  setWorkingHoursAttendance(state, workingHours) {
-    state.workingHoursAttendance = workingHours; // Update the state with fetched working hours
-  },
-  newLeaveApplication(state, leaveApplication) {
-    // Logic to handle the leave application if needed
-  },
-attendanceDetails(state, attendanceDetails) {
-  state.attendanceDetails = attendanceDetails; // Fixed typo
-},
-setStatusCounts(state, statusCounts) {
-  state.statusCounts = statusCounts;
-},
-  //Arham
-  setWorkingHours(state, workingHours) {
-    state.workingHour = workingHours; // Update the state with fetched working hours
+    setEmployees(state, employees) {
+        state.employees = employees;
+    },
+    newEmployee(state, employee) {
+        state.employees.push(employee);
+    },
+    updateEmployee(state, updatedEmployee) {
+        const index = state.employees.findIndex((e) => e.id === updatedEmployee.id);
+        if (index !== -1) {
+            state.employees.splice(index, 1, updatedEmployee);
+        }
+    },
+    removeEmployee(state, id) {
+        state.employees = state.employees.filter((employee) => employee.id !== id);
+    },
+    setSalaryDetails(state, salaryDetails) {
+        state.salaryDetails = salaryDetails; // Update the salary details state
+    },
+    setAttendanceRecords(state, attendanceRecords) {
+        state.attendanceRecords = attendanceRecords; // Update the state with fetched attendance records
+    },
+    //Arham
+    setWorkingHours(state, workingHours) {
+        state.workingHours = workingHours; // Update the state with fetched working hours
+    },
+    setWorkingHoursAttendance(state, workingHours) {
+        state.workingHoursAttendance = workingHours; // Update the state with fetched working hours
+    },
+    newLeaveApplication(state, leaveApplication) {
+        // Logic to handle the leave application if needed
+    },
+    attendanceDetails(state, attendanceDetails) {
+        state.attendanceDetails = attendanceDetails; // Fixed typo
+    },
+    setStatusCounts(state, statusCounts) {
+        state.statusCounts = statusCounts;
+    },
+    //Arham
+    setWorkingHours(state, workingHours) {
+        state.workingHour = workingHours; // Update the state with fetched working hours
     },
     SET_WORKING_HOURS(state, payload) {
-      state.workingHours = payload;
+        state.workingHours = payload;
     },
     setAssignedProjects(state, projects) {
-    if (Array.isArray(projects)) {
-      state.assignedProjects = projects;
-    } else {
-      console.error("Expected an array, got:", projects);
+        if (Array.isArray(projects)) {
+            state.assignedProjects = projects;
+        } else {
+            console.error("Expected an array, got:", projects);
 
-      state.assignedProjects = []; // Fallback to an empty array
-    }
-  },
+            state.assignedProjects = []; // Fallback to an empty array
+        }
+    },
 
-  updateProjectStatus(state, updatedProject) {
-    const index = state.assignedProjects.findIndex(
-      (project) => project.id === updatedProject.id
-    );
+    updateProjectStatus(state, updatedProject) {
+        const index = state.assignedProjects.findIndex(
+            (project) => project.id === updatedProject.id
+        );
 
-    if (index !== -1) {
-      // Update the project's status in the state
+        if (index !== -1) {
+            // Update the project's status in the state
 
-      state.assignedProjects[index].status = updatedProject.status;
-    }
-  },
+            state.assignedProjects[index].status = updatedProject.status;
+        }
+    },
+    setAnnouncements(state, announcements) {
+        state.announcements = announcements;
+    },
+
+
 };
 
 export default {
-  namespaced: true,
-  state,
-  getters,
-  actions,
-  mutations,
+    namespaced: true,
+    state,
+    getters,
+    actions,
+    mutations,
 };
