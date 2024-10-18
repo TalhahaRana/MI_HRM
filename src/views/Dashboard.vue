@@ -18,12 +18,21 @@
 
         <div class="col-7 row">
           <div class="profile-menu">
-            
             <button class="profile-settings-btn">
-              <img class="profile-icon"src="../assets/images/user.png" alt="">
+              <router-link to="./EditProfile">
+                <img
+                  class="profile-icon"
+                  src="../assets/images/user.png"
+                  alt=""
+                />
+              </router-link>
             </button>
-            <button class="logout-btn " @click="logout">
-              <img class="profile-icon" src="../assets/images/logout.gif" alt="">
+            <button class="logout-btn" @click="logout">
+              <img
+                class="profile-icon"
+                src="../assets/images/logout.gif"
+                alt=""
+              />
             </button>
           </div>
         </div>
@@ -80,9 +89,15 @@
                   <i class="icon fas fa-project-diagram"></i> Manage Projects
                 </router-link>
               </li>
-              <li v-if="hasPermission('User can view employee assigned projects')">
-                <router-link to="/dashboard/all-assign-projects" class="redirect-link">
-                  <i class="icon fas fa-project-diagram"></i> Employee Assigned Projects
+              <li
+                v-if="hasPermission('User can view employee assigned projects')"
+              >
+                <router-link
+                  to="/dashboard/all-assign-projects"
+                  class="redirect-link"
+                >
+                  <i class="icon fas fa-project-diagram"></i> Employee Assigned
+                  Projects
                 </router-link>
               </li>
 
@@ -116,7 +131,7 @@
                   <i class="icon fas fa-user-times"></i> Assign Projects
                 </router-link>
               </li>
-              
+
               <li v-if="!samePermission('User can see Attendance Records')">
                 <router-link
                   to="/dashboard/attendance-hr"
@@ -200,7 +215,6 @@
                   <i class="icon fas fa-clipboard-list"></i> Assigned Projects
                 </router-link>
               </li>
-              
             </ul>
           </nav>
         </div>
@@ -222,11 +236,10 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import DashView from "../components/dashcompo/DashView.vue";
 
-import store from '@/stores';
+import store from "@/stores";
 export default {
   name: "Dashboard",
   setup() {
-
     const sidebarVisible = ref(false);
     const router = useRouter();
     // store=useStore();
@@ -246,20 +259,21 @@ export default {
       }
     );
     const hasPermission = (permission) => {
-      return store.getters['roles/hasPermission'](permission);
+      return store.getters["roles/hasPermission"](permission);
       //return true;
     };
     const samePermission = (permission) => {
-      const isPermission= store.getters['roles/hasPermission'](permission);
-      const role=store.getters['roles/userRole'];
-      console.log("Same Permission Role",role);
-      if(isPermission){
-        if(role=='employee'){return false}
-        if(role=="admin" || !(role=="hr"&& isPermission) ){
+      const isPermission = store.getters["roles/hasPermission"](permission);
+      const role = store.getters["roles/userRole"];
+      console.log("Same Permission Role", role);
+      if (isPermission) {
+        if (role == "employee") {
+          return false;
+        }
+        if (role == "admin" || !(role == "hr" && isPermission)) {
           console.log("her!!!!!!!!!!!!!e");
           return true;
-        }
-        else{
+        } else {
           return false;
         }
       }
@@ -270,18 +284,16 @@ export default {
     };
 
     const logout = async () => {
-      
       try {
         // Dispatch the logout action from Vuex
-        await store.dispatch('auth/logout');
+        await store.dispatch("auth/logout");
 
         // Redirect to the login page
-         router.push('/');
+        router.push("/");
       } catch (error) {
-        console.error('Error during logout:', error);
-      } 
+        console.error("Error during logout:", error);
+      }
     };
-
 
     return {
       sidebarVisible,
@@ -290,7 +302,7 @@ export default {
       logout,
       DashView,
       hasPermission,
-      samePermission
+      samePermission,
     };
   },
 };

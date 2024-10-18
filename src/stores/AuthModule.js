@@ -10,21 +10,43 @@ const getters = {
 const actions = {
   async login({ commit }, credentials) {
     try {
-      const response = await ApiServices.PostRequest('/login', credentials);
-      console.log("Resssssssssssss",response.data);
+      const response = await ApiServices.PostRequest("/login", credentials);
+      console.log("Resssssssssssss", response.data);
       commit("setUser", response.data);
       return response;
     } catch (error) {
-      throw error; 
-    }
-  },
-  async passwordSetup({commit},passwordData){
-    try{
-      const response=await ApiServices.PostRequest('/password-setup',passwordData)
-    }catch(error){
       throw error;
     }
   },
+  async passwordSetup({ commit }, passwordData) {
+    try {
+      const response = await ApiServices.PostRequest(
+        "/password-setup",
+        passwordData
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  async updateUser({ commit }, userData) {
+    try {
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+      const response = await ApiServices.PutRequest(
+        "/user/update",
+        userData.updatedData, // Payload should be correctly structured here
+        { headers }
+      );
+
+      alert("User updated successfully");
+      return response;
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      throw error;
+    }
+  },
+
   async logout({ commit }) {
     commit("clearUser");
     // Clear token from localStorage
@@ -32,9 +54,8 @@ const actions = {
     localStorage.removeItem("permissions");
     localStorage.removeItem("roles");
     // Clear role and permissions from localStorage (assuming these are managed in another module)
-    await this.dispatch('roles/clearRoleAndPermissions'); // Assuming you have 'roles.js' module
+    await this.dispatch("roles/clearRoleAndPermissions"); // Assuming you have 'roles.js' module
     // Redirect to login page
-
   },
 };
 
