@@ -27,7 +27,10 @@
             <div class="col-7 row">
               <div class="profile-menu">
                 <button class="profile-settings-btn">
-              <img class="profile-icon"src="../assets/images/user.png" alt="">
+              <img class="message-icon" src="../assets/images/open.png" alt="">
+            </button>
+                <button class="profile-settings-btn">
+              <img class="profile-icon" src="../assets/images/user.png" alt="">
             </button>
             <button class="logout-btn " @click="logout">
               <img class="profile-icon" src="../assets/images/logout.gif" alt="">
@@ -91,7 +94,7 @@ export default {
     };
 
     const logout = async () => {
-      
+
       try {
         // Dispatch the logout action from Vuex
         await store.dispatch('auth/logout');
@@ -100,7 +103,7 @@ export default {
          router.push('/');
       } catch (error) {
         console.error('Error during logout:', error);
-      } 
+      }
     };
 
 
@@ -152,9 +155,10 @@ export default {
   justify-content: end;
   margin-left: 60px;
 }
-.profile-icon {
+.profile-icon,.message-icon {
   width: 35px;
 }
+
 
 .profile-settings-btn,
 .logout-btn {

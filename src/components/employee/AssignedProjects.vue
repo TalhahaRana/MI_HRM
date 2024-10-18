@@ -22,7 +22,7 @@
                 @click="showDescriptionModal(project.project.description)"
                 title="Click to view full description"
               >
-                View Description -->
+                View Description
               </span>
             </p>
             <p class="card-text">Deadline: {{ project.project.deadline }}</p>
@@ -32,6 +32,7 @@
                 project.status
               }}</span>
             </p>
+            <progress-bar :status="project.status" />
             <button class="btn btn-warning" @click="showStatusModal(project)">
               Update Status
             </button>
@@ -40,7 +41,7 @@
       </div>
     </div>
 
-    <!-- Modal for Description -->
+
     <transition name="fade">
       <div v-if="showDescriptionModalFlag" class="modal-overlay">
         <div class="modal-content">
@@ -53,7 +54,7 @@
       </div>
     </transition>
 
-    <!-- Modal for Status Update -->
+
     <transition name="fade">
       <div v-if="showModal" class="modal-overlay">
         <div class="modal-content">
@@ -63,20 +64,21 @@
               <input
                 type="radio"
                 name="status"
-                value="in_progress"
-                v-model="newStatus"
-              />
-              In Progress
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="status"
                 value="pending"
                 v-model="newStatus"
               />
               Pending
             </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="in_progress"
+                v-model="newStatus"
+              />
+              In Progress
+            </label>
+
             <label>
               <input
                 type="radio"
@@ -104,8 +106,12 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
+import ProgressBar from './ProgressBar.vue';
 
 export default {
+  components: {
+    ProgressBar,
+  },
   setup() {
     const store = useStore();
     const projects = ref([]);
@@ -194,6 +200,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .project-card {
   height: 300px; /* Set a fixed height for all project cards */
@@ -269,4 +276,5 @@ export default {
     padding: 15px;
   }
 }
+
 </style>
