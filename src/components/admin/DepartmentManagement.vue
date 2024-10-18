@@ -1,9 +1,7 @@
-
-
 <template>
   <div class="designation-department-management form-card">
     <!-- Page Title -->
-    <h2 >Departments</h2>
+    <h2>Departments</h2>
 
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb">
@@ -14,7 +12,9 @@
         <li class="breadcrumb-item active fw-bolder" aria-current="page">
           <strong>Departments</strong>
         </li>
-        <button @click="openAddModal" class="btn btn-primary ms-auto">Add Department</button>
+        <button @click="openAddModal" class="btn btn-primary ms-auto">
+          Add Department
+        </button>
       </ol>
     </nav>
 
@@ -31,12 +31,12 @@
     </div>
 
     <!-- Departments Table -->
-    <table class="table table-striped" v-else>
+    <table class="table department-table" v-else>
       <thead>
         <tr>
-          <th>#</th>
-          <th>Department Name</th>
-          <th class="text-end">Actions</th>
+          <th><i class="fas fa-hashtag"></i> ID</th>
+          <th><i class="fas fa-building"></i> Department Name</th>
+          <th class="text-end"><i class="fas fa-cogs"></i> Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -51,7 +51,7 @@
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style="cursor: pointer;"
+                style="cursor: pointer"
               ></i>
               <ul class="dropdown-menu" aria-labelledby="actionMenu">
                 <li class="dropdown-item" @click="editDepartment(dept)">
@@ -73,7 +73,7 @@
     <!-- Modal for Adding/Editing Department -->
     <div v-if="showModal" class="modal" @click.self="closeModal">
       <div class="modal-content">
-        <h3>{{ isEditing ? 'Edit Department' : 'Add Department' }}</h3>
+        <h3>{{ isEditing ? "Edit Department" : "Add Department" }}</h3>
         <form @submit.prevent="submitForm">
           <div class="form-group">
             <label for="departmentName">Department Name</label>
@@ -86,171 +86,25 @@
             />
           </div>
           <div class="d-flex justify-content-end mt-3">
-            <button type="submit" class="btn btn-primary me-2" :disabled="loading">
-              {{ isEditing ? 'Update' : 'Add' }} Department
-            </button>
-            <button @click="closeModal" type="button" class="btn btn-secondary" :disabled="loading">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal for Assigning Employees (Optional) -->
-    <div v-if="showAssignModal" class="modal" @click.self="closeAssignModal">
-      <div class="modal-content">
-        <h3>Assign Employees to {{ selectedDepartment.name }}</h3>
-        <div v-for="employee in employees" :key="employee.id" class="form-check">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            :id="'emp-' + employee.id"
-            :value="employee.id"
-            v-model="selectedDepartment.employees"
-          />
-          <label :for="'emp-' + employee.id" class="form-check-label">
-            {{ employee.name }}
-          </label>
-        </div>
-        <div class="d-flex justify-content-end mt-3">
-          <button @click="saveEmployeeAssignment" type="button" class="btn btn-primary me-2">
-            Save
-          </button>
-          <button @click="closeAssignModal" type="button" class="btn btn-secondary">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Designations and Employees Sections (Existing Structure) -->
-    <h2 class="mt-5">Designations</h2>
-
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb d-flex justify-content-between">
-        <li class="breadcrumb-item fw-bolder">
-          <a href="#"><strong>Dashboard</strong></a>
-        </li>
-        <li class="breadcrumb-item active fw-bolder" aria-current="page">
-          <strong>Designations</strong>
-        </li>
-        <button @click="openDesignationModal" class="btn btn-primary ms-auto">Add Designation</button>
-      </ol>
-    </nav>
-
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Designation</th>
-          <th>Department</th>
-          <th class="text-end">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(designation, index) in designations" :key="designation.id">
-          <td>{{ index + 1 }}</td>
-          <td>{{ designation.name }}</td>
-          <td>{{ getDepartmentName(designation.departmentId) }}</td>
-          <td class="text-end px-4">
-            <div class="dropdown">
-              <i
-                class="fa-solid fa-ellipsis-vertical"
-                id="actionMenu"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style="cursor: pointer;"
-              ></i>
-              <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                <li class="dropdown-item" @click="editDesignation(designation)">
-                  <i class="fa-solid fa-pencil"></i>Edit
-                </li>
-                <li class="dropdown-item" @click="deleteDesignation(designation.id)">
-                  <i class="fa-solid fa-trash-can"></i>Delete
-                </li>
-              </ul>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Designation Modal -->
-    <div v-if="showDesignationModal" class="modal" @click.self="closeDesignationModal">
-      <div class="modal-content">
-        <h3>{{ isEditingDesignation ? 'Edit Designation' : 'Add Designation' }}</h3>
-        <form @submit.prevent="submitDesignationForm">
-          <div class="form-group">
-            <label for="designationName">Designation Name</label>
-            <input
-              v-model="formDesignation.name"
-              type="text"
-              class="form-control"
-              id="designationName"
-              required
-            />
-          </div>
-          <div class="form-group mt-3">
-            <label for="designationDepartment">Department</label>
-            <select
-              v-model="formDesignation.departmentId"
-              class="form-control"
-              id="designationDepartment"
-              required
+            <button
+              type="submit"
+              class="btn btn-primary me-2"
+              :disabled="loading"
             >
-              <option disabled value="">Select Department</option>
-              <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-                {{ dept.name }}
-              </option>
-            </select>
-          </div>
-          <div class="d-flex justify-content-end mt-4">
-            <button type="submit" class="btn btn-primary me-2" :disabled="loading">
-              {{ isEditingDesignation ? 'Update' : 'Add' }} Designation
+              {{ isEditing ? "Update" : "Add" }} Department
             </button>
-            <button @click="closeDesignationModal" type="button" class="btn btn-secondary" :disabled="loading">
+            <button
+              @click="closeModal"
+              type="button"
+              class="btn btn-secondary"
+              :disabled="loading"
+            >
               Cancel
             </button>
           </div>
         </form>
       </div>
     </div>
-
-    <!-- Employees Section -->
-    <h2 class=" mt-5">Employees</h2>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb d-flex justify-content-between">
-        <li class="breadcrumb-item fw-bolder">
-          <a href="#"><strong>Dashboard</strong></a>
-        </li>
-        <li class="breadcrumb-item active fw-bolder" aria-current="page">
-          <strong>Employees</strong>
-        </li>
-      </ol>
-    </nav>
-
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Employee Name</th>
-          <th>Email</th>
-          <th>Department</th>
-          <th>Designation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(employee, index) in employees" :key="employee.id">
-          <td>{{ index + 1 }}</td>
-          <td>{{ employee.name }}</td>
-          <td>{{ employee.email }}</td>
-          <td>{{ getDepartmentName(employee.departmentId) }}</td>
-          <td>{{ getDesignationName(employee.designationId) }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -266,7 +120,9 @@ export default {
     // --------------------
     // Computed Properties
     // --------------------
-    const departments = computed(() => store.getters["department/allDepartments"]);
+    const departments = computed(
+      () => store.getters["department/allDepartments"]
+    );
     const loading = computed(() => store.getters["department/isLoading"]);
     const error = computed(() => store.getters["department/departmentError"]);
 
@@ -297,9 +153,27 @@ export default {
     ]);
 
     const employees = ref([
-      { id: 1, name: "Alice", email: "alice@example.com", departmentId: 1, designationId: 1 },
-      { id: 2, name: "Bob", email: "bob@example.com", departmentId: 2, designationId: 2 },
-      { id: 3, name: "Charlie", email: "charlie@example.com", departmentId: 3, designationId: 3 },
+      {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        departmentId: 1,
+        designationId: 1,
+      },
+      {
+        id: 2,
+        name: "Bob",
+        email: "bob@example.com",
+        departmentId: 2,
+        designationId: 2,
+      },
+      {
+        id: 3,
+        name: "Charlie",
+        email: "charlie@example.com",
+        departmentId: 3,
+        designationId: 3,
+      },
     ]);
 
     // --------------------
@@ -347,7 +221,9 @@ export default {
             updatedData: { name: form.value.name },
           });
         } else {
-          await store.dispatch("department/addDepartment", { name: form.value.name });
+          await store.dispatch("department/addDepartment", {
+            name: form.value.name,
+          });
         }
         closeModal();
       } catch (err) {
@@ -386,21 +262,32 @@ export default {
     const editDesignation = (designation) => {
       isEditingDesignation.value = true;
       editDesignationId.value = designation.id;
-      formDesignation.value = { name: designation.name, departmentId: designation.departmentId };
+      formDesignation.value = {
+        name: designation.name,
+        departmentId: designation.departmentId,
+      };
       showDesignationModal.value = true;
     };
 
     // Submit Add/Edit Designation Form
     const submitDesignationForm = () => {
-      if (!formDesignation.value.name.trim() || !formDesignation.value.departmentId) {
+      if (
+        !formDesignation.value.name.trim() ||
+        !formDesignation.value.departmentId
+      ) {
         alert("Designation name and department are required.");
         return;
       }
 
       if (isEditingDesignation.value) {
-        const index = designations.value.findIndex((d) => d.id === editDesignationId.value);
+        const index = designations.value.findIndex(
+          (d) => d.id === editDesignationId.value
+        );
         if (index !== -1) {
-          designations.value.splice(index, 1, { id: editDesignationId.value, ...formDesignation.value });
+          designations.value.splice(index, 1, {
+            id: editDesignationId.value,
+            ...formDesignation.value,
+          });
         }
       } else {
         designations.value.push({ id: Date.now(), ...formDesignation.value });
@@ -452,7 +339,9 @@ export default {
     };
 
     const getDesignationName = (designationId) => {
-      const designation = designations.value.find((d) => d.id === designationId);
+      const designation = designations.value.find(
+        (d) => d.id === designationId
+      );
       return designation ? designation.name : "";
     };
 
@@ -505,6 +394,9 @@ export default {
 
 <style scoped>
 /* Dropdown Menu Styles */
+.designation-department-management{
+  height: 660px;
+}
 .dropdown-menu {
   right: 0;
   left: auto;
@@ -553,26 +445,29 @@ export default {
 }
 
 /* Table Styles */
-.table {
+
+.department-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.table th,
-.table td {
+.department-table th,
+.department-table td {
   padding: 12px;
-  border-bottom: 1px solid #0000003c;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-.table th {
-  font-size: 18px;
+.department-table th {
+  background-color: #f4f6f9;
+  color: #333;
 }
 
-.table td {
-  font-size: 16px;
-  font-weight: 400;
-  color: black;
+.department-table tr:hover {
+    background-color: #f9f9f9;
 }
 
 /* Button Styles */
