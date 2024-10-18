@@ -395,7 +395,6 @@ export default {
 }
 </style> -->
 
-
 <template>
   <div class="container mt-4 form-card">
     <div class="card">
@@ -420,32 +419,24 @@ export default {
           </svg>
         </div>
 
-        <div class="row mt-3">
-          <!-- Check-in Block with box shadow -->
+        <div class="row mt-3 p-5">
           <div class="col-4 text-center check-block">
             <h5>Check-In Time</h5>
             <p>{{ checkInTime }}</p>
-            <button class="btn btn-primary" @click="handleCheckIn">
-              Check-In
-            </button>
+            <button class="btn btn-primary" @click="handleCheckIn">Check-In</button>
           </div>
 
-          <!-- Image Placeholder -->
           <div class="col-4 text-center">
             <img src="../../assets/images/Untitled_design-removebg-preview.png" alt="custom image" class="custom-image" />
           </div>
 
-          <!-- Check-out Block with box shadow -->
           <div class="col-4 text-center check-block">
             <h5>Check-Out Time</h5>
             <p>{{ checkOutTime }}</p>
-            <button class="btn btn-danger" @click="handleCheckOut">
-              Check-Out
-            </button>
+            <button class="btn btn-danger" @click="handleCheckOut">Check-Out</button>
           </div>
         </div>
 
-        <!-- Working Hours Block below the check-in and check-out -->
         <div class="working-hours">
           <h5>Working Hours: {{ workingHours }}</h5>
         </div>
@@ -461,8 +452,8 @@ export default {
   setup() {
     const checkInTime = ref("00:00");
     const checkOutTime = ref("00:00");
-    const workingHours = ref("00:00"); // Display working hours
-    const arcPath = ref(""); // SVG path for dynamic arc filling
+    const workingHours = ref("00:00");
+    const arcPath = ref("");
 
     const handleCheckIn = () => {
       const now = new Date();
@@ -473,7 +464,7 @@ export default {
       workingHours.value = "00:00";
 
       // Update dynamic arc path
-      updateArc(0); // Assuming 0% filled at check-in
+      updateArc(checkInTime.value, 0); // Start filling from check-in
     };
 
     const handleCheckOut = () => {
@@ -491,24 +482,39 @@ export default {
       const diff = checkOutDate - checkInDate;
       const hours = Math.floor(diff / 3600000);
       const minutes = Math.floor((diff % 3600000) / 60000);
-      workingHours.value = `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}`;
+      workingHours.value = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-      // Update dynamic arc path
-      updateArc(100); // Assuming 100% filled after checkout
+      // Update dynamic arc path for check-out
+      updateArc(checkInTime.value, workingHours.value); // Fill arc based on working hours
     };
 
-    const updateArc = (percentage) => {
+    const updateArc = (checkIn, workingHours) => {
       const arcRadius = 80;
       const startX = 20;
       const endX = 180;
 
-      // Calculate the endpoint based on percentage of arc filled
-      const x = startX + ((endX - startX) * percentage) / 100;
-      const largeArcFlag = percentage > 50 ? 1 : 0;
+      // Define moon, sun, and middle points in the arc
+      const moonStartX = startX; // Moon
+      const sunEndX = endX; // Sun
 
-      arcPath.value = `M 20 80 A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} 1 ${x} 80`;
+      // Convert check-in time to minutes
+      const [checkInHour, checkInMinute] = checkIn.split(":").map(Number);
+      const totalCheckInMinutes = checkInHour * 60 + checkInMinute;
+
+      // Calculate how many minutes to fill (7.5 hours = 450 minutes)
+      const fillDuration = 450; // in minutes
+      const workingHoursMinutes = workingHours ? (Number(workingHours.split(":")[0]) * 60 + Number(workingHours.split(":")[1])) : 0;
+
+      // Calculate how much to fill based on the check-in time and working hours
+      const fillPercentage = (workingHoursMinutes / fillDuration) * 100;
+
+      // Calculate the x position based on check-in time
+      const x = moonStartX + ((sunEndX - moonStartX) * (totalCheckInMinutes / 60) / (fillDuration / 60)); // Position based on time
+
+      // Adjust arc to fill based on check-in time
+      const largeArcFlag = fillPercentage > 50 ? 1 : 0;
+
+      arcPath.value = `M ${moonStartX} 80 A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} 1 ${x} 80`;
     };
 
     return {
@@ -522,6 +528,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .arc-container {
@@ -540,10 +547,12 @@ svg {
 }
 
 .custom-image {
-  width: 80px;
-  height: 80px;
-  object-fit: contain; /* Adjust this to fit your image display needs */
+  width: 100%;
+  height: auto; /* Allow height to adjust based on aspect ratio */
+  max-height: 150px; /* Set a max height to maintain a consistent look */
+  object-fit: cover; /* Change to 'cover' if you want the image to fill the space */
 }
+
 
 .working-hours {
   margin-top: 20px;
