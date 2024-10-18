@@ -9,8 +9,13 @@ const state = {
   assignedProjects: [],
   attendanceRecords: [],
   statusCounts: { present: 0, absent: 0 },
+
   attendanceDetails: {},
-};
+
+  hrCount: 0,            // New state for HR count
+  employeeCount: 0,
+  departmentCount:0
+ };
 
 const getters = {
   allEmployees: (state) => state.employees,
@@ -22,6 +27,9 @@ const getters = {
   allWorkingHours: (state) => state.workingHours,
   allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
   getAttendanceDetails: (state) => state.attendanceDetails,
+  hrCount: (state) => state.hrCount,
+  departmentCount: (state) => state.departmentCount,
+  employeeCount: (state) => state.employeeCount,
 };
 
 const actions = {
@@ -190,6 +198,27 @@ async updateEmployee({ commit }, employeeData) {
 
     }
   },
+
+  //Emp and hr card
+  async card({ commit }) {
+    try {
+      const response = await ApiServices.GetRequest('/employee-role-counts');
+      console.log('API Response:', response.data); 
+      if (response.data) { // Check if response.data exists
+        const { hr_count, employee_count,department_count } = response.data; // Destructure employee_count from response.data
+        console.log("employeeeeee", employee_count);
+      
+        commit('setHrCount', hr_count); 
+        commit('setEmployeeCount', employee_count); 
+        commit('setDepartmentCount',department_count)
+      }
+    } catch (error) {
+      console.error('Error fetching employee role counts:', error);
+    }
+  }
+,  
+  
+  
   // Check-in action
 
   // Fetch attendance records of the logged-in employee based on the token
@@ -388,6 +417,15 @@ setStatusCounts(state, statusCounts) {
       state.assignedProjects[index].status = updatedProject.status;
     }
   },
+  setHrCount(state, count) {
+    state.hrCount = count;
+  },
+  setEmployeeCount(state, count) {
+    state.employeeCount = count;
+  },
+  setDepartmentCount(state,count){
+    state.departmentCount = count
+  }
 };
 
 export default {

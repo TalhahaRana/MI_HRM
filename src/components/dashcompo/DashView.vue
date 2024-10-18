@@ -35,8 +35,8 @@
         </div>
         <div class="row mt-4 stats-section">
             <AdminDashCard/>
-            <HrDashCard/>
-            <EmpDashCard/>
+            <!-- <HrDashCard/>
+            <EmpDashCard/> -->
         </div>
     </div>
 
