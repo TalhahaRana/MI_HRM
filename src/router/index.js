@@ -32,6 +32,7 @@ import AssignProjectEmployee from "@/components/hr/AssignProjectEmployee.vue";
 import TwoFa from "@/views/TwoFa.vue";
 import QR from "@/views/QR.vue";
 import Salaries from "@/components/admin/Salaries.vue";
+import EmpWorkingHours from "@/components/admin/EmpWorkingHours.vue";
 
 //Profile
 import Profile from "@/components/profile.vue";
@@ -198,6 +199,11 @@ const router = createRouter({
           component: HrManageLeaves,
           beforeEnter: RouteService('User can see Attendance Records', ['admin','hr']),
           
+        },
+        {
+          path:"all-working-hours",
+          component:EmpWorkingHours,
+          beforeEnter: RouteService('User can see Attendance Records', ['admin','hr']),
         },
         {
           path: "attendance-hr",

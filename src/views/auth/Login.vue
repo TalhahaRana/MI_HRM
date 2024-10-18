@@ -57,21 +57,16 @@ export default {
     const userData = { email: email.value, password: password.value };
   try {
     const response = await store.dispatch('auth/login', userData);
-    console.log("respnseeeeeeeeee......",response.data);
-    const { role, permissions,token } = response.data;
-    localStorage.setItem("token",token);
-    console.log("Local storage:  ...",localStorage.getItem("token"));
-    console.log("ROle",role," Permission",permissions);
-    localStorage.setItem("permissions",JSON.stringify(permissions));
-    localStorage.setItem("roles",role);
-    await store.dispatch('roles/setRoleAndPermissions', { role, permissions });
-    console.log("permissions", response.permissions);
-    // Check the user role from Vuex store
-    const userRole = store.getters['roles/userRole'];
-    if (userRole) {
-      router.push('/dashboard');
-    } else {
-      console.error('User role is undefined or null. Unable to redirect.');
+    const qr_code_scanned = response.data.qr_code_scanned;
+    console.log("Qr scn",qr_code_scanned);
+    localStorage.setItem("qr_code_scanned",response.data.qr_code_scanned);
+    localStorage.setItem("qr_code",response.data.qr_code);
+    localStorage.setItem("token",response.data.token);
+    console.log("Qr image",response.data.qr_code);
+    if(!qr_code_scanned){
+      router.push('/QR');
+    }else{
+      router.push('/Twofa');
     }
   } catch (error) {
     // Handle any errors during login
