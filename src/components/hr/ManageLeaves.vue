@@ -183,7 +183,7 @@ watch(filteredPendingLeaves, (newPendingLeaves) => {
 </script>
 
 
-
+stats
 
 <style scoped>
 .leaves-dashboard {
@@ -200,7 +200,7 @@ watch(filteredPendingLeaves, (newPendingLeaves) => {
     margin-bottom: 20px;
 }
 
-.dashboard-stats {
+.dashboard- {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
