@@ -9,6 +9,7 @@ const state = {
   assignedProjects: [],
   attendanceRecords: [],
   statusCounts: { present: 0, absent: 0 },
+  attendanceDetails: {},
 };
 
 const getters = {
@@ -20,6 +21,7 @@ const getters = {
   statusCounts: (state) => state.statusCounts,
   allWorkingHours: (state) => state.workingHours,
   allWorkingHoursAttendance: (state) => state.workingHoursAttendance,
+  getAttendanceDetails: (state) => state.attendanceDetails,
 };
 
 const actions = {
@@ -34,6 +36,17 @@ const actions = {
       console.error("Error fetching employees:", error);
       throw error;
     }
+  },
+  //samia
+
+  async allAttendance({ commit }) {
+    try {
+      const response = await ApiServices.GetRequest("/get-all-attendance");
+      commit("attendanceDetails", response.data); // This should match the mutation name
+    } catch (error) {
+      throw error;
+    }
+
   },
   async fetchEmployeeStatus({ commit }, { date, frequency }) {
     try {
@@ -179,23 +192,6 @@ async updateEmployee({ commit }, employeeData) {
   },
   // Check-in action
 
-  async checkIn({ commit }) {
-    try {
-      const response = await ApiServices.PostRequestHeader(
-        "/attendance/check-in",
-
-        {}
-      );
-
-      alert(response.message);
-
-      // Optionally commit any mutations if needed
-    } catch (error) {
-      console.error("Check-in failed:", error);
-
-      alert("Check-in failed. Please try again.");
-    }
-  },
   // Fetch attendance records of the logged-in employee based on the token
   async fetchEmployeeAttendance({ commit }, { month }) {
     try {
@@ -215,23 +211,30 @@ async updateEmployee({ commit }, employeeData) {
     }
   },
 
-  // Check-out action
+    // Check-out Check-in action
 
-  async checkOut({ commit }) {
-    try {
-      const response = await ApiServices.PostRequestHeader(
-        "/attendance/check-out",
-
-        {}
-      );
-
-      alert(response.message);
-    } catch (error) {
-      console.error("Check-out failed:", error);
-
-      alert("Check-out failed. Please try again.");
-    }
-  },
+    async checkInOut({ commit }, type) {
+      try {
+        const response = await ApiServices.PostRequestHeader(
+          "/attendance/checkin-out",
+          { type }
+        );
+  
+        alert(response.message);
+        return response.data ? response.data["working hours"] : null;
+      } catch (error) {
+        console.error(
+          `${type.charAt(0).toUpperCase() + type.slice(1)} failed:`,
+          error
+        );
+        alert(
+          `${
+            type.charAt(0).toUpperCase() + type.slice(1)
+          } failed. Please try again.`
+        );
+        return null;
+      }
+    },
 
   async fetchWorkingHours({ commit }) {
     try {
@@ -351,6 +354,9 @@ const mutations = {
   newLeaveApplication(state, leaveApplication) {
     // Logic to handle the leave application if needed
   },
+attendanceDetails(state, attendanceDetails) {
+  state.attendanceDetails = attendanceDetails; // Fixed typo
+},
 setStatusCounts(state, statusCounts) {
   state.statusCounts = statusCounts;
 },

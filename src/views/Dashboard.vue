@@ -45,12 +45,7 @@
 
     <div class="container-fluid" style="background-color: #f5f7ff">
       <div class="d-flex">
-        <div
-          :class="{
-            'sidebar-expanded': sidebarVisible,
-            'sidebar-collapsed': !sidebarVisible,
-          }"
-        >
+        <div :class="{ 'sidebar-expanded': sidebarVisible, 'sidebar-collapsed': !sidebarVisible }">
           <SideBar :visible="sidebarVisible" />
         </div>
         <div class="main-content">
@@ -62,18 +57,29 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import SideBar from "./SideBar.vue";
-import DashView from "../components/dashcompo/DashView.vue";
-import store from '@/stores';
+
 export default {
   name: "Dashboard",
-  components: { SideBar, DashView },
+  components: { SideBar },
   setup() {
     const sidebarVisible = ref(false);
+    const showDropdown = ref(false);
+    const announcements = ref(["Announcement 1", "Announcement 2", "Announcement 3"]); // Sample announcements
+    const isHRorEmployee = ref(false);
+
     const router = useRouter();
-    // store=useStore();
+
+    // Check user role from localStorage
+    onMounted(() => {
+      const storedRole = localStorage.getItem('userRole');
+      if (storedRole === 'hr' || storedRole === 'employee') {
+        isHRorEmployee.value = true;
+      }
+    });
+
     const toggleSidebar = () => {
       sidebarVisible.value = !sidebarVisible.value;
     };
@@ -82,38 +88,31 @@ export default {
       sidebarVisible.value = false;
     };
 
-
-    watch(
-      () => router.currentRoute.value,
-      () => {
-        closeSidebar(); // Automatically close sidebar on route change
-      }
-    );
-    const goToProfileSettings = () => {
-      // Logic to navigate to profile settings
+    const toggleDropdown = () => {
+      showDropdown.value = !showDropdown.value;
     };
 
     const logout = async () => {
 
       try {
-        // Dispatch the logout action from Vuex
-        await store.dispatch('auth/logout');
-
-        // Redirect to the login page
-         router.push('/');
+        localStorage.removeItem('userRole'); // Remove the role from local storage upon logout
+        router.push('/');
       } catch (error) {
         console.error('Error during logout:', error);
       }
     };
 
+    watch(() => router.currentRoute.value, closeSidebar);
 
     return {
       sidebarVisible,
       toggleSidebar,
       closeSidebar,
-      goToProfileSettings,
+      showDropdown,
+      toggleDropdown,
+      announcements,
       logout,
-      DashView,
+      isHRorEmployee,
     };
   },
 };
@@ -240,6 +239,9 @@ export default {
 .navbar-brand {
   font-size: 22px;
   color: rgb(7, 7, 7);
+}
+.bg{
+  height: 100vh;
 }
 
 /* Adjust the sidebar and main content */

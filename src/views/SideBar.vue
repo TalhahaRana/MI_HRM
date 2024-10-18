@@ -19,10 +19,10 @@
               </li>
               <li v-if="samePermission('User can get salary invoice')">
                 <router-link
-                  to="/dashboard/working-hours"
+                  to="/dashboard/all-working-hours"
                   class="redirect-link"
                 >
-                  <i class="icon fas fa-clock"></i> Admin Working Hours
+                  <i class="icon fas fa-clock"></i> Employee Working Hours
                 </router-link>
               </li>
               <li v-if="hasPermission('User can add department')">
@@ -139,11 +139,9 @@ export default {
     const samePermission = (permission) => {
       const isPermission= store.getters['roles/hasPermission'](permission);
       const role=store.getters['roles/userRole'];
-      console.log("Same Permission Role",role);
       if(isPermission){
         if(role=='employee'){return false}
-        if(role=="admin" || !(role=="hr"&& isPermission) ){
-          console.log("her!!!!!!!!!!!!!e");
+        if(role=="admin" || !(role=="hr"&& isPermission)  || (role=="hr" && permission=='User can get salary invoice')){
           return true;
         }
         else{
