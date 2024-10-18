@@ -623,7 +623,7 @@ const state = {
   user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
   token: localStorage.getItem("token") || null,
   role: localStorage.getItem("role") || null,
-  permissions: localStorage.getItem("permissions") ? JSON.parse(localStorage.getItem("permissions")) : [],
+  permissions: [],
 };
 
 const getters = {
