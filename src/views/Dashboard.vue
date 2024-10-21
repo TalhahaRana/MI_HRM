@@ -27,7 +27,7 @@
             <div class="col-7 row">
               <div class="profile-menu">
                 <button class="profile-settings-btn">
-              <img class="profile-icon"src="../assets/images/user.png" alt="">
+              <img class="profile-icon" src="../assets/images/user.png" alt="">
             </button>
             <button class="logout-btn " @click="logout">
               <img class="profile-icon" src="../assets/images/logout.gif" alt="">
