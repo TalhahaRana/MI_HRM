@@ -140,8 +140,8 @@ export default {
       const isPermission= store.getters['roles/hasPermission'](permission);
       const role=store.getters['roles/userRole'];
       if(isPermission){
-        if(role=='employee'){return false}
-        if(role=="admin" || !(role=="hr"&& isPermission)  || (role=="hr" && permission=='User can get salary invoice')){
+        if(role=='employee' || (role=='hr' && permission=='User can get salary invoice')){return false}
+        if(role=="admin" || !(role=="hr")  || (role=="hr" && permission=='User can get salary invoice' || (role=='hr'))){
           return true;
         }
         else{

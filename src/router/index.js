@@ -249,7 +249,7 @@ const router = createRouter({
         {
           path: "salaries",
           component: Salaries,
-          beforeEnter: RouteService('User can get salary invoice', ['admin']),
+          beforeEnter: RouteService('User can get salary invoice', ['admin','hr']),
         },
         // {
         //   path: "manage-projects-hr",
