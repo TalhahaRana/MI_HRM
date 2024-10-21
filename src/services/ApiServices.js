@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const baseURL = 'http://192.168.15.93:8000/api'; // Set your base URL
+//const baseURL = 'http://192.168.15.93:8000/api'; // Set your base URL
 //const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL
-
+const baseURL = 'http://192.168.15.115:8000/api'
 
 const ApiServices = {
   // Initialize the Axios defaults
@@ -42,15 +42,15 @@ const ApiServices = {
     
     ...this.getAuthHeader(),
     
-    "Content-Type": "application/json", // Add custom header
+    "Content-Type": "application/json", 
     
     };
     
-    const response = await axios.get(url, { headers, params }); // Include params here
+    const response = await axios.get(url, { headers, params }); 
     
-    alert(response.data.message); // Show a message alert on success
+    alert(response.data.message); 
     
-    return response.data; // Return the response data for further processing
+    return response.data; 
     
     } catch (error) {
     

@@ -12,9 +12,13 @@ const state = {
 
   attendanceDetails: {},
 
-  hrCount: 0,            // New state for HR count
+  hrCount: 0,          
   employeeCount: 0,
-  departmentCount:0
+  departmentCount:0,
+  totalPresent: 0, // Add this line
+    totalAbsent: 0,
+    totalOnLeave: 0,
+    employeeRecord: [] // Add this line
  };
 
 const getters = {
@@ -30,6 +34,10 @@ const getters = {
   hrCount: (state) => state.hrCount,
   departmentCount: (state) => state.departmentCount,
   employeeCount: (state) => state.employeeCount,
+  totalAbsent: (state) => state.totalAbsent,
+  totalOnLeave: (state) => state.totalOnLeave,
+  totalPresent: (state) => state.totalPresent, 
+  employeeRecord: (state) => state.employeeRecord 
 };
 
 const actions = {
@@ -56,6 +64,20 @@ const actions = {
     }
 
   },
+  async fetchAttendanceData({ commit }) {
+    try {
+        const response = await ApiServices.GetRequest("/daily-attendance-count");
+        commit('setAttendanceData', {
+            totalPresent: response.data.totalPresent, 
+            totalAbsent: response.data.totalAbsent,
+            totalOnLeave: response.data.totalOnLeave,
+            employeeRecord: response.data.employee_record 
+        });
+    } catch (error) {
+        console.error(error);
+    }
+},
+
   async fetchEmployeeStatus({ commit }, { date, frequency }) {
     try {
         // Fetch working hours using the API
@@ -425,7 +447,14 @@ setStatusCounts(state, statusCounts) {
   },
   setDepartmentCount(state,count){
     state.departmentCount = count
-  }
+  },
+  setAttendanceData(state, { totalPresent, totalAbsent, totalOnLeave, employeeRecord }) {
+    state.totalPresent = totalPresent; 
+    state.totalAbsent = totalAbsent;
+    state.totalOnLeave = totalOnLeave;
+    state.employeeRecord = employeeRecord; 
+},
+
 };
 
 export default {
