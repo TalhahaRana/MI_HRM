@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const baseURL = 'http://192.168.15.93:8000/api'; // Set your base URL ahamd
+//const baseURL = 'http://192.168.15.93:8000/api'; // Set your base URL ahamd
 // const baseURL = 'http://192.168.15.44:8000/api'; // Set your base URL talha
 
-//const baseURL = 'http://192.168.15.115:8000/api'; // Set your base URL samir
+const baseURL = 'http://192.168.15.115:8000/api'; // Set your base URL samir
 
 
 const ApiServices = {

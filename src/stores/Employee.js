@@ -434,25 +434,47 @@ const actions = {
         }
 
     },
-    async fetchEmployeeStatus({ commit }, { date, frequency }) {
+    // async fetchEmployeeStatus({ commit }, { date, frequency }) {
+    //     try {
+    //         // Fetch working hours using the API
+    //         const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+
+    //         // Get the daily working hours from the API response
+    //         const dailyWorkingHours = response.data.daily_working_hours;
+
+    //         // Calculate the counts based on the status key
+    //         const statusCounts = dailyWorkingHours.reduce(
+    //             (counts, entry) => {
+    //                 if (entry.status === "present") {
+    //                     counts.present++;
+    //                 } else if (entry.status === "absent") {
+    //                     counts.absent++;
+    //                 }
+    //                 return counts;
+    //             }, { present: 0, absent: 0 } // Initial counts
+    //         );
+
+    //         // Commit the computed counts to the store
+    //         commit("setStatusCounts", statusCounts);
+    //     } catch (error) {
+    //         console.error("Error fetching employee status:", error);
+    //         throw error; // Rethrow the error for handling in the component
+    //     }
+    // },
+    async fetchEmployeeStatus({ commit }) {
         try {
-            // Fetch working hours using the API
-            const response = await ApiServices.GetRequestWorkingHours(`/get-employee/working-hours?date=${date}&frequency=${frequency}`);
+            // Fetch attendance counts using the new API endpoint
+            const response = await ApiServices.GetRequest(`/employee-attendance-count`);
 
-            // Get the daily working hours from the API response
-            const dailyWorkingHours = response.data.daily_working_hours;
+            // Get attendance data from the API response
+            const attendanceData = response.data;
 
-            // Calculate the counts based on the status key
-            const statusCounts = dailyWorkingHours.reduce(
-                (counts, entry) => {
-                    if (entry.status === "present") {
-                        counts.present++;
-                    } else if (entry.status === "absent") {
-                        counts.absent++;
-                    }
-                    return counts;
-                }, { present: 0, absent: 0 } // Initial counts
-            );
+            // Set the status counts based on the response
+            const statusCounts = {
+                present: attendanceData.present,
+                absent: attendanceData.absent,
+                onleave: attendanceData.onleave, // Include onleave if needed
+            };
 
             // Commit the computed counts to the store
             commit("setStatusCounts", statusCounts);
@@ -708,6 +730,7 @@ const actions = {
 
     async fetchAnnouncements({ commit }) {
         try {
+            // Fetch announcements from backend (unchanged)
             const response = await ApiServices.GetRequest("/get-announcements");
             if (response && response.data) {
                 commit("setAnnouncements", response.data);
@@ -715,6 +738,18 @@ const actions = {
         } catch (error) {
             console.error("Error fetching announcements:", error);
             throw error;
+        }
+    },
+
+    markAsRead({ commit }, announcementId) {
+        // No API call, just update the state
+        commit("markAnnouncementAsRead", announcementId);
+
+        // Optionally persist the read state in localStorage
+        const readAnnouncements = JSON.parse(localStorage.getItem("readAnnouncements")) || [];
+        if (!readAnnouncements.includes(announcementId)) {
+            readAnnouncements.push(announcementId);
+            localStorage.setItem("readAnnouncements", JSON.stringify(readAnnouncements));
         }
     },
 };
@@ -786,7 +821,19 @@ const mutations = {
         }
     },
     setAnnouncements(state, announcements) {
-        state.announcements = announcements;
+        // Load read status from localStorage and merge with announcements
+        const readAnnouncements = JSON.parse(localStorage.getItem("readAnnouncements")) || [];
+        state.announcements = announcements.map((announcement) => ({
+            ...announcement,
+            is_read: readAnnouncements.includes(announcement.id),
+        }));
+    },
+
+    markAnnouncementAsRead(state, announcementId) {
+        const announcement = state.announcements.find((a) => a.id === announcementId);
+        if (announcement) {
+            announcement.is_read = true;
+        }
     },
 
 
