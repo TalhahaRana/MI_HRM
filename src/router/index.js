@@ -26,7 +26,7 @@ import AssignedProjects from "@/components/employee/AssignedProjects.vue";
 import ManageLeaves from "@/components/admin/Leaves.vue"; // Import corrected
 import Payroll from "@/components/hr/Payroll.vue";
 import ManageProjectsHR from "@/components/hr/ManageProjects.vue";
-import DashView from "@/components/dashcompo/DashView.vue";
+import DashView from "@/components/dashcompo/MainDashView.vue";
 import AllAssignedProjects from "@/components/admin/AllAssignedProjects.vue";
 import AssignProjectEmployee from "@/components/hr/AssignProjectEmployee.vue";
 import TwoFa from "@/views/TwoFa.vue";

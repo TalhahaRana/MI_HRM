@@ -66,6 +66,7 @@ const actions = {
       localStorage.setItem("user", JSON.stringify(response.data));
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("permissions", JSON.stringify(response.data.permissions));
+      localStorage.setItem("userName", response.data.name)
 
       return response;
     } catch (error) {

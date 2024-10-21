@@ -9,7 +9,12 @@ const state = {
   assignedProjects: [],
   attendanceRecords: [],
   statusCounts: { present: 0, absent: 0 },
-
+  attendanceCounts: {
+    employee_name: "",
+    present: 0,
+    absent: 0,
+    onleave: 0,
+  },
   attendanceDetails: {},
 
   hrCount: 0,            // New state for HR count
@@ -30,6 +35,7 @@ const getters = {
   hrCount: (state) => state.hrCount,
   departmentCount: (state) => state.departmentCount,
   employeeCount: (state) => state.employeeCount,
+  attendanceCounts: (state) => state.attendanceCounts,
 };
 
 const actions = {
@@ -359,6 +365,56 @@ const actions = {
       return null;
     }
   },
+
+   // Check-out Check-in action
+
+   async checkInOut({ commit }, type) {
+    try {
+      const response = await ApiServices.PostRequestHeader(
+        "/attendance/checkin-out",
+        { type }
+      );
+
+      alert(response.message);
+      return response.data ? response.data["working hours"] : null;
+    } catch (error) {
+      console.error(
+        `${type.charAt(0).toUpperCase() + type.slice(1)} failed:`,
+        error
+      );
+      alert(
+        `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } failed. Please try again.`
+      );
+      return null;
+    }
+  },
+
+  async fetchEmployeeAttendanceCounts({ commit }) {
+    try {
+      console.log("Fetching attendance counts...");
+      const response = await ApiServices.GetRequest(
+        "/employee-attendance-count"
+      );
+
+      // Log to inspect full response
+      console.log("Full API response:", response);
+
+      // Check response structure
+      if (response && response.data) {
+        commit("setAttendanceCounts", response.data); // Commit the data directly
+        console.log("Attendance counts fetched:", response.data); // Check what is being passed
+      } else {
+        console.error("Failed to fetch attendance counts:", response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching attendance counts:", error);
+    }
+  },
+
+
+
 };
 
 const mutations = {
@@ -435,7 +491,20 @@ const mutations = {
   },
   setDepartmentCount(state,count){
     state.departmentCount = count
-  }
+  },
+
+  //arham
+  setAttendanceCounts(state, counts) {
+    if (counts) {
+      console.log("Setting attendance counts:", counts); // Log the counts received
+      state.attendanceCounts.employee_name = counts.employee_name || "";
+      state.attendanceCounts.present = counts.present || 0;
+      state.attendanceCounts.absent = counts.absent || 0;
+      state.attendanceCounts.onleave = counts.onleave || 0;
+    } else {
+      console.error("Received undefined counts in mutation");
+    }
+  },
 };
 
 export default {

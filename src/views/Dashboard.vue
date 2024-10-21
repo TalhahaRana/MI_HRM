@@ -49,7 +49,10 @@
         }">
           <SideBar :visible="sidebarVisible" />
         </div>
+
+
         <div class="main-content">
+            
           <router-view></router-view>
         </div>
       </div>
@@ -62,10 +65,11 @@ import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import SideBar from "./SideBar.vue";
 import DashView from "../components/dashcompo/DashView.vue";
+import EmpView from "@/components/employee/EmployeeDashboard.vue";
 import store from '@/stores';
 export default {
   name: "Dashboard",
-  components: { SideBar, DashView },
+  components: { SideBar, DashView,EmpView},
   setup() {
     const sidebarVisible = ref(false);
     const router = useRouter();
@@ -110,6 +114,7 @@ export default {
       goToProfileSettings,
       logout,
       DashView,
+      EmpView
     };
   },
 };
