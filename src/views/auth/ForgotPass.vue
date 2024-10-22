@@ -42,28 +42,38 @@
 
 <script>
 import logo from '../../assets/images/login.jpeg';
-import { ref } from 'vue'; 
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
     setup() {
+        const store = useStore();
         const logoImage = logo;
         const email = ref('');
-        const password = ref('');
 
-        const handleLogin = () => {
-            console.log('Email:', email.value);
-            console.log('Password:', password.value);
-        };
+        const handleLogin = async () => {
+  if (email.value) {
+    try {
+      await store.dispatch('auth/sendPasswordResetLink', email.value);
+      alert('Password reset link sent to your email.');
+    } catch (error) {
+      console.error('sending password reset link:', error);
+      alert('Password reset link sent to your email.');
+    }
+  } else {
+    alert('Please enter a valid email address.');
+  }
+};
 
         return {
             logo: logoImage,
             email,
-            password,
             handleLogin
         };
     },
 };
 </script>
+
 
 <style scoped>
 .login-container {
