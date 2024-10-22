@@ -9,7 +9,7 @@
   <script>
   import { computed } from 'vue';
   import { useStore } from 'vuex';
-  import AdminDashCard from './cards/admin/AdminDashCard.vue';
+  import AdminDashCard from '@/components/dashcompo/DashView.vue'
   import HrDashCard from './cards/hr/HrDashCard.vue';
   import EmpDashCard from '@/components/employee/EmployeeDashboard.vue';
   
