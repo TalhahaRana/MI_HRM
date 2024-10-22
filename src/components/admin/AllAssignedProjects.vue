@@ -30,14 +30,16 @@
         </thead>
         <tbody>
           <tr v-for="(projectData, index) in filteredProjects" :key="index">
-            <td>{{ projectData.employee.user.name }}</td>
-            <td>{{ projectData.project.title }}</td>
-            <td>{{ projectData.status }}</td>
-            <td>{{ projectData.project.deadline }}</td>
+            <td>{{ projectData.name }}</td> <!-- Corrected -->
+              <td>{{ projectData.title }}</td> <!-- Corrected -->
+              <td>{{ projectData.status }}</td>
+              <td>{{ projectData.deadline }}</td> <!-- Corrected -->
             <td>
-              <button @click="openModal(projectData)" class="view-all">View All Details</button>
-            </td>
-          </tr>
+    <button @click="openModal(projectData)" class="view-all">View All Details</button>
+  </td>
+</tr>
+
+
         </tbody>
       </table>
   
@@ -50,11 +52,12 @@
         <div class="modal-content form-card">
           <span class="close" @click="closeModal">&times;</span>
           <h2>Project Details</h2>
-          <p><strong>Employee Name:</strong> {{ selectedProject.employee.user.name }}</p>
-          <p><strong>Project Name:</strong> {{ selectedProject.project.title }}</p>
+          <p><strong>Employee Name:</strong> {{ selectedProject.name }}</p> <!-- Corrected -->
+          <p><strong>Project Name:</strong> {{ selectedProject.title }}</p> <!-- Corrected -->
           <p><strong>Status:</strong> {{ selectedProject.status }}</p>
-          <p><strong>Deadline:</strong> {{ selectedProject.project.deadline }}</p>
-          <p><strong>Description:</strong> {{ selectedProject.project.description }}</p>
+          <p><strong>Deadline:</strong> {{ selectedProject.deadline }}</p> <!-- Corrected -->
+          <p><strong>Description:</strong> {{ selectedProject.description }}</p> <!-- Make sure the API response includes this field, or handle it if it's missing -->
+
         </div>
       </div>
     </div>
@@ -88,17 +91,19 @@
   
   // Filter projects based on search term, status, and deadline (date range)
   const filteredProjects = computed(() => {
-    return projects.value.filter(project => {
-      const matchesSearchTerm = project.employee.user.name.toLowerCase().includes(searchTerm.value.toLowerCase());
-      const matchesStatus = selectedStatus.value ? project.status.trim().toLowerCase() === selectedStatus.value.trim().toLowerCase() : true;
-  
-      const projectDeadline = new Date(project.project.deadline);
-      const matchesStartDate = startDate.value ? new Date(startDate.value) <= projectDeadline : true;
-      const matchesEndDate = endDate.value ? projectDeadline <= new Date(endDate.value) : true;
-  
-      return matchesSearchTerm && matchesStatus && matchesStartDate && matchesEndDate;
-    });
+  return projects.value.filter(project => {
+    // Adjusted field access
+    const matchesSearchTerm = project.name.toLowerCase().includes(searchTerm.value.toLowerCase());
+    const matchesStatus = selectedStatus.value ? project.status.trim().toLowerCase() === selectedStatus.value.trim().toLowerCase() : true;
+
+    const projectDeadline = new Date(project.deadline); // Adjusted field access
+    const matchesStartDate = startDate.value ? new Date(startDate.value) <= projectDeadline : true;
+    const matchesEndDate = endDate.value ? projectDeadline <= new Date(endDate.value) : true;
+
+    return matchesSearchTerm && matchesStatus && matchesStartDate && matchesEndDate;
   });
+});
+
   
   // Modal logic
   const openModal = (project) => {
