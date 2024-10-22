@@ -5,6 +5,11 @@ const state = {
     loading: false, // Added loading state
     error: null, // Added error state (optional but recommended)
     departments: [],
+    projectCount: {
+      pendingProject: 0,
+      inProgressProject: 0,
+      completedProject: 0,
+  },
 };
 
 const getters = {
@@ -15,6 +20,9 @@ const getters = {
     fetchEmpDepartments: (state) => {
     return state.employees; 
   },
+  pendingProjectCount: (state) => state.projectCount.pendingProject,
+  inProgressProjectCount: (state) => state.projectCount.inProgressProject,
+  completedProjectCount: (state) => state.projectCount.completedProject,
 };
 
 const actions = {
@@ -50,7 +58,18 @@ const actions = {
             commit("setLoading", false); // End loading
         }
     },
-
+    async fetchProjectsCount({ commit }) {
+      try {
+        const response = await ApiServices.GetRequest("/project-count");
+        commit('setProjectCount', {
+          pendingProject: response.data.pendingProject,
+          inProgressProject: response.data.inProgressProject,
+          completedProject: response.data.completedProject,
+        });
+      } catch (error) {
+        console.error('Error fetching project count:', error);
+      }
+    },
     // Update an existing project
     async updateProject({ commit }, { id, updatedData }) {
         commit("setLoading", true); // Start loading
@@ -184,6 +203,11 @@ const mutations = {
       },
       setProjects(state, projects) {
         state.projects = projects; // Set projects in state
+      },
+      setProjectCount(state, payload) {
+        state.projectCount.pendingProject = payload.pendingProject;
+        state.projectCount.inProgressProject = payload.inProgressProject;
+        state.projectCount.completedProject = payload.completedProject;
       },
 };
 

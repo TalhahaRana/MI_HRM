@@ -17,9 +17,13 @@ const state = {
   },
   attendanceDetails: {},
 
-  hrCount: 0,            // New state for HR count
+  hrCount: 0,          
   employeeCount: 0,
-  departmentCount:0
+  departmentCount:0,
+  totalPresent: 0, // Add this line
+    totalAbsent: 0,
+    totalOnLeave: 0,
+    employeeRecord: [] // Add this line
  };
 
 const getters = {
@@ -35,7 +39,10 @@ const getters = {
   hrCount: (state) => state.hrCount,
   departmentCount: (state) => state.departmentCount,
   employeeCount: (state) => state.employeeCount,
-  attendanceCounts: (state) => state.attendanceCounts,
+  totalAbsent: (state) => state.totalAbsent,
+  totalOnLeave: (state) => state.totalOnLeave,
+  totalPresent: (state) => state.totalPresent, 
+  employeeRecord: (state) => state.employeeRecord 
 };
 
 const actions = {
@@ -61,6 +68,20 @@ const actions = {
       throw error;
     }
   },
+  async fetchAttendanceData({ commit }) {
+    try {
+        const response = await ApiServices.GetRequest("/daily-attendance-count");
+        commit('setAttendanceData', {
+            totalPresent: response.data.totalPresent, 
+            totalAbsent: response.data.totalAbsent,
+            totalOnLeave: response.data.totalOnLeave,
+            employeeRecord: response.data.employee_record 
+        });
+    } catch (error) {
+        console.error(error);
+    }
+},
+
   async fetchEmployeeStatus({ commit }, { date, frequency }) {
     try {
       // Fetch working hours using the API
@@ -491,20 +512,7 @@ const mutations = {
   },
   setDepartmentCount(state,count){
     state.departmentCount = count
-  },
-
-  //arham
-  setAttendanceCounts(state, counts) {
-    if (counts) {
-      console.log("Setting attendance counts:", counts); // Log the counts received
-      state.attendanceCounts.employee_name = counts.employee_name || "";
-      state.attendanceCounts.present = counts.present || 0;
-      state.attendanceCounts.absent = counts.absent || 0;
-      state.attendanceCounts.onleave = counts.onleave || 0;
-    } else {
-      console.error("Received undefined counts in mutation");
-    }
-  },
+  }
 };
 
 export default {

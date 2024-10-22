@@ -42,11 +42,11 @@ const ApiServices = {
     
     ...this.getAuthHeader(),
     
-    "Content-Type": "application/json", // Add custom header
+    "Content-Type": "application/json", 
     
     };
     
-    const response = await axios.get(url, { headers, params }); // Include params here
+    const response = await axios.get(url, { headers, params }); 
     
     alert(response.data.message); 
     

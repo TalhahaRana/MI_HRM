@@ -2,7 +2,6 @@ const state = {
   userRole: localStorage.getItem('userRole') || null,
   permissions: [],
 };
-
 // Check if userPermissions is available in localStorage and is a valid JSON string
 const storedPermissions = localStorage.getItem('userPermissions');
 if (storedPermissions) {
