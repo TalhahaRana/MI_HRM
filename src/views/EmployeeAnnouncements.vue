@@ -96,8 +96,8 @@ export default {
 </script> -->
 
 <template>
-  <div class="dropdown rounded">
-    <ul>
+  <div class="dropdown">
+    <ul class="announcements-list">
       <li
         v-for="(announcement) in sortedAnnouncements"
         :key="announcement.id"
@@ -106,10 +106,10 @@ export default {
       >
         <p>{{ announcement.user_name }}</p>
         <h4>{{ announcement.title }}</h4>
-        <span v-html="getTruncatedDescription(announcement)"></span> <!-- Render HTML -->
+        <span v-html="getTruncatedDescription(announcement)"></span>
         <span><strong>Published at: </strong> {{ announcement.published_at }}</span>
 
-        <!-- Show read/unread status -->
+        <!-- Read/unread status -->
         <span v-if="announcement.is_read" class="read-status">Read</span>
         <span v-else class="unread-status">Unread</span>
       </li>
@@ -123,7 +123,7 @@ export default {
             <h5 class="modal-title">{{ selectedAnnouncement.title }}</h5>
           </div>
           <div class="modal-body">
-            <p v-html="selectedAnnouncement.text"></p> <!-- Render full HTML in modal -->
+            <p v-html="selectedAnnouncement.text"></p>
             <small class="text-muted">Published at: {{ selectedAnnouncement.published_at }}</small>
           </div>
           <div class="modal-footer">
@@ -145,10 +145,10 @@ export default {
     const store = useStore();
     const selectedAnnouncement = ref(null); // For modal display
 
-    // Access announcements from Vuex store and sort by published date (newest first)
+    // Access announcements from Vuex store and sort by newest first
     const sortedAnnouncements = computed(() => {
       return store.state.employee.announcements.slice().sort((a, b) => {
-        return new Date(b.published_at) - new Date(a.published_at); // Sort in descending order
+        return new Date(b.published_at) - new Date(a.published_at);
       });
     });
 
@@ -186,7 +186,7 @@ export default {
     };
 
     return {
-      sortedAnnouncements, // Use sorted announcements instead of original announcements
+      sortedAnnouncements,
       openAnnouncement,
       getTruncatedDescription,
       selectedAnnouncement,
@@ -198,46 +198,45 @@ export default {
 
   <style scoped>
   .dropdown {
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    width: 250px;
-    top: 50px;
-    right: 20px;
-    position: absolute;
-    z-index: 1000;
-  }
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 250px;
+  top: 50px;
+  right: 20px;
+  position: absolute;
+  z-index: 1000;
+  max-height: 450px; /* Set a maximum height for the dropdown */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
 
-  }
+li {
+  padding: 10px 10px 20px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #cfcfcf;
+}
 
-  li {
-    padding: 10px 10px 20px 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #cfcfcf;
+li:last-child {
+  border-bottom: none; /* Remove the last border */
+}
 
-  }
+h4 {
+  margin: 0; /* Remove default margin */
+}
 
-  li:last-child {
-    border-bottom: none; /* Remove the last border */
-  }
+p {
+  margin: 5px 0; /* Add some spacing */
+}
 
-  h4 {
-    margin: 0; /* Remove default margin */
-  }
-
-  p {
-    margin: 5px 0; /* Add some spacing */
-  }
-
-  small {
-    color: #999; /* Optional: Style for the published date */
-  }
-
+small {
+  color: #999; /* Optional: Style for the published date */
+}
 
 .unread {
   background-color: #ffe4e1; /* Light red background for unread */
@@ -276,4 +275,7 @@ export default {
   max-width: 500px;
   width: 100%;
 }
+
+
+
 </style>
