@@ -86,6 +86,25 @@ const actions = {
       throw error;
     }
   },
+  async sendPasswordResetLink({ commit }, email) {
+    try {
+      const response = await ApiServices.PostRequest('/password-reset-link', { email });
+      console.log('API Response:', response); // Log the full response for debugging
+  
+      // Check if the response contains the success message
+      if (response && response.data && response.data.message === 'Password Link sent') {
+        console.log('Password reset link sent successfully.');
+        return response;
+      } else {
+        // Handle unexpected response structure
+        console.error('Unexpected response structure:', response);
+        throw new Error('Failed to send reset link.');
+      }
+    } catch (error) {
+      // console.error('Error in sendPasswordResetLink:', error);
+      throw error;
+    }
+  },     
 
   async logout({ commit }) {
     commit("clearUserData");
