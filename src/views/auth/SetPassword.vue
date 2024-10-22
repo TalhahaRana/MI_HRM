@@ -1,6 +1,13 @@
 <template>
-    <div class="container">
-    <div class="password-container form-card">
+    <div class="container d-grid">
+      <div class="row justify-content-center">
+        <div class="icon">
+        <img src="../../assets/images/set.gif" alt="" srcset="">
+      </div>
+      </div>
+      
+      <div class="row justify-content-center">
+        <div class="password-container form-card">
       <form @submit.prevent="handleSubmit">
         <h3 class="text-center">Set Your Password</h3>
   
@@ -58,6 +65,8 @@
         <button type="submit" class="btn btn-primary" :disabled="!canSubmit">Submit</button>
       </form>
     </div>
+      </div>
+   
     </div>
   </template>
   
@@ -189,19 +198,26 @@
   
   <style scoped>
   .password-container {
-    max-width: 400px;
-    margin: 0 auto;
+    width: 500px;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
     margin-top: 15%;
     
   }
-  .container{
-    height: 100vh;
+  .icon{
+    position: relative;
+    top: -68px;
+    justify-content: center;
+    display: flex;
+
   }
-  
+  .icon img{
+    width: 30%;
+    position: absolute;
+    left: 479px;
+    mix-blend-mode: darken;
+  }
   .input-group {
     display: flex;
     align-items: center;
@@ -215,6 +231,14 @@
     padding: 0;
    
   }
+  @media screen and (max-width: 768px) {
+  .icon {
+    top: -45px;
+  }
+  .icon img {
+    left: 35%;
+  }
+}
   
   .bg-danger {
     background-color: red;
