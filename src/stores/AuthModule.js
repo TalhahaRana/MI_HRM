@@ -1,5 +1,5 @@
 import ApiServices from "@/services/ApiServices";
-
+import router from "@/router";
 const state = {
   user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
   token: localStorage.getItem("token") || null,
@@ -28,7 +28,19 @@ const actions = {
   async passwordSetup({ commit }, passwordData) {
     try {
       const response = await ApiServices.PostRequest('/password-setup', passwordData);
-      return response;
+     
+      router.push("/");
+      console.log("Route.......!");
+    } catch (error) {
+      throw error;
+    }
+  },
+  async passwordReset({ commit }, passwordData) {
+    try {
+      const response = await ApiServices.PostRequest('/password-reset', passwordData);
+     
+      router.push("/");
+      console.log("Route.......!");
     } catch (error) {
       throw error;
     }

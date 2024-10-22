@@ -112,7 +112,7 @@
           console.log("password Data",passwordData);
   
           try {
-            await store.dispatch("auth/passwordSetup", passwordData);
+            await store.dispatch("auth/passwordReset", passwordData);
             alert("Password set successfully!");
           } catch (error) {
             // alert("Failed to set password. Please try again.");

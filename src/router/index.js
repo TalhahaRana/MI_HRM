@@ -33,7 +33,7 @@ import TwoFa from "@/views/TwoFa.vue";
 import QR from "@/views/QR.vue";
 import Salaries from "@/components/admin/Salaries.vue";
 import EmpWorkingHours from "@/components/admin/EmpWorkingHours.vue";
-
+import ForgotPassword from "@/views/auth/ForgotPassword.vue";
 //Profile
 import Profile from "@/components/profile.vue";
 import EditProfile from "@/views/EditProfile.vue";
@@ -70,6 +70,10 @@ const router = createRouter({
     {
       path: "/password-setup",
       component: SetPassword,
+    },
+    {
+      path: "/password-reset",
+      component: ForgotPassword,
     },
     {
       path: "/dashboard",
