@@ -14,7 +14,9 @@ const state = {
 
   hrCount: 0,            // New state for HR count
   employeeCount: 0,
-  departmentCount:0
+  departmentCount:0,
+  perks: [],
+  perksResponse: {},
  };
 
 const getters = {
@@ -30,6 +32,8 @@ const getters = {
   hrCount: (state) => state.hrCount,
   departmentCount: (state) => state.departmentCount,
   employeeCount: (state) => state.employeeCount,
+  allPerks: (state) => state.perks,
+  perksResponse: (state) => state.perksResponse
 };
 
 const actions = {
@@ -359,6 +363,29 @@ const actions = {
       return null;
     }
   },
+  async fetchPerks({ commit }) {
+    try {
+      const response = await ApiServices.GetRequest("/get-all-perks");
+      if (response && response.data) {
+        commit("setPerks", response.data); // Store the perks in Vuex state
+      }
+    } catch (error) {
+      console.error("Error fetching perks:", error);
+      throw error;
+    }
+  },
+  async applyForPerks({ commit }, requestedPerks) {
+    try {
+      const response = await ApiServices.PostRequestHeader("/send-perk/request", {
+        requested_perks: requestedPerks,
+      });
+      commit("setPerksResponse", response.data);
+      return response;
+    } catch (error) {
+      console.error("Error applying for perks:", error);
+      throw error;
+    }
+  },
 };
 
 const mutations = {
@@ -435,7 +462,13 @@ const mutations = {
   },
   setDepartmentCount(state,count){
     state.departmentCount = count
-  }
+  },
+  setPerks(state, perks) {
+    state.perks = perks; // Mutation to store perks
+  },
+  setPerksResponse(state, data) {
+    state.perksResponse = data;
+  },
 };
 
 export default {

@@ -18,7 +18,6 @@
                 placeholder="Search Employee Name"
                 class="input-field"
             />
-            <button @click="searchLeaves" class="btn-search">Search</button>
         </div>
         <div v-if="error" class="error-message text-danger py-1">{{ error }}</div>
         <div v-if="successMessage" class="success-message text-success py-1">{{ successMessage }}</div>
@@ -30,7 +29,6 @@
                 <thead>
                     <tr>
                         <th><i class="fas fa-user"></i> Employee</th>
-                        <th><i class="fas fa-calendar-alt"></i> Leave Type</th>
                         <th><i class="fas fa-calendar-day"></i> From</th>
                         <th><i class="fas fa-calendar-day"></i> To</th>
                         <th><i class="fas fa-comment-alt"></i> Reason</th>
@@ -40,13 +38,12 @@
                 <tbody>
                     <tr v-for="leave in filteredPendingLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
-                        <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
                         <td>{{ leave.end_date }}</td>
                         <td>{{ leave.reason }}</td>
                         <td>
-                            <button class="btn-action accept" @click="acceptLeave(leave.id)">Accept</button>
-                            <button class="btn-action reject" @click="rejectLeave(leave.id)">Reject</button>
+                            <button class="btn-action accept" @click="acceptLeave(leave.id)"><i class="fa-regular fa-circle-check"></i> Accept</button>
+                            <button class="btn-action reject" @click="rejectLeave(leave.id)"><i class="fa-regular fa-circle-xmark"></i> Reject</button>
                         </td>
                     </tr>
                 </tbody>
@@ -60,7 +57,6 @@
                 <thead>
                     <tr>
                         <th><i class="fas fa-user"></i> Employee</th>
-                        <th><i class="fas fa-calendar-alt"></i> Leave Type</th>
                         <th><i class="fas fa-calendar-day"></i> From</th>
                         <th><i class="fas fa-calendar-day"></i> To</th>
                         <th><i class="fas fa-comment-alt"></i> Reason</th>
@@ -69,7 +65,6 @@
                 <tbody>
                     <tr v-for="leave in filteredAcceptedLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
-                        <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
                         <td>{{ leave.end_date }}</td>
                         <td>{{ leave.reason }}</td>
@@ -85,7 +80,6 @@
                 <thead>
                     <tr>
                         <th><i class="fas fa-user"></i> Employee</th>
-                        <th><i class="fas fa-calendar-alt"></i> Leave Type</th>
                         <th><i class="fas fa-calendar-day"></i> From</th>
                         <th><i class="fas fa-calendar-day"></i> To</th>
                         <th><i class="fas fa-comment-alt"></i> Reason</th>
@@ -94,7 +88,6 @@
                 <tbody>
                     <tr v-for="leave in filteredRejectedLeaves" :key="leave.id">
                         <td>{{ leave.employee_name }}</td>
-                        <td>{{ leave.leaveType }}</td>
                         <td>{{ leave.start_date }}</td>
                         <td>{{ leave.end_date }}</td>
                         <td>{{ leave.reason }}</td>
@@ -106,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -117,7 +110,12 @@ const filters = ref({
     toDate: '',
 });
 
-const leaveTypes = ref(['Medical Leave', 'Casual Leave', 'Paternity Leave', 'Maternity Leave']);
+const employees = ref([]);
+  onMounted(async () => {
+    await store.dispatch('admin/fetchAllEmployees');
+    employees.value = store.getters['admin/getEmployees'];
+  });
+
 store.dispatch('fetchLeaves');
 
 const pendingLeaves = computed(() => store.getters.pendingLeaves);
@@ -165,25 +163,27 @@ const filteredRejectedLeaves = computed(() => {
     );
 });
 
-// Search leaves across all tables
-const searchLeaves = () => {
-    // Filtering happens reactively through the computed properties, so no need for explicit search logic
-};
+store.dispatch('fetchEmployeeStatus', { date: new Date().toISOString().split('T')[0], frequency: 'daily' });
+
+const presentCount = computed(() => store.getters.statusCounts?.present ?? 0);
+const absentCount = computed(() => store.getters.statusCounts?.absent ?? 0);
+const totalEmployees = computed(() => presentCount.value + absentCount.value);
 
 // Stats including filteredPendingLeaves length
 const stats = ref([
-    { title: 'Today Presents', value: '12 / 60' },
+    { title: 'Today Presents', value: `${presentCount.value} / ${employees.value.length}` }, // dynamic count
     { title: 'Pending Requests', value: `${filteredPendingLeaves.value.length}` },
 ]);
+
+watch([presentCount, employees], () => {
+    stats.value[0].value = `${presentCount.value} / ${employees.value.length}`;
+});
 
 // Watch the length of filteredPendingLeaves to update stats reactively
 watch(filteredPendingLeaves, (newPendingLeaves) => {
     stats.value[1].value = `${newPendingLeaves.length}`;
 });
 </script>
-
-
-
 
 <style scoped>
 .leaves-dashboard {

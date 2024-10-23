@@ -17,7 +17,7 @@ const getters = {
 const actions = {
   async login({ commit }, credentials) {
     try {
-      const response = await ApiServices.PostRequest('/login', credentials);
+      const response = await ApiServices.PostRequest('/auth/login', credentials);
       commit("setUserData", response.data);
       return response;
     } catch (error) {

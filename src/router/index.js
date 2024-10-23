@@ -33,7 +33,10 @@ import TwoFa from "@/views/TwoFa.vue";
 import QR from "@/views/QR.vue";
 import Salaries from "@/components/admin/Salaries.vue";
 import EmpWorkingHours from "@/components/admin/EmpWorkingHours.vue";
-
+import Announcements from "@/components/admin/Announcements.vue";
+import ManagePerks from "@/components/admin/ManagePerks.vue";
+import CreatePerks from "@/components/admin/CreatePerks.vue";
+import ApplyPerks from "@/components/employee/ApplyPerks.vue";
 //Profile
 import Profile from "@/components/profile.vue";
 import EditProfile from "@/views/EditProfile.vue";
@@ -70,6 +73,22 @@ const router = createRouter({
     {
       path: "/password-setup",
       component: SetPassword,
+    },
+    {
+      path: "/announcements",
+      component: Announcements
+    },
+    {
+      path: "/manage-perks",
+      component: ManagePerks
+    },
+    {
+      path: "/create-perks",
+      component: CreatePerks
+    },
+    {
+      path: "/apply-perks",
+      component: ApplyPerks
     },
     {
       path: "/dashboard",
