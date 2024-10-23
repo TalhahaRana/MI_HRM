@@ -1,13 +1,7 @@
 <template>
   <div class="chart-container form-card">
     <h2>Employee Working Hours</h2>
-    <Bar
-      :key="chartKey"
-      :data="chartData"
-      :options="chartOptions"
-      :width="width"
-      :height="height"
-    />
+    <Bar :key="chartKey" :data="chartData" :options="chartOptions" :width="width" :height="height" />
   </div>
 </template>
 

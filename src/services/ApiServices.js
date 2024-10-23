@@ -26,11 +26,11 @@ const ApiServices = {
         'Content-Type': 'application/json',
       };
       const response = await axios.get(url, { headers });
-      alert(response.data.message); 
+      // alert(response.data.message); 
       return response.data;
     } catch (error) {
       console.error('GET request failed:', error);
-      alert('An error occurred. Please try again later.'); 
+      // alert('An error occurred. Please try again later.'); 
       throw error; 
     }
   },
@@ -49,7 +49,7 @@ const ApiServices = {
     
     const response = await axios.get(url, { headers, params }); 
     
-    alert(response.data.message); 
+    // alert(response.data.message); 
     
     return response.data;
     
@@ -57,7 +57,7 @@ const ApiServices = {
     
     console.error("GET request failed:", error);
     
-    alert("An error occurred. Please try again later."); // Alert on error
+    
     
     throw error; // Rethrow the error for further handling if needed
     
@@ -142,7 +142,7 @@ async DeleteRequest(url) {
 
         const response = await axios.delete(`${url}`, { headers });
 
-        alert(response.data.message); // Show a message alert on success
+        // alert(response.data.message); // Show a message alert on success
 
         return response.data; // Return the response data for further processing
 
@@ -150,7 +150,7 @@ async DeleteRequest(url) {
 
         console.error('DELETE request failed:', error);
 
-        alert('An error occurred. Please try again later.'); // Alert on error
+        // alert('An error occurred. Please try again later.'); // Alert on error
 
         throw error; // Rethrow the error for further handling if needed
 

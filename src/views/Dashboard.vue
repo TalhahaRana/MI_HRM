@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center gap-5">
               <div class="header-left">
                 <router-link to="/dashboard">
-                  <img width="150px" height="45px" src="../assets/images/logo.png" />
+                  <img width="150px" src="../assets/images/logo.png" />
                 </router-link>
               </div>
               <button class="btn" type="button" id="sidebarToggle" @click="toggleSidebar">

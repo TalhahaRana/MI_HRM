@@ -4,19 +4,19 @@
         <!-- Left Side: Welcome Card & Other Sections -->
         <div class="col-lg-6 col-md-12">
           <!-- Welcome Card -->
-          <div class="card custom-card text-white mb-3">
+          <div class="card custom-card text-white mb-3 grad">
             <div
               class="card-body d-flex justify-content-between align-items-center h-100 flex-column flex-lg-row"
             >
               <div>
                 <h5 class="card-title mb-1">Welcome Back, {{ userName }}</h5>
-                <p class="card-text">
-                  <span class="font-weight-bold">
+                
+                  <span class="font">
                     🌟 Today is a new opportunity to grow and shine! Remember,
                     every small step you take leads to big achievements. Let’s
                     make today count!
                   </span>
-                </p>
+              
                 <!-- <button class="btn btn-outline-light mt-2">View Profile</button> -->
               </div>
               <video autoplay muted loop class="emoji-video mt-3 mt-lg-0">
@@ -209,7 +209,7 @@ import { useStore } from 'vuex';
     background-color: #F5F7FF;
  }
   .custom-card {
-    background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+    /* background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%); */
     border-radius: 10px;
     padding: 10px;
     height: 92%;
@@ -277,7 +277,6 @@ background-color: #ffffff;
   }
   .progress-card {
   margin-bottom: 15px;
-  border: 1px solid rgba(221, 221, 221, 0.5); 
   border-radius: 10px; 
   padding: 20px;
 
@@ -288,11 +287,23 @@ background-color: #ffffff;
 .progress-card:hover {
   background-color: #e6f0ff; 
 }
-
+.font{
+  font-size: 18px;
+}
 .progress {
   height: 8px;
   border-radius: 10px; 
   overflow: hidden; 
+}
+.progress-card {
+  background-color: #fff3cd;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid transparent; /* Transparent border to allow gradient */
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(45deg, rgb(34, 51, 102), rgb(68, 102, 153), rgb(102, 153, 204), rgb(136, 204, 238));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 .progress-bar {
