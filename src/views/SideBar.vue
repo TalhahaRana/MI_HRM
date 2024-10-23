@@ -98,7 +98,7 @@
                 </router-link>
               </li>
               <li v-if="PermissionEmployeeHR('User Can send perk requests')">
-                <router-link to="/dashboard/payroll-hr" class="redirect-link">
+                <router-link to="/dashboard/apply-perks" class="redirect-link">
                   <i class="icon fas fa-money-check-alt"></i> Apply Perks
                 </router-link>
               </li>

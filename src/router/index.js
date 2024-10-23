@@ -31,7 +31,7 @@ import Announcements from "@/components/admin/Announcements.vue";
 import ManagePerks from "@/components/admin/ManagePerks.vue";
 import CreatePerks from "@/components/admin/CreatePerks.vue";   
 import EditProfile from "@/views/EditProfile.vue";
-
+import ApplyPerks from "@/components/employee/ApplyPerks.vue";
 // Create Vue Router instance
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -94,6 +94,11 @@ const router = createRouter({
           path: "create-perks",
           component: CreatePerks,
           beforeEnter: RouteService('User can create perks', ["admin"]),
+        },
+        {
+          path: "apply-perks",
+          component: ApplyPerks,
+          beforeEnter: RouteService('User Can send perk requests', ["employee","hr"]),
         },
 
         {
