@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-lg-6 col-md-12">
         <!-- Welcome Card -->
-        <div class="card custom-card text-white mt-4">
+        <div class="card custom-card text-white mt-4 grad">
           <div
             class="card-body d-flex justify-content-between align-items-center h-100 flex-column flex-lg-row"
           >
@@ -95,7 +95,7 @@ export default {
 
 <style scoped>
 .custom-card {
-  background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+  /* background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%); */
   border-radius: 10px;
   padding: 20px;
 }

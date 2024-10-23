@@ -21,6 +21,7 @@
     "font-awesome": "^4.7.0",
     "jspdf": "^2.5.2",
     "quill": "^2.0.2",
+    "toastify": "^2.0.1",
     "vue": "^3.4.29",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.3.3",

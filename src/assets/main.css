@@ -78,3 +78,7 @@
     padding-left: 30px;
     padding-right: 30px;
 }
+.grad{
+  --angle: 45deg; 
+ background: linear-gradient(var(--angle), hwb(225 13.3% 60%), hwb(216 26.7% 40%), hwb(210 40% 20%), hwb(200 53.3% 6.67%))
+}
