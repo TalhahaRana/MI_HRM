@@ -28,9 +28,10 @@
             <p class="card-text">Deadline: {{ project.project.deadline }}</p>
             <p class="card-text">
               Status:
-              <span :class="statusClass(project.status)">{{ project.status }}</span>
+              <span :class="statusClass(project.status)">{{
+                project.status
+              }}</span>
             </p>
-            <progress-bar :status="project.status" />
             <button class="btn btn-warning" @click="showStatusModal(project)">
               Update Status
             </button>
@@ -39,12 +40,35 @@
       </div>
     </div>
 
+    <!-- Modal for Description -->
+    <transition name="fade">
+      <div v-if="showDescriptionModalFlag" class="modal-overlay">
+        <div class="modal-content">
+          <h3 class="text-center">Description</h3>
+          <p v-html="currentDescription"></p>
+          <!-- Use v-html here -->
+          <button class="btn btn-secondary" @click="closeDescriptionModal">
+            Close
+          </button>
+        </div>
+      </div>
+    </transition>
+
     <!-- Modal for Status Update -->
     <transition name="fade">
       <div v-if="showModal" class="modal-overlay">
         <div class="modal-content">
           <h3>Update Status for {{ selectedProject?.project.title }}</h3>
           <div class="status-options">
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="in_progress"
+                v-model="newStatus"
+              />
+              In Progress
+            </label>
             <label>
               <input
                 type="radio"
@@ -58,16 +82,6 @@
               <input
                 type="radio"
                 name="status"
-                value="in_progress"
-                v-model="newStatus"
-              />
-              In Progress
-            </label>
-
-            <label>
-              <input
-                type="radio"
-                name="status"
                 value="completed"
                 v-model="newStatus"
               />
@@ -77,7 +91,7 @@
           <button
             class="btn text-white"
             @click="updateProjectStatus(newStatus)"
-            style="background-color: var(--basic-button);"
+            style="background-color: var(--basic-button)"
           >
             Update
           </button>
@@ -91,33 +105,41 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import ProgressBar from './ProgressBar.vue';
+import DOMPurify from "dompurify"; // Import DOMPurify
+import { watch } from "vue"; // Import the watch function
+
 export default {
-  components: {
-    ProgressBar,
-  },
   setup() {
-    
     const store = useStore();
     const projects = ref([]);
     const selectedProject = ref(null);
     const showModal = ref(false);
     const newStatus = ref("");
-
-    // Object for status options
-    const statuses = ref({
-      in_progress: "In Progress",
-      pending: "Pending",
-      completed: "Completed",
-    });
-
     const showDescriptionModalFlag = ref(false);
     const currentDescription = ref("");
+
+    const watchProjectStatus = () => {
+      watch(
+        () => projects.value, // Watch the projects data
+        (newProjects, oldProjects) => {
+          newProjects.forEach((project, index) => {
+            if (project.status !== oldProjects[index]?.status) {
+              // Perform some action when the status changes
+              console.log(
+                `Project ${project.project.title} status updated to ${project.status}`
+              );
+            }
+          });
+        },
+        { deep: true } // This ensures that the watcher tracks changes inside the projects array
+      );
+    };
 
     const fetchProjects = async () => {
       try {
         await store.dispatch("employee/fetchAssignedProjects");
         const fetchedProjects = store.getters["employee/getAssignedProjects"];
+        console.log("Fetched Projects:", fetchedProjects); // Log the fetched projects
         projects.value = Array.isArray(fetchedProjects) ? fetchedProjects : [];
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -131,7 +153,7 @@ export default {
     };
 
     const showDescriptionModal = (description) => {
-      currentDescription.value = description;
+      currentDescription.value = DOMPurify.sanitize(description); // Sanitize before setting
       showDescriptionModalFlag.value = true;
     };
 
@@ -172,7 +194,8 @@ export default {
     };
 
     onMounted(() => {
-      fetchProjects();
+      fetchProjects(); // Fetch projects when the component is mounted
+      watchProjectStatus(); // Start watching the project status after data is fetched
     });
 
     return {
@@ -184,7 +207,6 @@ export default {
       selectedProject,
       statusClass,
       newStatus,
-      statuses,
       showDescriptionModalFlag,
       showDescriptionModal,
       currentDescription,
@@ -193,8 +215,6 @@ export default {
   },
 };
 </script>
-
-
 <style scoped>
 .project-card {
   height: 300px; /* Set a fixed height for all project cards */
