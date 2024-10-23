@@ -2,25 +2,16 @@
   <div class="container form-card">
     <div class="card">
       <div class="card-body">
-        <div
-          class="alert d-flex justify-content-between align-items-center"
-          style="background-color: whitesmoke"
-        >
+        <div class="alert d-flex justify-content-between align-items-center">
           <div>
-            <h4 class="mb-0">Work Time</h4>
-            <p class="h5 mb-0 text-dark">{{ formattedWorkTime }}</p>
+            <h4 class="mb-0 text-light">Work Time</h4>
+            <p class="h5 mb-0 text-light">{{ formattedWorkTime }}</p>
           </div>
           <div>
-            <button
-              class="btn btn-inverse gap-2 d-flex align-items-center justify-content-center"
-              @click="toggleCheckInOut"
-              :disabled="isCheckedOut || isTomorrow || isLoading"
-            >
+            <button class="btn btn-inverse gap-2 d-flex align-items-center justify-content-center"
+              @click="toggleCheckInOut" :disabled="isCheckedOut || isTomorrow || isLoading">
               <span v-if="isLoading" class="spinner"></span>
-              <span
-                class="gap-2 d-flex align-items-center justify-content-center"
-                v-else
-              >
+              <span class="gap-2 d-flex align-items-center justify-content-center" v-else>
                 <img src="../../assets/images/clock.svg" alt="clock icon" />
                 {{ isCheckedIn ? "Check-out" : "Check-in" }}
               </span>
@@ -44,15 +35,10 @@
         </div>
       </div>
 
-      <div class="card-footer text-start">
+      <div class="card-footer text-start grad">
         <div class="d-flex d-inline-flex align-items-center p-2 gap-2">
-          <a href="#" class="link-primary text-dark text-decoration-none"
-            >View Attendance</a
-          >
-          <img
-            src="../../assets/images/arrow-right-circle.svg"
-            alt="arrow-right-circle"
-          />
+          <a href="#" class="link-primary text-light text-decoration-none">View Attendance</a>
+          <img src="../../assets/images/arrow-right-circle.svg" alt="arrow-right-circle" />
         </div>
       </div>
     </div>
@@ -137,16 +123,20 @@ export default {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-top: 4px solid #3498db;
   border-radius: 50%;
-  width: 20px; /* Adjust the size of the spinner */
-  height: 20px; /* Adjust the size of the spinner */
+  width: 20px;
+  /* Adjust the size of the spinner */
+  height: 20px;
+  /* Adjust the size of the spinner */
   animation: spin 1s linear infinite;
-  margin-right: 8px; /* Space between spinner and text */
+  margin-right: 8px;
+  /* Space between spinner and text */
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -156,40 +146,80 @@ export default {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
 }
-
 .alert {
   background-color: #fff3cd;
+  position: relative;
+  padding: 15px;
+  border-radius: 10px;
+  z-index: 1;
 }
 
+.alert::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  border-radius: 10px; /* Match the border radius */
+  background: linear-gradient(45deg, rgb(34, 51, 102), rgb(68, 102, 153), rgb(102, 153, 204), rgb(136, 204, 238));
+}
+
+/* .alert {
+  background-color: #fff3cd;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid transparent; 
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(45deg, rgb(34, 51, 102), rgb(68, 102, 153), rgb(102, 153, 204), rgb(136, 204, 238));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+} */
+
+
+
+
 .btn-inverse {
-  background-color: #4b49ac; /* Button color */
-  border-color: rgba(0, 123, 255, 0);
-  color: whitesmoke; /* Button text color */
+  /* background-color: #ffffff; */
+  /* Button color */
+  border-color: rgb(255, 255, 255);
+  color: #e8e8e8;
+  /* Button text color */
 }
 
 .btn-inverse:hover {
-  color: white; /* Color on hover */
-  background-color: #007bff; /* Background color on hover */
-  border-color: #007bff; /* Border color on hover */
+  color: rgb(0, 0, 0);
+  /* Color on hover */
+  background-color: #ffffff;
+  /* Background color on hover */
+  border-color: #007bff;
+  /* Border color on hover */
 }
 
 .btn-inverse:focus,
 .btn-inverse.focus {
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Focus effect */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  /* Focus effect */
 }
 
 .btn-inverse:disabled,
 .btn-inverse.disabled {
-  color: #007bff; /* Color when disabled */
-  background-color: transparent; /* Background when disabled */
+  color: #007bff;
+  /* Color when disabled */
+  background-color: transparent;
+  /* Background when disabled */
 }
 
 .btn-inverse:active,
 .btn-inverse.active,
-.show > .btn-inverse.dropdown-toggle {
-  color: white; /* Color when active */
-  background-color: #007bff; /* Background color when active */
-  border-color: #007bff; /* Border color when active */
+.show>.btn-inverse.dropdown-toggle {
+  color: white;
+  /* Color when active */
+  background-color: #007bff;
+  /* Background color when active */
+  border-color: #007bff;
+  /* Border color when active */
 }
 
 @media (max-width: 576px) {
