@@ -1,3 +1,5 @@
+
+
 <template>
   <div class="container mt-4 form-card">
     <h2 class="text-center mb-4">Employee Attendance Chart</h2>
@@ -64,29 +66,17 @@ export default {
   setup() {
     const store = useStore();
 
-    // Get the first day of the current month
-    const currentMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-      .toISOString()
-      .split("T")[0];
-
-    const selectedDate = ref(currentMonthFirstDay);
+    const selectedDate = ref(null);
     const selectedFrequency = ref("monthly");
 
     // Function to fetch attendance data
     const fetchAttendanceData = async () => {
-      if (selectedDate.value && selectedFrequency.value) {
-        try {
-          console.log("Fetching attendance data for:", selectedDate.value, selectedFrequency.value);
-          await store.dispatch("employee/fetchEmployeeStatus", {
-            date: selectedDate.value,
-            frequency: selectedFrequency.value,
-          });
-        } catch (error) {
-          console.error("Error fetching attendance data:", error);
-          alert("Failed to fetch attendance data.");
-        }
-      } else {
-        alert("Please select both a date and frequency.");
+      try {
+        console.log("Fetching attendance data...");
+        await store.dispatch("employee/fetchEmployeeStatus");
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+        alert("Failed to fetch attendance data.");
       }
     };
 
@@ -96,19 +86,19 @@ export default {
 
     // Compute the attendance counts
     const attendanceCounts = computed(() => {
-      const counts = store.getters["employee/statusCounts"] || { present: 0, absent: 0 };
+      const counts = store.getters["employee/statusCounts"] || { present: 0, absent: 0, onleave: 0 };
       return counts;
     });
 
     // Chart data (computed based on attendance counts)
     const chartData = computed(() => {
       return {
-        labels: ["Present", "Absent"],
+        labels: ["Present", "Absent", "On Leave"], // Added onleave
         datasets: [
           {
             label: "Attendance",
-            backgroundColor: ["#70e000", "#ff686b"], // Green for present, red for absent
-            data: [attendanceCounts.value.present, attendanceCounts.value.absent],
+            backgroundColor: ["#70e000", "#ff686b", "#ffcc00"], // Green for present, red for absent, yellow for on leave
+            data: [attendanceCounts.value.present, attendanceCounts.value.absent, attendanceCounts.value.onleave],
           },
         ],
       };

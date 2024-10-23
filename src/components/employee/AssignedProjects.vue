@@ -28,10 +28,9 @@
             <p class="card-text">Deadline: {{ project.project.deadline }}</p>
             <p class="card-text">
               Status:
-              <span :class="statusClass(project.status)">{{
-                project.status
-              }}</span>
+              <span :class="statusClass(project.status)">{{ project.status }}</span>
             </p>
+            <progress-bar :status="project.status" />
             <button class="btn btn-warning" @click="showStatusModal(project)">
               Update Status
             </button>
@@ -39,19 +38,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal for Description -->
-    <transition name="fade">
-      <div v-if="showDescriptionModalFlag" class="modal-overlay">
-        <div class="modal-content">
-          <h3 class="text-center">Description</h3>
-          <p>{{ currentDescription }}</p>
-          <button class="btn btn-secondary" @click="closeDescriptionModal">
-            Close
-          </button>
-        </div>
-      </div>
-    </transition>
 
     <!-- Modal for Status Update -->
     <transition name="fade">
@@ -63,20 +49,21 @@
               <input
                 type="radio"
                 name="status"
-                value="in_progress"
-                v-model="newStatus"
-              />
-              In Progress
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="status"
                 value="pending"
                 v-model="newStatus"
               />
               Pending
             </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="in_progress"
+                v-model="newStatus"
+              />
+              In Progress
+            </label>
+
             <label>
               <input
                 type="radio"
@@ -104,14 +91,26 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-
+import ProgressBar from './ProgressBar.vue';
 export default {
+  components: {
+    ProgressBar,
+  },
   setup() {
+    
     const store = useStore();
     const projects = ref([]);
     const selectedProject = ref(null);
     const showModal = ref(false);
     const newStatus = ref("");
+
+    // Object for status options
+    const statuses = ref({
+      in_progress: "In Progress",
+      pending: "Pending",
+      completed: "Completed",
+    });
+
     const showDescriptionModalFlag = ref(false);
     const currentDescription = ref("");
 
@@ -185,6 +184,7 @@ export default {
       selectedProject,
       statusClass,
       newStatus,
+      statuses,
       showDescriptionModalFlag,
       showDescriptionModal,
       currentDescription,
@@ -193,6 +193,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .project-card {

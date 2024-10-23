@@ -182,7 +182,7 @@
   </div>
 </template>
 
-<script>
+<!-- <script>
 import { ref, onMounted, computed, nextTick, getCurrentInstance } from "vue";
 import { useStore } from "vuex";
 import { QuillEditor } from "@vueup/vue-quill";
@@ -332,6 +332,201 @@ export default {
       const quillEditorInstance = document.querySelector(
         ".quill-editor.edit .ql-editor"
       );
+      if (quillEditorInstance) {
+        editProjectDescription.value = quillEditorInstance.innerHTML; // Capture the HTML content
+      }
+    };
+
+    return {
+      newProjectTitle,
+      description,
+      newProjectDeadline,
+      isModalOpen,
+      editProjectId,
+      editProjectTitle,
+      editProjectDescription,
+      editProjectDeadline,
+      editorOptions,
+      projects,
+      loading,
+      error,
+      handleAddProject,
+      handleDeleteProject,
+      editProject,
+      handleUpdateProject,
+      closeModal,
+      onTextChange,
+      onTextChangeEdit,
+    };
+  },
+};
+</script>
+ -->
+
+ <script>
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { QuillEditor } from "@vueup/vue-quill";
+import { toast } from 'vue3-toastify'; // Import vue3-toastify
+import 'vue3-toastify/dist/index.css'; // Import vue3-toastify styles
+import "quill/dist/quill.snow.css"; // Import Quill's CSS for proper styling
+
+export default {
+  name: "Projects",
+  components: {
+    QuillEditor,
+  },
+  setup() {
+    const store = useStore();
+
+    // Form Refs
+    const newProjectTitle = ref("");
+    const description = ref("");
+    const newProjectDeadline = ref("");
+
+    // Modal Refs
+    const isModalOpen = ref(false);
+    const editProjectId = ref(null);
+    const editProjectTitle = ref("");
+    const editProjectDescription = ref("");
+    const editProjectDeadline = ref("");
+
+    // Quill Editor options
+    const editorOptions = ref({
+      theme: "snow",
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["link", "blockquote", "code-block"],
+        [{ align: [] }],
+      ],
+    });
+
+    // Computed Properties
+    const projects = computed(() => store.getters["projects/allProjects"]);
+    const loading = computed(() => store.getters["projects/isLoading"]);
+    const error = computed(() => store.getters["projects/projectError"]);
+
+    // Fetch Projects on Mount
+    onMounted(async () => {
+      try {
+        await store.dispatch("projects/fetchProjects");
+      } catch (err) {
+        toast.error("Failed to load projects", {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Error toast for loading projects
+      }
+    });
+
+    // Handle Add Project
+    const handleAddProject = async () => {
+      if (!newProjectTitle.value.trim() || !description.value.trim()) {
+        toast.error("Project Title and Description are required.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+        return;
+      }
+
+      const projectData = {
+        title: newProjectTitle.value.trim(),
+        description: description.value.trim(),
+        deadline: newProjectDeadline.value,
+      };
+
+      try {
+        await store.dispatch("projects/addProject", projectData);
+        toast.success("Project created successfully!", {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Success toast for creating project
+
+        // Reset Form
+        newProjectTitle.value = "";
+        description.value = "";
+        newProjectDeadline.value = "";
+      } catch (error) {
+        toast.error("Failed to create project.", {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Error toast for failed creation
+      }
+    };
+
+    // Handle Delete Project
+    const handleDeleteProject = async (id) => {
+      if (confirm("Are you sure you want to delete this project?")) {
+        try {
+          await store.dispatch("projects/deleteProject", id);
+          toast.success("Project deleted successfully!" , {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Success toast for deletion
+        } catch (error) {
+          toast.error("Failed to delete project." , {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Error toast for failed deletion
+        }
+      }
+    };
+
+    const editProject = (project) => {
+      editProjectId.value = project.id;
+      editProjectTitle.value = project.title;
+      editProjectDescription.value = project.description;
+      editProjectDeadline.value = project.deadline;
+
+      // Open the modal
+      isModalOpen.value = true;
+    };
+
+    // Handle Update Project
+    const handleUpdateProject = async () => {
+      if (!editProjectTitle.value.trim() || !editProjectDescription.value.trim()) {
+        toast.error("Project Title and Description are required." , {
+        position: toast.POSITION.TOP_CENTER,
+      });
+        return;
+      }
+
+      const updatedData = {
+        title: editProjectTitle.value.trim(),
+        description: editProjectDescription.value.trim(),
+        deadline: editProjectDeadline.value,
+      };
+
+      try {
+        await store.dispatch("projects/updateProject", {
+          id: editProjectId.value,
+          updatedData,
+        });
+        toast.success("Project updated successfully!" , {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Success toast for updating
+        closeModal();
+      } catch (error) {
+        toast.error("Failed to update project." , {
+        position: toast.POSITION.TOP_CENTER,
+      }); // Error toast for failed update
+      }
+    };
+
+    // Close Modal
+    const closeModal = () => {
+      isModalOpen.value = false;
+      editProjectId.value = null;
+      editProjectTitle.value = "";
+      editProjectDescription.value = "";
+      editProjectDeadline.value = "";
+    };
+
+    // On text change for Quill editor
+    const onTextChange = () => {
+      const quillEditorInstance = document.querySelector(".quill-editor .ql-editor");
+      if (quillEditorInstance) {
+        description.value = quillEditorInstance.innerHTML; // Capture the HTML content
+      }
+    };
+
+    const onTextChangeEdit = () => {
+      const quillEditorInstance = document.querySelector(".quill-editor.edit .ql-editor");
       if (quillEditorInstance) {
         editProjectDescription.value = quillEditorInstance.innerHTML; // Capture the HTML content
       }

@@ -1,48 +1,50 @@
 <template>
   <div>
-    <div>
-      <nav class="navbar" style="background-color: #ffffff; width: 99%">
-        <div class="container-fluid d-block">
-          <div class="row">
-            <div class="col-5 row">
-              <div class="d-flex align-items-center gap-5">
-                <div class="header-left">
-                  <img width="150px" height="45px" src="../assets/images/logo.png" />
-                </div>
-                <button class="btn" type="button" id="sidebarToggle" @click="toggleSidebar">
-                  <i class="fa-xl fa-solid fa-bars"></i>
-                </button>
+    <nav class="navbar" style="background-color: #ffffff; width: 99%">
+      <div class="container-fluid d-block">
+        <div class="row">
+          <div class="col-5 row">
+            <div class="d-flex align-items-center gap-5">
+              <div class="header-left">
+                <img width="150px" height="45px" src="../assets/images/logo.png" />
               </div>
+              <button class="btn" type="button" id="sidebarToggle" @click="toggleSidebar">
+                <i class="fa-xl fa-solid fa-bars"></i>
+              </button>
             </div>
+          </div>
 
-            <div class="col-7 row">
-              <div class="profile-menu">
-                <button class="profile-settings-btn">
-              <img class="profile-icon" src="../assets/images/user.png" alt="">
-            </button>
-            <button class="logout-btn " @click="logout">
-              <img class="profile-icon" src="../assets/images/logout.gif" alt="">
-            </button>
+          <div class="col-7 row">
+            <div class="profile-menu">
+              <button v-if="isHRorEmployee" class="profile-settings-btn" @click="toggleDropdown">
+                <img class="message-icon" src="../assets/images/open.png" alt="Messages" />
+
+                <span v-if="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+              </button>
+
+
+              <div v-if="showDropdown" class="dropdown">
+                <EmployeeAnnouncements @close="showDropdown = false" @markAsRead="markAnnouncementAsRead" />
               </div>
+
+              <router-link to="/edit-profile" class="profile-settings-btn redirect-link">
+                <img class="profile-icon" src="../assets/images/user.png" alt="Profile" />
+               </router-link>
+              <button class="logout-btn" @click="logout">
+                <img class="profile-icon" src="../assets/images/logout.gif" alt="Logout" />
+              </button>
             </div>
           </div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
 
-    <!-- Navbar -->
-    <div class="container-fluid bg" style="background-color: #f5f7ff">
+    <div class="container-fluid" style="background-color: #f5f7ff">
       <div class="d-flex">
-        <div :class="{
-          'sidebar-expanded': sidebarVisible,
-          'sidebar-collapsed': !sidebarVisible,
-        }">
+        <div :class="{ 'sidebar-expanded': sidebarVisible, 'sidebar-collapsed': !sidebarVisible }">
           <SideBar :visible="sidebarVisible" />
         </div>
-
-
         <div class="main-content">
-            
           <router-view></router-view>
         </div>
       </div>
@@ -51,66 +53,74 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import SideBar from "./SideBar.vue";
-import DashView from "../components/dashcompo/DashView.vue";
-import EmpView from "@/components/employee/EmployeeDashboard.vue";
-import store from '@/stores';
+import EmployeeAnnouncements from "./EmployeeAnnouncements.vue";
+
 export default {
   name: "Dashboard",
-  components: { SideBar, DashView,EmpView},
+  components: { SideBar, EmployeeAnnouncements },
   setup() {
     const sidebarVisible = ref(false);
+    const showDropdown = ref(false);
+    const isHRorEmployee = ref(false);
+    const store = useStore();
     const router = useRouter();
-    // store=useStore();
+
+    // Fetch announcements on mount
+    onMounted(async () => {
+      const storedRole = localStorage.getItem("userRole");
+      if (storedRole === "hr" || storedRole === "employee") {
+        isHRorEmployee.value = true;
+      }
+
+      // Fetch announcements when dashboard is loaded
+      await store.dispatch('employee/fetchAnnouncements');
+    });
+
+    // Calculate unread announcements count
+    const unreadCount = computed(() => {
+      return store.state.employee.announcements.filter(announcement => !announcement.is_read).length;
+    });
+
     const toggleSidebar = () => {
       sidebarVisible.value = !sidebarVisible.value;
     };
 
-    const closeSidebar = () => {
-      sidebarVisible.value = false;
+    const toggleDropdown = () => {
+      showDropdown.value = !showDropdown.value;
     };
 
-
-    watch(
-      () => router.currentRoute.value,
-      () => {
-        closeSidebar(); // Automatically close sidebar on route change
-      }
-    );
-    const goToProfileSettings = () => {
-      // Logic to navigate to profile settings
+    // Mark announcement as read when clicked
+    const markAnnouncementAsRead = (announcementId) => {
+      store.dispatch('employee/markAsRead', announcementId);
     };
 
-    const logout = async () => {
-
-      try {
-        // Dispatch the logout action from Vuex
-        await store.dispatch('auth/logout');
-
-        // Redirect to the login page
-        router.push('/');
-      } catch (error) {
-        console.error('Error during logout:', error);
-      }
+    const logout = () => {
+      localStorage.removeItem("userRole");
+      router.push("/");
     };
-
-
+   
     return {
       sidebarVisible,
       toggleSidebar,
-      closeSidebar,
-      goToProfileSettings,
+      toggleDropdown,
+      unreadCount,
+      markAnnouncementAsRead,
+      isHRorEmployee,
+      showDropdown,
       logout,
-      DashView,
-      EmpView
     };
   },
 };
 </script>
 
+
 <style scoped>
+/* Styles from your current component */
+
 .navbar-brand {
   font-size: 22px;
   color: rgb(7, 7, 7);
@@ -122,7 +132,6 @@ export default {
 
 /* Adjust the sidebar and main content */
 .sidebar-expanded {
-  padding: 25px 4px;
   width: 250px;
   transition: width 0.3s ease-in-out;
 }
@@ -133,29 +142,23 @@ export default {
 }
 
 .main-content {
-  padding: 25px 14px;
-
   flex-grow: 1;
   transition: margin-left 0.3s ease-in-out;
 }
 
-.sidebar-collapsed~.main-content {
+.sidebar-collapsed ~ .main-content {
   margin-left: 0;
 }
-
-/* .container {
-  display: flex;
-} */
 
 .profile-menu {
   display: flex;
   align-items: center;
   justify-content: end;
-  margin-left: 15px;
-  gap : 10px;
+  margin-left: 60px;
 }
 
-.profile-icon {
+.profile-icon,
+.message-icon {
   width: 35px;
 }
 
@@ -182,78 +185,49 @@ export default {
     display: none;
   }
 }
-/* From Uiverse.io by MUJTABA201566 */ 
-.Btn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 45px;
-  height: 45px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition-duration: 0.3s;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
-  background-color: white;
-}
 
-/* plus sign */
-.sign {
-  width: 100%;
-  transition-duration: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sign svg {
-  width: 17px;
-}
-
-.sign svg path {
-  fill: black;
-}
-/* text */
-.text {
+.dropdown {
   position: absolute;
-  right: 0%;
-  width: 0%;
-  opacity: 0;
-  color: white;
-  font-size: 1.2em;
-  font-weight: 600;
-  transition-duration: 0.3s;
-}
-/* hover effect on button width */
-.Btn:hover {
-  background-color: black;
-  width: 125px;
-  border-radius: 40px;
-  transition-duration: 0.3s;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 450px;
+  top: 32px;
+  right: 20px;
+
+
 }
 
-.Btn:hover .sign {
-  width: 30%;
-  transition-duration: 0.3s;
-  padding-left: 20px;
+.dropdown ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
 }
 
-.Btn:hover .sign svg path {
-  fill: white;
+.dropdown ul li {
+  padding: 10px 10px 10px 20px;
+  cursor: pointer;
+
 }
 
-/* hover effect button's text */
-.Btn:hover .text {
-  opacity: 1;
-  width: 70%;
-  transition-duration: 0.3s;
-  padding-right: 10px;
-}
-/* button click effect*/
-.Btn:active {
-  transform: translate(2px, 2px);
+.dropdown ul li:hover {
+  background-color: #f0f0f0;
 }
 
+.message-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.badge {
+  background-color: red; /* Badge color */
+  color: white; /* Text color */
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 13px;
+  position: absolute;
+  top: 0; /* Adjust based on your layout */
+  right: 125px; /* Adjust based on your layout */
+}
 </style>

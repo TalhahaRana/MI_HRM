@@ -17,7 +17,7 @@ const getters = {
 const actions = {
   async login({ commit }, credentials) {
     try {
-      const response = await ApiServices.PostRequest('/login', credentials);
+      const response = await ApiServices.PostRequest('/auth/login', credentials);
       commit("setUserData", response.data);
       return response;
     } catch (error) {
@@ -27,7 +27,7 @@ const actions = {
 
   async passwordSetup({ commit }, passwordData) {
     try {
-      const response = await ApiServices.PostRequest('/password-setup', passwordData);
+      const response = await ApiServices.PostRequest('/auth/password-setup', passwordData);
      
       router.push("/");
       console.log("Route.......!");
@@ -37,7 +37,7 @@ const actions = {
   },
   async passwordReset({ commit }, passwordData) {
     try {
-      const response = await ApiServices.PostRequest('/password-reset', passwordData);
+      const response = await ApiServices.PostRequest('/auth/password-reset', passwordData);
      
       router.push("/");
       console.log("Route.......!");
@@ -88,7 +88,7 @@ const actions = {
   },
   async sendPasswordResetLink({ commit }, email) {
     try {
-      const response = await ApiServices.PostRequest('/password-reset-link', { email });
+      const response = await ApiServices.PostRequest('/auth/password-reset-link', { email });
       console.log('API Response:', response); // Log the full response for debugging
   
       // Check if the response contains the success message

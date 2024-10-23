@@ -1,9 +1,10 @@
+
 <template>
   <div class=" d-flex justify-content-center">
     <div class="card p-4 shadow-sm form-card">
       <h4 class="mb-3">Add Employee</h4>
       <form @submit.prevent="submitForm">
-        <!-- Row for Name and Email -->
+       
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="name" class="form-label">Name</label>
@@ -55,9 +56,8 @@
             >
               <option disabled value="">Select a Department</option>
               <option v-for="dept in departments.data" :key="dept.id" :value="dept.id">
-                              {{ dept.name }}
+                {{ dept.name }}
               </option>
-
             </select>
           </div>
         </div>
@@ -116,6 +116,8 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 export default {
   setup() {
@@ -139,30 +141,36 @@ export default {
         departments.value = store.getters['department/allDepartments'];
       } catch (error) {
         console.error('Error fetching departments:', error);
+        toast.error('Error fetching departments', {
+          position: toast.POSITION.TOP_CENTER,
+        });
       }
     });
 
     const submitForm = async () => {
-        const newEmployee = {
-          name: name.value,
-          email: email.value,
-          role: role.value,
-          department_id: department.value,  // Will remain as a string
-          position: position.value,
-          pay: pay.value,  // Will remain as a string
-        };
-
-        try {
-          console.log("Employee Data", newEmployee);
-          await store.dispatch('employee/addEmployee', newEmployee);
-          alert('Employee added successfully!');
-          resetForm();
-        } catch (error) {
-          console.error('Error adding employee:', error);
-          alert('There was an issue adding the employee.');
-        }
+      const newEmployee = {
+        name: name.value,
+        email: email.value,
+        role: role.value,
+        department_id: department.value,
+        position: position.value,
+        pay: pay.value,
       };
 
+      try {
+        console.log('Employee Data', newEmployee);
+        await store.dispatch('employee/addEmployee', newEmployee);
+        toast.success('Employee added successfully!', {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        resetForm();
+      } catch (error) {
+        console.error('Error adding employee:', error);
+        toast.error('There was an issue adding the employee.', {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+      }
+    };
 
     const resetForm = () => {
       name.value = '';
@@ -175,7 +183,9 @@ export default {
 
     const cancelForm = () => {
       resetForm();
-      alert('Form canceled');
+      toast.info('Form canceled', {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
     };
 
     return {
@@ -194,6 +204,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* Styles for the form */

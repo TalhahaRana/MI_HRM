@@ -44,7 +44,7 @@
                 </router-link>
               </li>
 
-              <li v-if="samePermission('User can see Attendance Records')">
+              <li v-if="PermissionAdminHR('User can see Attendance Records')">
                 <router-link
                   to="/dashboard/manage-leaves-hr"
                   class="redirect-link"
@@ -75,11 +75,31 @@
                   <i class="icon fas fa-money-check-alt"></i> Payroll
                 </router-link>
               </li>
-             
+
+              <li v-if="hasPermission('User can create perks')">
+                <router-link to="/dashboard/create-perks" class="redirect-link">
+                  <i class="icon fas fa-money-check-alt"></i> Create Perks
+                </router-link>
+              </li>
+              <li v-if="PermissionAdminHR('User can get perk requests')">
+                <router-link to="/dashboard/manage-perks" class="redirect-link">
+                  <i class="icon fas fa-money-check-alt"></i> Manage Perks
+                </router-link>
+              </li>
+              <li v-if="PermissionAdminHR('User can manage Announcement')">
+                <router-link to="/dashboard/announcements" class="redirect-link">
+                  <i class="icon fas fa-money-check-alt"></i> Create Announcements
+                </router-link>
+              </li>
               <!-- Employees -->
               <li v-if="hasPermission('User can Check-in/Check-out')">
                 <router-link to="/dashboard/check" class="redirect-link">
                   <i class="icon fas fa-user-check"></i> Check-in/Check-out
+                </router-link>
+              </li>
+              <li v-if="PermissionEmployeeHR('User Can send perk requests')">
+                <router-link to="/dashboard/payroll-hr" class="redirect-link">
+                  <i class="icon fas fa-money-check-alt"></i> Apply Perks
                 </router-link>
               </li>
               <li v-if="hasPermission('')">
@@ -140,8 +160,8 @@ export default {
       const isPermission= store.getters['roles/hasPermission'](permission);
       const role=store.getters['roles/userRole'];
       if(isPermission){
-        if(role=='employee' || (role=='hr' && permission=='User can get salary invoice')){return false}
-        if(role=="admin" || !(role=="hr")  || (role=="hr" && permission=='User can get salary invoice' || (role=='hr'))){
+        if(role=='employee' || (role=='hr' && permission=='User can get salary invoice' || role=='hr' && permission=='User can see Working Hours')){return false}
+        if(role=="admin" || !(role=="hr")  || (role=="hr" && permission=='User can get salary invoice')){
           return true;
         }
         else{
@@ -150,9 +170,34 @@ export default {
       }
       return false;
     };
+    
+    const PermissionEmployeeHR=(permission)=>{
+      const isPermission= store.getters['roles/hasPermission'](permission);
+      const role=store.getters['roles/userRole'];
+      if(isPermission){
+        if(role=='employee' || role=='hr'){
+              return true;
+        }
+      }
+      return false;
+    };
+    const PermissionAdminHR=(permission)=>{
+      const isPermission= store.getters['roles/hasPermission'](permission);
+      const role=store.getters['roles/userRole'];
+      if(isPermission){
+        if(role=='admin' || role=='hr'){
+              return true;
+        }
+      }
+      return false;
+    };
+    
     return {
       hasPermission,
-      samePermission};
+      samePermission,
+      PermissionEmployeeHR,
+      PermissionAdminHR
+    }
   },
 };
 </script>

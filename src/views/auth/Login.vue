@@ -52,7 +52,6 @@ export default {
     const password = ref("");
     const store = useStore();
     const router = useRouter();
-    console.log("Salman Ali");
     const handleLogin = async () => {
     const userData = { email: email.value, password: password.value };
   try {

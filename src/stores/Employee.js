@@ -6,8 +6,12 @@ const state = {
   workingHour: "", // New state for working hours
   workingHours: [],
   workingHoursAttendance: [],
+  announcements: [],
+  attendanceDetails: {},
   assignedProjects: [],
   attendanceRecords: [],
+  perksResponse: {}, 
+  perks: [],
   statusCounts: { present: 0, absent: 0 },
   attendanceCounts: {
     employee_name: "",
@@ -17,13 +21,10 @@ const state = {
   },
   attendanceDetails: {},
 
-  hrCount: 0,          
+  hrCount: 0,            // New state for HR count
   employeeCount: 0,
-  departmentCount:0,
-  totalPresent: 0, // Add this line
-    totalAbsent: 0,
-    totalOnLeave: 0,
-    employeeRecord: [] // Add this line
+  departmentCount:0
+ 
  };
 
 const getters = {
@@ -39,10 +40,11 @@ const getters = {
   hrCount: (state) => state.hrCount,
   departmentCount: (state) => state.departmentCount,
   employeeCount: (state) => state.employeeCount,
-  totalAbsent: (state) => state.totalAbsent,
-  totalOnLeave: (state) => state.totalOnLeave,
-  totalPresent: (state) => state.totalPresent, 
-  employeeRecord: (state) => state.employeeRecord 
+  attendanceCounts: (state) => state.attendanceCounts,
+  getAttendanceDetails: (state) => state.attendanceDetails,
+  getAnnouncements: (state) => state.announcements,
+  allPerks: (state) => state.perks,
+  perksResponse: (state) => state.perksResponse
 };
 
 const actions = {
@@ -68,48 +70,26 @@ const actions = {
       throw error;
     }
   },
-  async fetchAttendanceData({ commit }) {
+  async fetchEmployeeStatus({ commit }) {
     try {
-        const response = await ApiServices.GetRequest("/daily-attendance-count");
-        commit('setAttendanceData', {
-            totalPresent: response.data.totalPresent, 
-            totalAbsent: response.data.totalAbsent,
-            totalOnLeave: response.data.totalOnLeave,
-            employeeRecord: response.data.employee_record 
-        });
+        // Fetch attendance counts using the new API endpoint
+        const response = await ApiServices.GetRequest(`/employee-attendance-count`);
+
+        // Get attendance data from the API response
+        const attendanceData = response.data;
+
+        // Set the status counts based on the response
+        const statusCounts = {
+            present: attendanceData.present,
+            absent: attendanceData.absent,
+            onleave: attendanceData.onleave, // Include onleave if needed
+        };
+
+        // Commit the computed counts to the store
+        commit("setStatusCounts", statusCounts);
     } catch (error) {
-        console.error(error);
-    }
-},
-
-  async fetchEmployeeStatus({ commit }, { date, frequency }) {
-    try {
-      // Fetch working hours using the API
-      const response = await ApiServices.GetRequestWorkingHours(
-        `/get-employee/working-hours?date=${date}&frequency=${frequency}`
-      );
-
-      // Get the daily working hours from the API response
-      const dailyWorkingHours = response.data.daily_working_hours;
-
-      // Calculate the counts based on the status key
-      const statusCounts = dailyWorkingHours.reduce(
-        (counts, entry) => {
-          if (entry.status === "present") {
-            counts.present++;
-          } else if (entry.status === "absent") {
-            counts.absent++;
-          }
-          return counts;
-        },
-        { present: 0, absent: 0 } // Initial counts
-      );
-
-      // Commit the computed counts to the store
-      commit("setStatusCounts", statusCounts);
-    } catch (error) {
-      console.error("Error fetching employee status:", error);
-      throw error; // Rethrow the error for handling in the component
+        console.error("Error fetching employee status:", error);
+        throw error; // Rethrow the error for handling in the component
     }
   },
   async LeaveApplication({ commit }, leaveApplication) {
@@ -349,13 +329,17 @@ const actions = {
         "/get-employee/assigned-projects"
       );
 
-      if (response.status_code === "200, OK") {
-        commit("setAssignedProjects", response.data); // Commit the 'data' part of the response
+      // Check if the response contains data and a success message
+      if (
+        response.data &&
+        response.message === "Assigned projects fetched successfully."
+      ) {
+        commit("setAssignedProjects", response.data);
       } else {
-        console.error("Failed to fetch projects:", response.message);
+        console.error("Failed to fetch projects:", response); // Log the entire response
       }
     } catch (error) {
-      console.error("Error fetching assigned projects:", error);
+      console.error("Error fetching assigned projects:", error); // Log full error object
     }
   },
 
@@ -434,7 +418,74 @@ const actions = {
     }
   },
 
+  async fetchAnnouncements({ commit }) {
+    try {
+        // Fetch announcements from backend (unchanged)
+        const response = await ApiServices.GetRequest("/get-announcements");
+        if (response && response.data) {
+            commit("setAnnouncements", response.data);
+        }
+    } catch (error) {
+        console.error("Error fetching announcements:", error);
+        throw error;
+    }
+},
+markAsRead({ commit }, announcementId) {
+  // No API call, just update the state
+  commit("markAnnouncementAsRead", announcementId);
 
+  // Optionally persist the read state in localStorage
+  const readAnnouncements = JSON.parse(localStorage.getItem("readAnnouncements")) || [];
+  if (!readAnnouncements.includes(announcementId)) {
+      readAnnouncements.push(announcementId);
+      localStorage.setItem("readAnnouncements", JSON.stringify(readAnnouncements));
+  }
+},
+async fetchPerks({ commit }) {
+
+  try {
+
+    const response = await ApiServices.GetRequest("/get-all-perks");
+
+    if (response && response.data) {
+
+      commit("setPerks", response.data); // Store the perks in Vuex state
+
+    }
+
+  } catch (error) {
+
+    console.error("Error fetching perks:", error);
+
+    throw error;
+
+  }
+
+},
+
+async applyForPerks({ commit }, requestedPerks) {
+
+  try {
+
+    const response = await ApiServices.PostRequestHeader("/send-perk/request", {
+
+      requested_perks: requestedPerks,
+
+    });
+
+    commit("setPerksResponse", response.data);
+
+    return response;
+
+  } catch (error) {
+
+    console.error("Error applying for perks:", error);
+
+    throw error;
+
+  }
+
+}
 
 };
 
@@ -512,7 +563,52 @@ const mutations = {
   },
   setDepartmentCount(state,count){
     state.departmentCount = count
-  }
+  },
+
+  //arham
+  setAttendanceCounts(state, counts) {
+    if (counts) {
+      console.log("Setting attendance counts:", counts); // Log the counts received
+      state.attendanceCounts.employee_name = counts.employee_name || "";
+      state.attendanceCounts.present = counts.present || 0;
+      state.attendanceCounts.absent = counts.absent || 0;
+      state.attendanceCounts.onleave = counts.onleave || 0;
+    } else {
+      console.error("Received undefined counts in mutation");
+    }
+  },
+  setAttendanceData(state, attendanceData) {
+    state.totalPresent = attendanceData.totalPresent;
+    state.totalAbsent = attendanceData.totalAbsent;
+    state.totalOnLeave = attendanceData.totalOnLeave;
+    state.employeeRecord = attendanceData.employeeRecord;
+
+  },
+  setAnnouncements(state, announcements) {
+    // Load read status from localStorage and merge with announcements
+    const readAnnouncements = JSON.parse(localStorage.getItem("readAnnouncements")) || [];
+    state.announcements = announcements.map((announcement) => ({
+        ...announcement,
+        is_read: readAnnouncements.includes(announcement.id),
+    }));
+  },
+    markAnnouncementAsRead(state, announcementId) {
+      const announcement = state.announcements.find((a) => a.id === announcementId);
+      if (announcement) {
+          announcement.is_read = true;
+      }
+  },
+  setPerks(state, perks) {
+
+    state.perks = perks; // Mutation to store perks
+
+  },
+
+  setPerksResponse(state, data) {
+
+    state.perksResponse = data;
+
+  },
 };
 
 export default {

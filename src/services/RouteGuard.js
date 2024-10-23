@@ -5,7 +5,7 @@ let RouteService = function routeGuard(permission, roles = []) {
     // Get the user role and permission check from Vuex
     const userRole = store.getters['roles/userRole'];
     const hasPermission = store.getters['roles/hasPermission'](permission); // Checking if the user has the required permission
-
+      console.log("roless array",roles);
     console.log("User Role: ", userRole);
     console.log("Has Permission: ", hasPermission);
 

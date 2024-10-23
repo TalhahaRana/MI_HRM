@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="dashboard-container">
-        <h1 class="welcome-title">Welcome Samia</h1>
+        <h1 class="welcome-title"> Welcome Back, {{ userName }}</h1>
     </div>
     <div class="align-items-center justify-content-between container">
         <div class="row">
@@ -65,6 +65,7 @@ export default {
   },
     name: "Dashboard",
     setup() {
+        const userName = ref("");
         const time = ref("");
         const weatherData = ref(null);
 
@@ -104,11 +105,16 @@ export default {
             onUnmounted(() => {
                 clearInterval(intervalId); // Clear interval on unmount
             });
+            const storedUserName = localStorage.getItem("userName");
+        if (storedUserName) {
+          userName.value = storedUserName.toUpperCase(); // Set the userName from local storage
+        }
         });
 
         return {
             time,
             weatherData,
+            userName,
         };
     },
 };
