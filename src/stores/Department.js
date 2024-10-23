@@ -42,7 +42,7 @@ async addDepartment({ commit }, departmentData) {
     commit("setLoading", true);
     commit("clearError");
     try {
-        const response = await ApiServices.PostRequest("/add-department", departmentData);
+        const response = await ApiServices.PostRequestHeader("/add-department", departmentData);
         // Assuming response.data contains the newly created department
         commit("newDepartment", response.data);
     } catch (error) {
