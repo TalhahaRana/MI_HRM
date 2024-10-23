@@ -42,7 +42,8 @@ const getters = {
   totalAbsent: (state) => state.totalAbsent,
   totalOnLeave: (state) => state.totalOnLeave,
   totalPresent: (state) => state.totalPresent, 
-  employeeRecord: (state) => state.employeeRecord 
+  employeeRecord: (state) => state.employeeRecord ,
+  attendanceCounts: (state) => state.attendanceCounts,
 };
 
 const actions = {
